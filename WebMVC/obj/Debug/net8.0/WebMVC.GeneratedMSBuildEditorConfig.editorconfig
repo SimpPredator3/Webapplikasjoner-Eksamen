@@ -18,6 +18,10 @@ build_property.GenerateRazorMetadataSourceChecksumAttributes =
 build_property.MSBuildProjectDirectory = G:\GitHub\Webapplikasjoner-Eksamen\WebMVC
 build_property._RazorSourceGeneratorDebug = 
 
+[G:/GitHub/Webapplikasjoner-Eksamen/WebMVC/Views/Home/Forum.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxGb3J1bS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [G:/GitHub/Webapplikasjoner-Eksamen/WebMVC/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
