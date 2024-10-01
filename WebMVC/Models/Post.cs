@@ -12,6 +12,7 @@ public class Post
     public string Title { get; set; }
 
     [Required]
+    [StringLength(256)]
     public string Content { get; set; }
 
     public string? ImageUrl { get; set; }
