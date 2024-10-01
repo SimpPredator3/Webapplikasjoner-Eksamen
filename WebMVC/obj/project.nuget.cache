@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "Izq3Pm07NSs=",
+  "dgSpecHash": "ITV1n3fzDTU=",
   "success": true,
   "projectFilePath": "G:\\GitHub\\Webapplikasjoner-Eksamen\\WebMVC\\WebMVC.csproj",
   "expectedPackageFiles": [
@@ -118,6 +118,7 @@
     "C:\\Users\\adria\\.nuget\\packages\\nuget.projectmodel\\6.11.0\\nuget.projectmodel.6.11.0.nupkg.sha512",
     "C:\\Users\\adria\\.nuget\\packages\\nuget.protocol\\6.11.0\\nuget.protocol.6.11.0.nupkg.sha512",
     "C:\\Users\\adria\\.nuget\\packages\\nuget.versioning\\6.11.0\\nuget.versioning.6.11.0.nupkg.sha512",
+    "C:\\Users\\adria\\.nuget\\packages\\serilog\\4.0.2\\serilog.4.0.2.nupkg.sha512",
     "C:\\Users\\adria\\.nuget\\packages\\sqlitepclraw.bundle_e_sqlite3\\2.1.6\\sqlitepclraw.bundle_e_sqlite3.2.1.6.nupkg.sha512",
     "C:\\Users\\adria\\.nuget\\packages\\sqlitepclraw.core\\2.1.6\\sqlitepclraw.core.2.1.6.nupkg.sha512",
     "C:\\Users\\adria\\.nuget\\packages\\sqlitepclraw.lib.e_sqlite3\\2.1.6\\sqlitepclraw.lib.e_sqlite3.2.1.6.nupkg.sha512",

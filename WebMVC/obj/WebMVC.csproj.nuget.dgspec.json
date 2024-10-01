@@ -68,6 +68,10 @@
             "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
               "target": "Package",
               "version": "[8.0.5, )"
+            },
+            "Serilog": {
+              "target": "Package",
+              "version": "[4.0.2, )"
             }
           },
           "imports": [
