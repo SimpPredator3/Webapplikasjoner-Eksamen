@@ -1,7 +1,17 @@
+using Microsoft.EntityFrameworkCore;
+using WebMVC.DAL;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Register ApplicationDbContext
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Register the PostRepository for Dependency Injection
+builder.Services.AddScoped<IPostRepository, PostRepository>();
 
 var app = builder.Build();
 
