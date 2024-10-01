@@ -337,4 +337,8 @@ web.config
 *.licx
 *.svd
 *.pdb
+<<<<<<< HEAD
 *.opendb
+=======
+*.opendb
+>>>>>>> clean-start
