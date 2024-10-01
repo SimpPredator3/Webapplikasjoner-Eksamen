@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "mAkB3LJiZkw=",
+  "dgSpecHash": "+H6ZzdB7BP0=",
   "success": true,
-  "projectFilePath": "C:\\Users\\askno\\OneDrive\\Dokumenter\\GitHub\\Webapplikasjoner-Eksamen\\WebMVC\\WebMVC.csproj",
+  "projectFilePath": "c:\\Users\\askno\\OneDrive\\Dokumenter\\GitHub\\Webapplikasjoner-Eksamen\\WebMVC\\WebMVC.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\askno\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\askno\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\6.0.0\\microsoft.bcl.asyncinterfaces.6.0.0.nupkg.sha512",

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\askno\\OneDrive\\Dokumenter\\GitHub\\Webapplikasjoner-Eksamen\\WebMVC\\WebMVC.csproj": {}
+    "c:\\Users\\askno\\OneDrive\\Dokumenter\\GitHub\\Webapplikasjoner-Eksamen\\WebMVC\\WebMVC.csproj": {}
   },
   "projects": {
-    "C:\\Users\\askno\\OneDrive\\Dokumenter\\GitHub\\Webapplikasjoner-Eksamen\\WebMVC\\WebMVC.csproj": {
+    "c:\\Users\\askno\\OneDrive\\Dokumenter\\GitHub\\Webapplikasjoner-Eksamen\\WebMVC\\WebMVC.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\askno\\OneDrive\\Dokumenter\\GitHub\\Webapplikasjoner-Eksamen\\WebMVC\\WebMVC.csproj",
+        "projectUniqueName": "c:\\Users\\askno\\OneDrive\\Dokumenter\\GitHub\\Webapplikasjoner-Eksamen\\WebMVC\\WebMVC.csproj",
         "projectName": "WebMVC",
-        "projectPath": "C:\\Users\\askno\\OneDrive\\Dokumenter\\GitHub\\Webapplikasjoner-Eksamen\\WebMVC\\WebMVC.csproj",
+        "projectPath": "c:\\Users\\askno\\OneDrive\\Dokumenter\\GitHub\\Webapplikasjoner-Eksamen\\WebMVC\\WebMVC.csproj",
         "packagesPath": "C:\\Users\\askno\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\askno\\OneDrive\\Dokumenter\\GitHub\\Webapplikasjoner-Eksamen\\WebMVC\\obj\\",
+        "outputPath": "c:\\Users\\askno\\OneDrive\\Dokumenter\\GitHub\\Webapplikasjoner-Eksamen\\WebMVC\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\askno\\AppData\\Roaming\\NuGet\\NuGet.Config"
