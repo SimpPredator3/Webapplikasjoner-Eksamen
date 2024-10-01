@@ -1,0 +1,13 @@
+@model WebMVC1.Models.Post
+
+<h2>@Model.Title</h2>
+
+<p><strong>Author:</strong> @Model.Author</p>
+<p><strong>Content:</strong> @Model.Content</p>
+
+@if (!string.IsNullOrEmpty(Model.ImageUrl))
+{
+    <img src="@Model.ImageUrl" alt="Image" class="img-thumbnail" />
+}
+
+<p><strong>Posted on:</strong> @Model.CreatedDate.ToString("g")</p>
