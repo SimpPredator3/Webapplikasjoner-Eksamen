@@ -29,34 +29,12 @@ C:\Users\askno\OneDrive\Dokumenter\GitHub\Webapplikasjoner-Eksamen\WebMVC\obj\De
 C:\Users\askno\OneDrive\Dokumenter\GitHub\Webapplikasjoner-Eksamen\WebMVC\obj\Debug\net8.0\WebMVC.pdb
 C:\Users\askno\OneDrive\Dokumenter\GitHub\Webapplikasjoner-Eksamen\WebMVC\obj\Debug\net8.0\WebMVC.genruntimeconfig.cache
 C:\Users\askno\OneDrive\Dokumenter\GitHub\Webapplikasjoner-Eksamen\WebMVC\obj\Debug\net8.0\ref\WebMVC.dll
-G:\GitHub\Webapplikasjoner-Eksamen\WebMVC\bin\Debug\net8.0\appsettings.Development.json
-G:\GitHub\Webapplikasjoner-Eksamen\WebMVC\bin\Debug\net8.0\appsettings.json
-G:\GitHub\Webapplikasjoner-Eksamen\WebMVC\bin\Debug\net8.0\WebMVC.staticwebassets.runtime.json
-G:\GitHub\Webapplikasjoner-Eksamen\WebMVC\bin\Debug\net8.0\WebMVC.exe
-G:\GitHub\Webapplikasjoner-Eksamen\WebMVC\bin\Debug\net8.0\WebMVC.deps.json
-G:\GitHub\Webapplikasjoner-Eksamen\WebMVC\bin\Debug\net8.0\WebMVC.runtimeconfig.json
-G:\GitHub\Webapplikasjoner-Eksamen\WebMVC\bin\Debug\net8.0\WebMVC.dll
-G:\GitHub\Webapplikasjoner-Eksamen\WebMVC\bin\Debug\net8.0\WebMVC.pdb
-G:\GitHub\Webapplikasjoner-Eksamen\WebMVC\obj\Debug\net8.0\WebMVC.GeneratedMSBuildEditorConfig.editorconfig
-G:\GitHub\Webapplikasjoner-Eksamen\WebMVC\obj\Debug\net8.0\WebMVC.AssemblyInfoInputs.cache
-G:\GitHub\Webapplikasjoner-Eksamen\WebMVC\obj\Debug\net8.0\WebMVC.AssemblyInfo.cs
-G:\GitHub\Webapplikasjoner-Eksamen\WebMVC\obj\Debug\net8.0\WebMVC.csproj.CoreCompileInputs.cache
-G:\GitHub\Webapplikasjoner-Eksamen\WebMVC\obj\Debug\net8.0\WebMVC.MvcApplicationPartsAssemblyInfo.cache
-G:\GitHub\Webapplikasjoner-Eksamen\WebMVC\obj\Debug\net8.0\WebMVC.RazorAssemblyInfo.cache
-G:\GitHub\Webapplikasjoner-Eksamen\WebMVC\obj\Debug\net8.0\WebMVC.RazorAssemblyInfo.cs
-G:\GitHub\Webapplikasjoner-Eksamen\WebMVC\obj\Debug\net8.0\WebMVC.sourcelink.json
-G:\GitHub\Webapplikasjoner-Eksamen\WebMVC\obj\Debug\net8.0\staticwebassets.build.json
-G:\GitHub\Webapplikasjoner-Eksamen\WebMVC\obj\Debug\net8.0\staticwebassets.development.json
-G:\GitHub\Webapplikasjoner-Eksamen\WebMVC\obj\Debug\net8.0\staticwebassets\msbuild.WebMVC.Microsoft.AspNetCore.StaticWebAssets.props
-G:\GitHub\Webapplikasjoner-Eksamen\WebMVC\obj\Debug\net8.0\staticwebassets\msbuild.build.WebMVC.props
-G:\GitHub\Webapplikasjoner-Eksamen\WebMVC\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.WebMVC.props
-G:\GitHub\Webapplikasjoner-Eksamen\WebMVC\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.WebMVC.props
-G:\GitHub\Webapplikasjoner-Eksamen\WebMVC\obj\Debug\net8.0\staticwebassets.pack.json
-G:\GitHub\Webapplikasjoner-Eksamen\WebMVC\obj\Debug\net8.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
-G:\GitHub\Webapplikasjoner-Eksamen\WebMVC\obj\Debug\net8.0\scopedcss\bundle\WebMVC.styles.css
-G:\GitHub\Webapplikasjoner-Eksamen\WebMVC\obj\Debug\net8.0\scopedcss\projectbundle\WebMVC.bundle.scp.css
-G:\GitHub\Webapplikasjoner-Eksamen\WebMVC\obj\Debug\net8.0\WebMVC.dll
-G:\GitHub\Webapplikasjoner-Eksamen\WebMVC\obj\Debug\net8.0\refint\WebMVC.dll
-G:\GitHub\Webapplikasjoner-Eksamen\WebMVC\obj\Debug\net8.0\WebMVC.pdb
-G:\GitHub\Webapplikasjoner-Eksamen\WebMVC\obj\Debug\net8.0\WebMVC.genruntimeconfig.cache
-G:\GitHub\Webapplikasjoner-Eksamen\WebMVC\obj\Debug\net8.0\ref\WebMVC.dll
+C:\Users\mlyng\Documents\OsloMet\ITPE3200 Webapplikasjoner\Webapplikasjoner-Eksamen\WebMVC\obj\Debug\net8.0\WebMVC.csproj.AssemblyReference.cache
+C:\Users\mlyng\Documents\OsloMet\ITPE3200 Webapplikasjoner\Webapplikasjoner-Eksamen\WebMVC\obj\Debug\net8.0\WebMVC.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\mlyng\Documents\OsloMet\ITPE3200 Webapplikasjoner\Webapplikasjoner-Eksamen\WebMVC\obj\Debug\net8.0\WebMVC.AssemblyInfoInputs.cache
+C:\Users\mlyng\Documents\OsloMet\ITPE3200 Webapplikasjoner\Webapplikasjoner-Eksamen\WebMVC\obj\Debug\net8.0\WebMVC.AssemblyInfo.cs
+C:\Users\mlyng\Documents\OsloMet\ITPE3200 Webapplikasjoner\Webapplikasjoner-Eksamen\WebMVC\obj\Debug\net8.0\WebMVC.csproj.CoreCompileInputs.cache
+C:\Users\mlyng\Documents\OsloMet\ITPE3200 Webapplikasjoner\Webapplikasjoner-Eksamen\WebMVC\obj\Debug\net8.0\WebMVC.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\mlyng\Documents\OsloMet\ITPE3200 Webapplikasjoner\Webapplikasjoner-Eksamen\WebMVC\obj\Debug\net8.0\WebMVC.RazorAssemblyInfo.cache
+C:\Users\mlyng\Documents\OsloMet\ITPE3200 Webapplikasjoner\Webapplikasjoner-Eksamen\WebMVC\obj\Debug\net8.0\WebMVC.RazorAssemblyInfo.cs
+C:\Users\mlyng\Documents\OsloMet\ITPE3200 Webapplikasjoner\Webapplikasjoner-Eksamen\WebMVC\obj\Debug\net8.0\WebMVC.sourcelink.json
