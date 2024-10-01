@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\askno\\OneDrive\\Dokumenter\\GitHub\\Webapplikasjoner-Eksamen\\WebMVC\\WebMVC.csproj": {}
+    "C:\\Users\\mlyng\\Documents\\OsloMet\\ITPE3200 Webapplikasjoner\\Webapplikasjoner-Eksamen\\WebMVC\\WebMVC.csproj": {}
   },
   "projects": {
-    "C:\\Users\\askno\\OneDrive\\Dokumenter\\GitHub\\Webapplikasjoner-Eksamen\\WebMVC\\WebMVC.csproj": {
+    "C:\\Users\\mlyng\\Documents\\OsloMet\\ITPE3200 Webapplikasjoner\\Webapplikasjoner-Eksamen\\WebMVC\\WebMVC.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\askno\\OneDrive\\Dokumenter\\GitHub\\Webapplikasjoner-Eksamen\\WebMVC\\WebMVC.csproj",
+        "projectUniqueName": "C:\\Users\\mlyng\\Documents\\OsloMet\\ITPE3200 Webapplikasjoner\\Webapplikasjoner-Eksamen\\WebMVC\\WebMVC.csproj",
         "projectName": "WebMVC",
-        "projectPath": "C:\\Users\\askno\\OneDrive\\Dokumenter\\GitHub\\Webapplikasjoner-Eksamen\\WebMVC\\WebMVC.csproj",
-        "packagesPath": "C:\\Users\\askno\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\askno\\OneDrive\\Dokumenter\\GitHub\\Webapplikasjoner-Eksamen\\WebMVC\\obj\\",
+        "projectPath": "C:\\Users\\mlyng\\Documents\\OsloMet\\ITPE3200 Webapplikasjoner\\Webapplikasjoner-Eksamen\\WebMVC\\WebMVC.csproj",
+        "packagesPath": "C:\\Users\\mlyng\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\mlyng\\Documents\\OsloMet\\ITPE3200 Webapplikasjoner\\Webapplikasjoner-Eksamen\\WebMVC\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\askno\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\mlyng\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -42,6 +42,22 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.8, )"
+            },
+            "Microsoft.EntityFrameworkCore.Sqlite": {
+              "target": "Package",
+              "version": "[8.0.8, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.8, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
