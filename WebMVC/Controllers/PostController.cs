@@ -15,7 +15,7 @@ namespace WebMVC.Controllers
             _postRepository = postRepository;
         }
 
-        // GET: Post/Index
+        // GET: Post/test
         public async Task<IActionResult> Index()
         {
             var posts = await _postRepository.GetAllPostsAsync();
