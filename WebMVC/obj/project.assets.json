@@ -2573,19 +2573,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\adria\\.nuget\\packages\\": {}
+    "C:\\Users\\mlyng\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "G:\\GitHub\\Webapplikasjoner-Eksamen\\WebMVC\\WebMVC.csproj",
+      "projectUniqueName": "C:\\Users\\mlyng\\Documents\\OsloMet\\ITPE3200 Webapplikasjoner\\Webapplikasjoner-Eksamen\\WebMVC\\WebMVC.csproj",
       "projectName": "WebMVC",
-      "projectPath": "G:\\GitHub\\Webapplikasjoner-Eksamen\\WebMVC\\WebMVC.csproj",
-      "packagesPath": "C:\\Users\\adria\\.nuget\\packages\\",
-      "outputPath": "G:\\GitHub\\Webapplikasjoner-Eksamen\\WebMVC\\obj\\",
+      "projectPath": "C:\\Users\\mlyng\\Documents\\OsloMet\\ITPE3200 Webapplikasjoner\\Webapplikasjoner-Eksamen\\WebMVC\\WebMVC.csproj",
+      "packagesPath": "C:\\Users\\mlyng\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\mlyng\\Documents\\OsloMet\\ITPE3200 Webapplikasjoner\\Webapplikasjoner-Eksamen\\WebMVC\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\adria\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\mlyng\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
