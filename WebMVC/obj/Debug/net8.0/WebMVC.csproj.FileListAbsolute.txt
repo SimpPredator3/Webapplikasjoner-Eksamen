@@ -166,3 +166,12 @@ G:\GitHub\Webapplikasjoner-Eksamen\WebMVC\obj\Debug\net8.0\refint\WebMVC.dll
 G:\GitHub\Webapplikasjoner-Eksamen\WebMVC\obj\Debug\net8.0\WebMVC.pdb
 G:\GitHub\Webapplikasjoner-Eksamen\WebMVC\obj\Debug\net8.0\WebMVC.genruntimeconfig.cache
 G:\GitHub\Webapplikasjoner-Eksamen\WebMVC\obj\Debug\net8.0\ref\WebMVC.dll
+G:\GitHub\Webapplikasjoner-Eksamen\WebMVC\bin\Debug\net8.0\Microsoft.AspNetCore.Cryptography.Internal.dll
+G:\GitHub\Webapplikasjoner-Eksamen\WebMVC\bin\Debug\net8.0\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
+G:\GitHub\Webapplikasjoner-Eksamen\WebMVC\bin\Debug\net8.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+G:\GitHub\Webapplikasjoner-Eksamen\WebMVC\bin\Debug\net8.0\Microsoft.AspNetCore.Identity.UI.dll
+G:\GitHub\Webapplikasjoner-Eksamen\WebMVC\bin\Debug\net8.0\Microsoft.Extensions.FileProviders.Embedded.dll
+G:\GitHub\Webapplikasjoner-Eksamen\WebMVC\bin\Debug\net8.0\Microsoft.Extensions.Identity.Core.dll
+G:\GitHub\Webapplikasjoner-Eksamen\WebMVC\bin\Debug\net8.0\Microsoft.Extensions.Identity.Stores.dll
+G:\GitHub\Webapplikasjoner-Eksamen\WebMVC\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
+G:\GitHub\Webapplikasjoner-Eksamen\WebMVC\obj\Debug\net8.0\WebMVC.MvcApplicationPartsAssemblyInfo.cs
