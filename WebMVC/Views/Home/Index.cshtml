@@ -1,7 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-@model IEnumerable<Post>
+@model IEnumerable<WebMVC.Models.Post>
 
 
 <!DOCTYPE html>
@@ -23,22 +23,30 @@
     your life easier by providing a centralized space for organizing, sharing,
     and collaborating on notes, images, and other materials.</p>
 </div>
-<!--
+
 <div class="grid">
-    foreach (var post in Model){
+    @foreach (var post in Model)
+    {
         <div class="col">
             <div>
+                <img src="@post.ImageUrl" class="card" alt="@post.Author">
                 <div>
+                    <div class="flex-between-mt-2">
+                        <h5 class="text-start">
+                            @post.Author
+                        </h5>
+                        <h5 class=text-nowrap>
+                            @post.Content
+                        </h5>
+                        <h5 class="comments">Satt av plass til kommentar her</h5>
+                    </div>
 
                 </div>
             </div>
         </div>
     }
-
-
-
 </div>
--->
+
 </body>
 </html>
 

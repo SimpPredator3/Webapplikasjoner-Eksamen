@@ -23,6 +23,7 @@ namespace WebMVC.Controllers
         }
 
         // GET: Post/Create
+        [HttpGet]
         public IActionResult Create()
         {
             return View();
