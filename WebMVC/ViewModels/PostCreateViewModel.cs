@@ -7,7 +7,7 @@ namespace WebMVC.ViewModels;
 public class PostCreateViewModel
 {
     [Required]
-    [StringLength(100)]
+    [StringLength(30)]
     public string Title { get; set; } = default!;
 
     [Required]

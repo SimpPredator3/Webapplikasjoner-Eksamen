@@ -68,27 +68,45 @@ namespace WebMVC.Controllers
 
         // GET: Post/Edit/{id}
         [Authorize]
-        public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> Edit(int? id)
         {
-            if (id == 0)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var post = await _postRepository.GetPostByIdAsync(id);
+            var post = await _postRepository.GetPostByIdAsync(id.Value);
             if (post == null)
             {
                 return NotFound();
             }
-            return View(post);
+
+            // Ensure the logged-in user is the author or an admin
+            if (post.Author != User.Identity.Name && !User.IsInRole("Admin"))
+            {
+                return Forbid(); // Return a 403 Forbidden response
+            }
+
+            return View(post); // If the user is authorized, return the view
         }
 
         // POST: Post/Edit/{id}
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Edit(Post post)
+        public async Task<IActionResult> Edit(int id, Post post)
         {
+            if (id != post.Id)
+            {
+                return NotFound();
+            }
+
+            // Ensure the logged-in user is the author or an admin
+            if (post.Author != User.Identity.Name && !User.IsInRole("Admin"))
+            {
+                return Forbid(); // Return a 403 Forbidden response
+            }
+
             if (ModelState.IsValid)
             {
                 await _postRepository.UpdatePostAsync(post);
@@ -112,7 +130,13 @@ namespace WebMVC.Controllers
                 return NotFound();
             }
 
-            return View(post); // This will show a confirmation page
+            // Ensure the logged-in user is the author or an admin
+            if (post.Author != User.Identity.Name && !User.IsInRole("Admin"))
+            {
+                return Forbid(); // Return a 403 Forbidden response
+            }
+
+            return View(post); // If the user is authorized, return the confirmation view
         }
 
         // POST: Post/DeleteConfirmed/{id}
@@ -121,6 +145,14 @@ namespace WebMVC.Controllers
         [Authorize]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            var post = await _postRepository.GetPostByIdAsync(id);
+
+            // Ensure the logged-in user is the author or an admin
+            if (post.Author != User.Identity.Name && !User.IsInRole("Admin"))
+            {
+                return Forbid(); // Return a 403 Forbidden response
+            }
+
             await _postRepository.DeletePostAsync(id);
             return RedirectToAction(nameof(Index));
         }
