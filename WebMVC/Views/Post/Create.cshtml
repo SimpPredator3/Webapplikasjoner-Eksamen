@@ -23,8 +23,11 @@
         <span asp-validation-for="ImageUrl" class="text-danger"></span>
     </div>
 
-    <!-- Hidden input to pass the logged-in user's name as the Author -->
-    <input type="hidden" asp-for="Author" value="@User.Identity.Name" />
+    <div class="form-group">
+        <label>Author</label>
+        <input asp-for="Author" class="form-control" />
+        <span asp-validation-for="Author" class="text-danger"></span>
+    </div>
 
     <div class="form-group">
         <input type="submit" value="Create" class="btn btn-primary" />

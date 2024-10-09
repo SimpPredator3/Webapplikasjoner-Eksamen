@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using WebMVC.DAL;
 using WebMVC.Models;
+using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
 
 namespace WebMVC.Controllers
@@ -23,6 +24,7 @@ namespace WebMVC.Controllers
         }
 
         // GET: Post/Create
+        [Authorize] // Only logged-in users can access this method
         public IActionResult Create()
         {
             return View();
@@ -31,10 +33,23 @@ namespace WebMVC.Controllers
         // POST: Post/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize] // Ensure only logged-in users can post
         public async Task<IActionResult> Create(Post post)
         {
             if (ModelState.IsValid)
             {
+                // Check if the user is authenticated and User.Identity.Name is not null
+                if (User?.Identity?.IsAuthenticated == true && !string.IsNullOrEmpty(User.Identity.Name))
+                {
+                    post.Author = User.Identity.Name;
+                }
+                else
+                {
+                    // Handle the case where the user is not authenticated for some reason
+                    ModelState.AddModelError("", "Unable to determine the author of the post.");
+                    return View(post);
+                }
+
                 post.CreatedDate = System.DateTime.Now;
                 await _postRepository.AddPostAsync(post);
                 return RedirectToAction(nameof(Index));

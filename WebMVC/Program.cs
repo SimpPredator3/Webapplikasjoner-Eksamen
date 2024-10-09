@@ -12,7 +12,8 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddControllersWithViews();
 
 // Register ApplicationDbContext with the correct connection string
-builder.Services.AddDbContext<ApplicationDbContext>(options => {
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+{
     options.UseSqlite(connectionString); // Using the correct connection string
 });
 
