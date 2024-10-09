@@ -2,18 +2,21 @@ using Microsoft.AspNetCore.Mvc;
 using WebMVC.DAL;
 using WebMVC.Models;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 
 namespace WebMVC.Controllers
 {
     public class PostController : Controller
     {
+        private readonly UserManager<IdentityUser> _userManager;
         private readonly IPostRepository _postRepository;
 
         // Constructor that injects the repository
-        public PostController(IPostRepository postRepository)
-        {
-            _postRepository = postRepository;
-        }
+         public PostController(UserManager<IdentityUser> userManager, IPostRepository postRepository)
+    {
+        _userManager = userManager; // Setter verdien av _userManager
+        _postRepository = postRepository;
+    }
 
         // GET: Post/Index
         public async Task<IActionResult> Index()
@@ -35,6 +38,11 @@ namespace WebMVC.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Hent den innloggede brukeren
+                var user = await _userManager.GetUserAsync(User);
+                post.Author = user?.Email; // Setter forfatter til brukerens brukernavn
+
+
                 post.CreatedDate = System.DateTime.Now;
                 await _postRepository.AddPostAsync(post);
                 return RedirectToAction(nameof(Index));
