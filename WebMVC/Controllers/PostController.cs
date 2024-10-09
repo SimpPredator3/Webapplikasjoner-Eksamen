@@ -36,17 +36,17 @@ namespace WebMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Post post)
         {
-            if (ModelState.IsValid)
-            {
-                // Hent den innloggede brukeren
+            // Hent den innloggede brukeren
                 var user = await _userManager.GetUserAsync(User);
                 post.Author = user?.Email; // Setter forfatter til brukerens brukernavn
 
-
+            if (ModelState.IsValid)
+            {
                 post.CreatedDate = System.DateTime.Now;
                 await _postRepository.AddPostAsync(post);
                 return RedirectToAction(nameof(Index));
             }
+
             return View(post);
         }
 
