@@ -263,7 +263,6 @@ ClientBin/
 *.config
 *.p12
 *.csr
-*.json
 *.npmrc
 *.yarnrc
 *.yarnclean
@@ -283,7 +282,6 @@ ClientBin/
 *.lst
 *.node
 web.config
-*.csproj
 *.vbproj
 *.fsproj
 *.props
