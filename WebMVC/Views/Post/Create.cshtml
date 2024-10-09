@@ -1,4 +1,4 @@
-@model WebMVC.Models.Post
+@model WebMVC.ViewModels.PostCreateViewModel
 
 @{
     ViewData["Title"] = "Create Post";
@@ -21,12 +21,6 @@
         <label asp-for="ImageUrl" class="control-label"></label>
         <input asp-for="ImageUrl" class="form-control" />
         <span asp-validation-for="ImageUrl" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label>Author</label>
-        <input asp-for="Author" class="form-control" />
-        <span asp-validation-for="Author" class="text-danger"></span>
     </div>
 
     <div class="form-group">

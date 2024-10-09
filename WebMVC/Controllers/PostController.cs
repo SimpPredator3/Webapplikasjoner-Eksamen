@@ -3,6 +3,7 @@ using WebMVC.DAL;
 using WebMVC.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
+using WebMVC.ViewModels;
 
 namespace WebMVC.Controllers
 {
@@ -27,34 +28,31 @@ namespace WebMVC.Controllers
         [Authorize] // Only logged-in users can access this method
         public IActionResult Create()
         {
-            return View();
+            return View(new PostCreateViewModel());
         }
 
         // POST: Post/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize] // Ensure only logged-in users can post
-        public async Task<IActionResult> Create(Post post)
+        public async Task<IActionResult> Create(PostCreateViewModel model)
         {
             if (ModelState.IsValid)
             {
-                // Check if the user is authenticated and User.Identity.Name is not null
-                if (User?.Identity?.IsAuthenticated == true && !string.IsNullOrEmpty(User.Identity.Name))
+                // Map ViewModel to Post entity
+                var post = new Post
                 {
-                    post.Author = User.Identity.Name;
-                }
-                else
-                {
-                    // Handle the case where the user is not authenticated for some reason
-                    ModelState.AddModelError("", "Unable to determine the author of the post.");
-                    return View(post);
-                }
+                    Title = model.Title,
+                    Content = model.Content,
+                    ImageUrl = model.ImageUrl,
+                    Author = User.Identity.Name, // Set the Author from the logged-in user
+                    CreatedDate = DateTime.Now
+                };
 
-                post.CreatedDate = System.DateTime.Now;
                 await _postRepository.AddPostAsync(post);
                 return RedirectToAction(nameof(Index));
             }
-            return View(post);
+            return View(model);
         }
 
         // GET: Post/Details/{id}
