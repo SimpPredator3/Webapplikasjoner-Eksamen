@@ -9,11 +9,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Retrieve the connection string for the ApplicationDbContext
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-
-// Retrieve the connection string for the ApplicationDbContext
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-
-
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
