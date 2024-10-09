@@ -8,8 +8,9 @@
     <thead>
         <tr>
             <th>Title</th>
+            <th>Content</th>
+            <th>Image URL</th>
             <th>Author</th>
-            <th>Created Date</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -18,10 +19,22 @@
         {
             <tr>
                 <td>@post.Title</td>
+                <td>@post.Content</td>
+                <td>@post.ImageUrl</td>
                 <td>@post.Author</td>
-                <td>@post.CreatedDate.ToString("g")</td>
                 <td>
-                    <a href="/Post/Details/@post.Id" class="btn btn-info">Details</a>
+                    <a asp-action="Details" asp-route-id="@post.Id" class="btn btn-info">Details</a>
+
+                    @if (post.Author == User.Identity.Name || User.IsInRole("Admin"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@post.Id" class="btn btn-primary">Edit</a>
+
+                        <form asp-action="Delete" asp-route-id="@post.Id" method="post" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-danger"
+                                onclick="return confirm('Are you sure you want to delete this post?');">Delete</button>
+                        </form>
+                    }
                 </td>
             </tr>
         }

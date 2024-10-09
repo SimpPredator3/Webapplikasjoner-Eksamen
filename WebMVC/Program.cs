@@ -10,11 +10,16 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 
+// Retrieve the connection string for the ApplicationDbContext
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
 // Register ApplicationDbContext with the correct connection string
-builder.Services.AddDbContext<ApplicationDbContext>(options => {
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+{
     options.UseSqlite(connectionString); // Using the correct connection string
 });
 
