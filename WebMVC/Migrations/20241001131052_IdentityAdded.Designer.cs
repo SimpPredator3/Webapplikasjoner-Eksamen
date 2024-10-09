@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebMVC.DAL;
 
@@ -10,9 +11,11 @@ using WebMVC.DAL;
 namespace WebMVC.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241001131052_IdentityAdded")]
+    partial class IdentityAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.8");
@@ -156,11 +159,9 @@ namespace WebMVC.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ProviderKey")
-                        .HasMaxLength(128)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ProviderDisplayName")
@@ -198,11 +199,9 @@ namespace WebMVC.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(128)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Value")
@@ -248,7 +247,7 @@ namespace WebMVC.Migrations
                             Id = 1,
                             Author = "John Doe",
                             Content = "This is the first post",
-                            CreatedDate = new DateTime(2024, 10, 1, 16, 41, 36, 638, DateTimeKind.Local).AddTicks(5470),
+                            CreatedDate = new DateTime(2024, 10, 1, 15, 10, 51, 791, DateTimeKind.Local).AddTicks(3987),
                             Title = "First Post"
                         },
                         new
@@ -256,7 +255,7 @@ namespace WebMVC.Migrations
                             Id = 2,
                             Author = "Jane Smith",
                             Content = "This is the second post",
-                            CreatedDate = new DateTime(2024, 10, 1, 16, 41, 36, 638, DateTimeKind.Local).AddTicks(5511),
+                            CreatedDate = new DateTime(2024, 10, 1, 15, 10, 51, 791, DateTimeKind.Local).AddTicks(4036),
                             Title = "Second Post"
                         },
                         new
@@ -264,7 +263,7 @@ namespace WebMVC.Migrations
                             Id = 3,
                             Author = "Jim Beam",
                             Content = "This is the third post",
-                            CreatedDate = new DateTime(2024, 10, 1, 16, 41, 36, 638, DateTimeKind.Local).AddTicks(5514),
+                            CreatedDate = new DateTime(2024, 10, 1, 15, 10, 51, 791, DateTimeKind.Local).AddTicks(4038),
                             Title = "Third Post"
                         });
                 });
