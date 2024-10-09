@@ -2,16 +2,19 @@ using Microsoft.AspNetCore.Mvc;
 using WebMVC.DAL;
 using WebMVC.Models;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 
 namespace WebMVC.Controllers
 {
     public class PostController : Controller
     {
+        private readonly UserManager<IdentityUser> _userManager;
         private readonly IPostRepository _postRepository;
 
         // Constructor that injects the repository
-        public PostController(IPostRepository postRepository)
+        public PostController(UserManager<IdentityUser> userManager, IPostRepository postRepository)
         {
+            _userManager = userManager;
             _postRepository = postRepository;
         }
 
@@ -33,6 +36,11 @@ namespace WebMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Post post)
         {
+
+            // Hent den innloggede brukeren
+                var user = await _userManager.GetUserAsync(User);
+                post.Author = user?.Email; // Setter forfatter til brukerens email
+
             if (ModelState.IsValid)
             {
                 post.CreatedDate = System.DateTime.Now;
