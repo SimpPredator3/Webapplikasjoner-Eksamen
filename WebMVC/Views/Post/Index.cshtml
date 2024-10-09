@@ -18,10 +18,17 @@
         {
             <tr>
                 <td>@post.Title</td>
+                <td>@post.Content</td>
+                <td>@post.ImageUrl</td>
                 <td>@post.Author</td>
-                <td>@post.CreatedDate.ToString("g")</td>
                 <td>
-                    <a href="/Post/Details/@post.Id" class="btn btn-info">Details</a>
+                    <a asp-action="Edit" asp-route-id="@post.Id" class="btn btn-primary">Edit</a>
+                    <a asp-action="Details" asp-route-id="@post.Id" class="btn btn-info">Details</a>
+                    <form asp-action="Delete" asp-route-id="@post.Id" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-danger"
+                            onclick="return confirm('Are you sure you want to delete this post?');">Delete</button>
+                    </form>
                 </td>
             </tr>
         }

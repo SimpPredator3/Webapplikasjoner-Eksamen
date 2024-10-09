@@ -67,8 +67,14 @@ namespace WebMVC.Controllers
         }
 
         // GET: Post/Edit/{id}
+        [Authorize]
         public async Task<IActionResult> Edit(int id)
         {
+            if (id == 0)
+            {
+                return NotFound();
+            }
+
             var post = await _postRepository.GetPostByIdAsync(id);
             if (post == null)
             {
@@ -80,6 +86,7 @@ namespace WebMVC.Controllers
         // POST: Post/Edit/{id}
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> Edit(Post post)
         {
             if (ModelState.IsValid)
@@ -91,19 +98,27 @@ namespace WebMVC.Controllers
         }
 
         // GET: Post/Delete/{id}
-        public async Task<IActionResult> Delete(int id)
+        [Authorize]
+        public async Task<IActionResult> Delete(int? id)
         {
-            var post = await _postRepository.GetPostByIdAsync(id);
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var post = await _postRepository.GetPostByIdAsync(id.Value);
             if (post == null)
             {
                 return NotFound();
             }
-            return View(post);
+
+            return View(post); // This will show a confirmation page
         }
 
         // POST: Post/DeleteConfirmed/{id}
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await _postRepository.DeletePostAsync(id);
