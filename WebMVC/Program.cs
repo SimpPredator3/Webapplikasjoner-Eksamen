@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using WebMVC.DAL;
 using Microsoft.AspNetCore.Identity;
 using WebMVC.Models;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,16 @@ builder.Services.AddDefaultIdentity<IdentityUser>().AddEntityFrameworkStores<App
 
 // Register the PostRepository for Dependency Injection
 builder.Services.AddScoped<IPostRepository, PostRepository>();
+
+//Logger with Serilog
+var loggerConfiguration = new LoggerConfiguration()
+    .MinimumLevel.Information() // levels: Trace< Information < Warning < Erorr < Fatal
+    .WriteTo.File($"Logs/app_{DateTime.Now:yyyyMMdd_HHmmss}.log");
+
+var logger = loggerConfiguration.CreateLogger();
+builder.Logging.AddSerilog(logger);
+
+
 
 builder.Services.AddRazorPages();
 builder.Services.AddSession();

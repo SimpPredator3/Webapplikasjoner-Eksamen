@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using WebMVC.Models;
 
-namespace WebMVC.Models
+namespace WebMVC.DAL
 {
     public class ApplicationDbContext : DbContext
     {
