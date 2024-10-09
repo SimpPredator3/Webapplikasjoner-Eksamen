@@ -1,24 +1,40 @@
 @model WebMVC.Models.Post
 
-<h2>Create New Post</h2>
+@{
+    ViewData["Title"] = "Create Post";
+}
+
+<h2>Create Post</h2>
 
 <form asp-action="Create" method="post">
     <div class="form-group">
-        <label>Title</label>
+        <label asp-for="Title" class="control-label"></label>
         <input asp-for="Title" class="form-control" />
         <span asp-validation-for="Title" class="text-danger"></span>
     </div>
-
     <div class="form-group">
-        <label>Content</label>
+        <label asp-for="Content" class="control-label"></label>
         <textarea asp-for="Content" class="form-control"></textarea>
         <span asp-validation-for="Content" class="text-danger"></span>
     </div>
-
     <div class="form-group">
-        <label>Image URL</label>
+        <label asp-for="ImageUrl" class="control-label"></label>
         <input asp-for="ImageUrl" class="form-control" />
+        <span asp-validation-for="ImageUrl" class="text-danger"></span>
     </div>
 
-    <input type="submit" value="Create" class="btn btn-primary" />
+    <!-- Hidden input to pass the logged-in user's name as the Author -->
+    <input type="hidden" asp-for="Author" value="@User.Identity.Name" />
+
+    <div class="form-group">
+        <input type="submit" value="Create" class="btn btn-primary" />
+    </div>
+
+    @Html.AntiForgeryToken()
 </form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
