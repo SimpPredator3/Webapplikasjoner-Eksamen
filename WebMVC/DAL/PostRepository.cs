@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using WebMVC.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using WebMVC.Models;
 
 namespace WebMVC.DAL
 {
@@ -21,11 +21,12 @@ namespace WebMVC.DAL
 
         public async Task<Post> GetPostByIdAsync(int id)
         {
-            return await _context.Posts.FirstOrDefaultAsync(p => p.Id == id);
+            return await _context.Posts.FindAsync(id);
         }
 
         public async Task AddPostAsync(Post post)
         {
+            post.CreatedDate = DateTime.Now;
             await _context.Posts.AddAsync(post);
             await _context.SaveChangesAsync();
         }
@@ -38,7 +39,7 @@ namespace WebMVC.DAL
 
         public async Task DeletePostAsync(int id)
         {
-            var post = await GetPostByIdAsync(id);
+            var post = await _context.Posts.FindAsync(id);
             if (post != null)
             {
                 _context.Posts.Remove(post);

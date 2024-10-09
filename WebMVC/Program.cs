@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using WebMVC.DAL;
 using Microsoft.AspNetCore.Identity;
+using WebMVC.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
