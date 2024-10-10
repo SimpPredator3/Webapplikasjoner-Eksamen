@@ -37,11 +37,6 @@ namespace WebMVC.Controllers
         [Authorize] // Ensure only logged-in users can post
         public async Task<IActionResult> Create(PostCreateViewModel model)
         {
-
-            // Hent den innloggede brukeren
-                var user = await _userManager.GetUserAsync(User);
-                post.Author = user?.Email; // Setter forfatter til brukerens email
-
             if (ModelState.IsValid)
             {
                 // Map ViewModel to Post entity
