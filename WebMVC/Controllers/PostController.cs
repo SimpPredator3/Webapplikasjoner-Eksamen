@@ -43,7 +43,15 @@ namespace WebMVC.Controllers
 
             if (ModelState.IsValid)
             {
-                post.CreatedDate = System.DateTime.Now;
+                // Sjekk om Author er null
+                if (post.Author == null)
+                {
+                    ModelState.AddModelError("Author", "You must be logged in to add a post.");
+                    return View(post);
+                }
+
+                // Hvis Author ikke er null, fortsett med å sette CreatedDate og lagre posten
+                post.CreatedDate = DateTime.Now;
                 await _postRepository.AddPostAsync(post);
                 return RedirectToAction(nameof(Index));
             }
