@@ -12,11 +12,11 @@ namespace WebMVC.Controllers
         private readonly IPostRepository _postRepository;
 
         // Constructor that injects the repository
-         public PostController(UserManager<IdentityUser> userManager, IPostRepository postRepository)
-    {
-        _userManager = userManager; // Setter verdien av _userManager
-        _postRepository = postRepository;
-    }
+        public PostController(UserManager<IdentityUser> userManager, IPostRepository postRepository)
+        {
+            _userManager = userManager;
+            _postRepository = postRepository;
+        }
 
         // GET: Post/Index
         public async Task<IActionResult> Index()
@@ -36,13 +36,22 @@ namespace WebMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Post post)
         {
+
             // Hent den innloggede brukeren
                 var user = await _userManager.GetUserAsync(User);
-                post.Author = user?.Email; // Setter forfatter til brukerens brukernavn
+                post.Author = user?.Email; // Setter forfatter til brukerens email
 
             if (ModelState.IsValid)
             {
-                post.CreatedDate = System.DateTime.Now;
+                // Sjekk om Author er null
+                if (post.Author == null)
+                {
+                    ModelState.AddModelError("Author", "You must be logged in to add a post.");
+                    return View(post);
+                }
+
+                // Hvis Author ikke er null, fortsett med å sette CreatedDate og lagre posten
+                post.CreatedDate = DateTime.Now;
                 await _postRepository.AddPostAsync(post);
                 return RedirectToAction(nameof(Index));
             }
