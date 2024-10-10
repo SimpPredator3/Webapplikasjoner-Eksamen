@@ -9,13 +9,11 @@ namespace WebMVC.Controllers
 {
     public class PostController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
         private readonly IPostRepository _postRepository;
 
         // Constructor that injects the repository
-        public PostController(UserManager<IdentityUser> userManager, IPostRepository postRepository)
+        public PostController(IPostRepository postRepository)
         {
-            _userManager = userManager;
             _postRepository = postRepository;
         }
 
