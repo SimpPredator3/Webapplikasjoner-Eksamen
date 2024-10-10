@@ -2,28 +2,25 @@
 
 <h2>Posts</h2>
 
-<a href="/Post/Create" class="btn btn-primary">Create New Post</a>
+<a href="/Post/Create" class="btn btn-primary mb-3">Create New Post</a>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Title</th>
-            <th>Author</th>
-            <th>Created Date</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var post in Model)
-        {
-            <tr>
-                <td>@post.Title</td>
-                <td>@post.Author</td>
-                <td>@post.CreatedDate.ToString("g")</td>
-                <td>
+<div class="row">
+    @foreach (var post in Model)
+    {
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">@post.Title</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">By @post.Author on @post.CreatedDate.ToString("g")</h6>
+                     @if (!string.IsNullOrEmpty(post.ImageUrl))
+                    {
+                        <img src="@post.ImageUrl" alt="Image" class="img-thumbnail mb-2" />
+                    }
+                    <p class="card-text">@post.Content</p>
                     <a href="/Post/Details/@post.Id" class="btn btn-info">Details</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
