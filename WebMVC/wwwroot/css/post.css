@@ -12,3 +12,10 @@
     max-height: 200px;
     object-fit: cover;
 }
+.post-details-container {
+    border: 2px solid #aeb7b8;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    background-color: #f1ebeb;
+}
