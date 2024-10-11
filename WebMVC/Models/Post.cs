@@ -19,6 +19,7 @@ public class Post
     [Url(ErrorMessage = "Please enter a valid URL")]
     public string? ImageUrl { get; set; }
 
+    public string? Tag {get; set;}
     public DateTime CreatedDate { get; set; }
 
     [Required]
