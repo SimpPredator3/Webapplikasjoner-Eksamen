@@ -10,17 +10,25 @@ namespace WebMVC.Controllers
     public class PostController : Controller
     {
         private readonly IPostRepository _postRepository;
+        private readonly ILogger<PostController> _logger;
 
         // Constructor that injects the repository
-        public PostController(IPostRepository postRepository)
+        public PostController(IPostRepository postRepository, ILogger<PostController> logger)
         {
             _postRepository = postRepository;
+            _logger = logger;
         }
 
         // GET: Post/Index
         public async Task<IActionResult> Index()
         {
             var posts = await _postRepository.GetAllPostsAsync();
+            if (posts == null)
+            {
+                 // Log an error if the posts list is not found and return a NotFound response.
+                _logger.LogError("[PostController] Post list not found while executing _postRepository.GetAllPostsAsync()");
+                return NotFound("Post list not found");
+            }
             return View(posts);
         }
 
@@ -49,9 +57,16 @@ namespace WebMVC.Controllers
                     CreatedDate = DateTime.Now
                 };
 
-                await _postRepository.AddPostAsync(post);
-                return RedirectToAction(nameof(Index));
+                // Attempt to add the post to the repository.
+                bool returnOK = await _postRepository.AddPostAsync(post);
+                if (returnOK)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
             }
+
+            // Log a warning if the post creation failed and return the view with the model.
+            _logger.LogWarning("[PostController] Post creation failed {@post}", model);
             return View(model);
         }
 
@@ -61,7 +76,9 @@ namespace WebMVC.Controllers
             var post = await _postRepository.GetPostByIdAsync(id);
             if (post == null)
             {
-                return NotFound();
+                // Log an error if the post is not found and return a NotFound response.
+                _logger.LogError("[PostController] Post not found for the PostId {PostId:0000}", id);
+                return NotFound("Post not found for the PostId");
             }
             return View(post);
         }
@@ -70,15 +87,13 @@ namespace WebMVC.Controllers
         [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var post = await _postRepository.GetPostByIdAsync(id.Value);
+
+            // Check if the post was found. If not, log an error and return a BadRequest response.
             if (post == null)
             {
-                return NotFound();
+                _logger.LogError("[PostController] Post not found when updating the PostId {PostId:0000}", id);
+                return BadRequest("Post not found for the PostId");
             }
 
             // Ensure the logged-in user is the author or an admin
@@ -109,9 +124,15 @@ namespace WebMVC.Controllers
 
             if (ModelState.IsValid)
             {
-                await _postRepository.UpdatePostAsync(post);
-                return RedirectToAction(nameof(Index));
+                bool returnOK = await _postRepository.UpdatePostAsync(post);
+                if (returnOK)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
             }
+
+             // Log a warning if the post update failed and return the view with the model.
+            _logger.LogWarning("[PostController] post update failed {@post}", post);
             return View(post);
         }
 
@@ -127,7 +148,9 @@ namespace WebMVC.Controllers
             var post = await _postRepository.GetPostByIdAsync(id.Value);
             if (post == null)
             {
-                return NotFound();
+                // Log an error if the post is not found and return a BadRequest response.
+                _logger.LogError("[PostController] Post not found for the PostId {PostId:0000}", id);
+                return BadRequest("IPost not found for the PostId");
             }
 
             // Ensure the logged-in user is the author or an admin
@@ -146,6 +169,14 @@ namespace WebMVC.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var post = await _postRepository.GetPostByIdAsync(id);
+            bool returnOK = post != null;
+
+            if (!returnOK)
+            {
+                 // Log an error if the post deletion fails and return a BadRequest response.
+                _logger.LogError("[PostController] Post deletion failed for the PostId {PostId:0000}", id);
+                return BadRequest("Post deletion failed");
+            }
 
             // Ensure the logged-in user is the author or an admin
             if (post.Author != User.Identity.Name && !User.IsInRole("Admin"))
