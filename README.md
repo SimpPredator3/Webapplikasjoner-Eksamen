@@ -27,3 +27,16 @@ where you let users create/read/update/delete their notes, photos, etc. Users co
 | 31 Oktober | Make it look pretty |
 | ???? | React Website |
 | 2 Desember | **Innlevering** |
+
+------------------------------------------------------------------
+
+### Oppmøteoversikt
+
+| Navn    | Datoer tilstede | Antall møter tilstede |
+|---------|----------------|--------------|
+| Ask     | 24. sep, 01. okt, 09.okt| 3            |
+| Adrian  | 24. sep, 01. okt, 09.okt| 3            |
+| Martin  | 24. sep. 01. okt, 09.okt| 3            |
+| Rick    | 24. sep (digitalt)| 1            |
+
+Total gruppemøter: 3
