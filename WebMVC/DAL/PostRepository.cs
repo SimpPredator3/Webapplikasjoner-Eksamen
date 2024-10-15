@@ -32,7 +32,7 @@ namespace WebMVC.DAL
             }
         }
 
-        public async Task<Post> GetPostByIdAsync(int id)
+        public async Task<Post?> GetPostByIdAsync(int id)
         {
             try
             {
