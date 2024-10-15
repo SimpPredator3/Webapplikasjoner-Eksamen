@@ -1,0 +1,46 @@
+public class CommentController : Controller
+{
+    private readonly ApplicationDbContext _context;
+
+    public CommentController(ApplicationDbContext context)
+    {
+        _context = context;
+    }
+
+    // GET: Comments for a specific Post
+    public async Task<IActionResult> GetComments(int postId)
+    {
+        var comments = await _context.Comments
+            .Where(c => c.PostId == postId)
+            .Include(c => c.User)
+            .ToListAsync();
+        return Json(comments);
+    }
+
+    // POST: Add new Comment
+    [HttpPost]
+    public async Task<IActionResult> AddComment(Comment comment)
+    {
+        if (ModelState.IsValid)
+        {
+            _context.Comments.Add(comment);
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+        return BadRequest();
+    }
+
+    // DELETE: Remove Comment
+    [HttpDelete]
+    public async Task<IActionResult> DeleteComment(int id)
+    {
+        var comment = await _context.Comments.FindAsync(id);
+        if (comment != null)
+        {
+            _context.Comments.Remove(comment);
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+        return NotFound();
+    }
+}
