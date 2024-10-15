@@ -1,0 +1,23 @@
+public class CommentControllerTests
+{
+    private readonly CommentController _controller;
+
+    public CommentControllerTests()
+    {
+        // Setup in-memory database or mock dependencies
+        _controller = new CommentController(mockContext.Object);
+    }
+
+    [Fact]
+    public async Task AddComment_ReturnsOkResult()
+    {
+        // Arrange
+        var newComment = new Comment { Content = "Test comment", PostId = 1, UserId = 1 };
+
+        // Act
+        var result = await _controller.AddComment(newComment);
+
+        // Assert
+        Assert.IsType<OkResult>(result);
+    }
+}
