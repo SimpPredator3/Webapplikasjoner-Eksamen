@@ -1,8 +1,8 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace WebMVC.Models
-{
+namespace WebMVC.Models;
+
     public class Comment
     {
         public int Id { get; set; }
@@ -22,4 +22,3 @@ namespace WebMVC.Models
         
         public Post Post { get; set; } = default!;
     }
-}
