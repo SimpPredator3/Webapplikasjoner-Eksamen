@@ -1,0 +1,23 @@
+.welcomebox {
+    width: 550px;
+    margin-left: 50px;
+}
+.welcometitle {
+    width: 350px;
+}
+.tag-card{
+    height: 74px;
+    background-color:rgb(200, 211, 248)    ;
+    width:auto;
+    line-height: 73px;     
+    text-align: center;    
+}
+.btn-card{
+    color:rgb(35, 31, 32);
+    font-weight: 700;
+    font-size: 19px;
+}
+a {
+    text-decoration: none;
+    color: inherit;
+}
