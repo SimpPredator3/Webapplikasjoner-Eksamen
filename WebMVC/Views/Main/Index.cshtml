@@ -1,18 +1,120 @@
 @model IEnumerable<WebMVC.Models.Post>
 
+@{
+    var uniqueTags = new HashSet<string>(); // To keep track of unique tags
+}
+
 <h2>MainPage</h2>
-<!-- Skal lage posteviemodel, så jeg kan lage flere ienumerable og få unique ting-->
-<a href="/Post/Create" class="btn btn-primary mb-3">Create New Post</a>
+
+<!-- Tag Buttons -->
 <div class="row">
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class=card-body>
+                <a href="javascript:void(0);" class="btn btn-warning" id="showAllButton">Show All Posts</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class=card-body>
+                <a href="javascript:void(0);" class="btn btn-info" id="showNullButton">No Tags</a>
+            </div>
+        </div>
+    </div>
+    
     @foreach (var post in Model)
     {
-        @if (!string.IsNullOrEmpty(post.Tag)){
-        <div class="col-md-4">
+        if (!string.IsNullOrEmpty(post.Tag) && uniqueTags.Add(post.Tag)){
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <a href="javascript:void(0);" class="btn btn-info tag-button" data-tag="@post.Tag">@post.Tag</a>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>
+
+<!-- Post Grid -->
+<div class="row" id="postGrid">
+    @foreach (var post in Model)
+    {
+        <div class="col-md-4 post-card" data-tag="@post.Tag">
             <div class="card mb-4">
                 <div class="card-body">
-                        <p>@post.Tag</p>
+                    <h5 class="card-title">@post.Title</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">By @post.Author on @post.CreatedDate.ToString("g")</h6>
+
+                    @if (!string.IsNullOrEmpty(post.ImageUrl))
+                    {
+                        <img src="@post.ImageUrl" alt="Image" class="img-thumbnail mb-2" />
+                    }
+
+                    <p class="card-text">@post.Content</p>
+                    <a href="/Post/Details/@post.Id" class="btn btn-info">Details</a>
+                    @if (!string.IsNullOrEmpty(post.Tag))
+                    {
+                    <a href="javascript:void(0);" class="btn btn-info tag-button" data-tag="@post.Tag">@post.Tag</a>
+                    }
+                    @if (post.Author == User.Identity.Name || User.IsInRole("Admin"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@post.Id" class="btn btn-primary">Edit</a>
+
+                        <form asp-action="Delete" asp-route-id="@post.Id" method="post" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-danger"
+                                onclick="return confirm('Are you sure you want to delete this post?');">Delete</button>
+                        </form>
+                    }
                 </div>
             </div>
         </div>
-    }}
+    }
 </div>
+
+<!-- jQuery Script to filter posts -->
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // Click event for filtering posts based on selected tag
+            $('.tag-button').click(function() {
+                var selectedTag = $(this).data('tag'); // Get the selected tag
+
+                // Show/Hide posts based on the selected tag
+                $('.post-card').each(function() {
+                    var postTag = $(this).data('tag');
+
+                    if (postTag === selectedTag) {
+                        $(this).show(); // Show matching post
+                    } else {
+                        $(this).hide(); // Hide non-matching post
+                    }
+                });
+            });
+
+            // Click event for showing all posts
+            $('#showAllButton').click(function() {
+                // Show all posts
+                $('.post-card').each(function() {
+                    $(this).show();
+                });
+            });
+            // Click event for showing all posts without tags
+            $('#showNullButton').click(function() {
+                // Show all posts without tags
+                $('.post-card').each(function() {
+                    var postTag = $(this).data('tag');
+                    if(!postTag){
+                        $(this).show();
+                    }
+                    else{
+                        $(this).hide();
+                    }
+                });
+            });
+        });
+    </script>
+}
