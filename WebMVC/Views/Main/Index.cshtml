@@ -1,6 +1,9 @@
 @model IEnumerable<WebMVC.Models.Post>
 @{
-    var uniqueTags = new HashSet<string>(); // To keep track of unique tags
+    // Fetching the tag data passed from the controller
+    var uniqueTags = ViewBag.UniqueTags as Dictionary<string, int>; // Unique tags with their counts
+    int noTags = ViewBag.NoTags; // Number of posts without tags
+    int allTags = ViewBag.AllTags; // Total number of posts
 }
 <head>
     <link rel="stylesheet" href="~/css/main.css" />
@@ -24,29 +27,27 @@ and collaborating on notes, images, and other materials.</p>
     <div class="col-md-3">
         <div class="card mb-4">
             <div class="tag-card">
-                <a href="javascript:void(0);" class="btn btn-card" id="showAllButton">All Posts</a>
+                <a href="javascript:void(0);" class="btn btn-card" id="showAllButton">All Posts (@allTags)</a>
             </div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="card mb-4">
             <div class="tag-card">
-                <a href="javascript:void(0);" class="btn btn-card" id="showNullButton">No Tags</a>
+                <a href="javascript:void(0);" class="btn btn-card" id="showNullButton">No Tags (@noTags)</a>
             </div>
         </div>
     </div>
     
-    @foreach (var post in Model)
+    @foreach (var tag in uniqueTags)
     {
-        if (!string.IsNullOrEmpty(post.Tag) && uniqueTags.Add(post.Tag)){
             <div class="col-md-3">
                 <div class="card mb-4">
                     <div class="tag-card">
-                        <a href="javascript:void(0);" class="btn btn-card tag-button" data-tag="@post.Tag">@post.Tag</a>
+                        <a href="javascript:void(0);" class="btn btn-card tag-button" data-tag="@tag.Key"> @tag.Key (@tag.Value)    </a>
                     </div>
                 </div>
             </div>
-        }
     }
 </div>
 <!-- Post Grid -->
