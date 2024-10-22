@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Mvc.Rendering;
-using WebMVC.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace WebMVC.ViewModels;
