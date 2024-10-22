@@ -56,39 +56,38 @@
 <div class="row" id="postGrid">
     <h2 id="postTitle">All Posts</h2>
 
+    <!-- SVG divider -->
     <svg width="100%" height="4"> <!-- 100% width and height for the line -->
         <line x1="0" y1="2" x2="100%" y2="2" stroke="black" stroke-width="4" />
     </svg>
+
+    <!-- Iterate through each post in the model -->
     @foreach (var post in Model)
     {
+        <!-- Post card structure with Bootstrap classes -->
         <div class="col-md-4 post-card" data-tag="@post.Tag">
             <div class="card mb-4">
                 <div class="card-body">
                     <h5 class="card-title">@post.Title</h5>
                     <h6 class="card-subtitle mb-2 text-muted">By @post.Author on @post.CreatedDate.ToString("g")</h6>
 
+                    <!-- Check if an image URL is present, display image if available -->
                     @if (!string.IsNullOrEmpty(post.ImageUrl))
                     {
                         <img src="@post.ImageUrl" alt="Image" class="img-thumbnail mb-2" />
                     }
 
                     <p class="card-text">@post.Content</p>
-                    <p><strong>Comments:</strong> @post.CommentCount</p> <!-- Display comment count -->
-                    <a href="/Post/Details/@post.Id" class="btn btn-info">Details</a>
-                    @if (!string.IsNullOrEmpty(post.Tag))
-                    {
-                        <a href="javascript:void(0);" class="btn btn-info tag-button" data-tag="@post.Tag">@post.Tag</a>
-                    }
-                    @if (post.Author == User.Identity.Name || User.IsInRole("Admin"))
-                    {
-                        <a asp-action="Edit" asp-route-id="@post.Id" class="btn btn-primary">Edit</a>
+                    <p><strong>Comments:</strong> @post.CommentCount</p>
 
-                        <form asp-action="Delete" asp-route-id="@post.Id" method="post" class="d-inline">
-                            @Html.AntiForgeryToken()
-                            <button type="submit" class="btn btn-danger"
-                                onclick="return confirm('Are you sure you want to delete this post?');">Delete</button>
-                        </form>
-                    }
+                    <!-- Display Upvotes count with dynamic updating via class 'like-counter' -->
+                    <p>Upvotes: <span class="like-counter">@post.Upvotes</span></p>
+
+                    <!-- Upvote button with post ID data attribute, used by JavaScript -->
+                    <button class="btn btn-success like-btn" data-post-id="@post.Id">Upvote</button>
+
+                    <!-- Link to post details -->
+                    <a href="/Post/Details/@post.Id" class="btn btn-info">Details</a>
                 </div>
             </div>
         </div>
@@ -126,6 +125,7 @@
                 });
                 $('#postTitle').text("All Posts"); //Change  headline
             });
+
             // Click event for showing all posts without tags
             $('#showNullButton').click(function () {
                 // Show all posts without tags
@@ -133,11 +133,40 @@
                     var postTag = $(this).data('tag');
                     if (!postTag) {
                         $(this).show();
-                    }
-                    else {
+                    } else {
                         $(this).hide();
                     }
                     $('#postTitle').text("No Tags"); //Change  headline
+                });
+            });
+        });
+
+        // jQuery Script to Like and remove like
+        $(document).ready(function () {
+            // Handle upvote button click
+            $(document).on('click', '.like-btn', function (e) {  // Event delegation for dynamic elements
+                e.preventDefault();
+
+                var button = $(this);
+                var postId = button.data('post-id');
+
+                // Send AJAX request to upvote the post
+                $.ajax({
+                    url: '/Main/Upvote', // The URL for the like action
+                    type: 'POST',
+                    data: {
+                        postId: postId,
+                        __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val() // Anti-forgery token
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            // Update the like counter on success
+                            button.closest('.card-body').find('.like-counter').text(response.upvotes);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.log(error);  // Handle any errors
+                    }
                 });
             });
         });

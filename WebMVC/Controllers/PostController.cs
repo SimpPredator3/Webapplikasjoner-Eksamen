@@ -33,8 +33,6 @@ namespace WebMVC.Controllers
         }
 
 
-
-
         // GET: Post/Create
         [Authorize] // Only logged-in users can access this method
         public IActionResult Create()
@@ -226,7 +224,6 @@ namespace WebMVC.Controllers
             await _postRepository.DeletePostAsync(id);
             return RedirectToAction(nameof(Index));
         }
-
 
     }
 }

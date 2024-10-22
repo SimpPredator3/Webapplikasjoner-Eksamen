@@ -25,6 +25,7 @@ builder.Services.AddDefaultIdentity<IdentityUser>().AddEntityFrameworkStores<App
 // Register the PostRepository for Dependency Injection
 builder.Services.AddScoped<IPostRepository, PostRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+builder.Services.AddScoped<ILikesRepository, LikesRepository>();
 
 //Logger with Serilog
 var loggerConfiguration = new LoggerConfiguration()

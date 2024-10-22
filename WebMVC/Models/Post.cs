@@ -31,4 +31,6 @@ public class Post
 
     [Required]
     public ICollection<Comment> Comments { get; set; } = []; // Initialize as an empty list
+
+    public int Upvotes { get; set; }
 }
