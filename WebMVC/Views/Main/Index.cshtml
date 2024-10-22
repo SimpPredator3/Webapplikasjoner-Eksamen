@@ -1,0 +1,142 @@
+@model IEnumerable<WebMVC.Models.Post>
+@{
+    // Fetching the tag data passed from the controller
+    var uniqueTags = ViewBag.UniqueTags as Dictionary<string, int>; // Unique tags with their counts
+    int noTags = ViewBag.NoTags; // Number of posts without tags
+    int allTags = ViewBag.AllTags; // Total number of posts
+}
+<head>
+    <link rel="stylesheet" href="~/css/main.css" />
+
+</head>
+<div class="welcomebox">
+<h3 class="welcometitle">Communicate in countless ways
+from one place.</h3>
+<p>Are you a student overwhelmed by textbooks and assignments? A
+professional trying to juggle multiple projects and deadlines? Or simply
+someone who loves learning new things and sharing their knowledge with
+others? [Website Name] is here to help! Our platform is designed to make
+your life easier by providing a centralized space for organizing, sharing,
+and collaborating on notes, images, and other materials.</p>
+</div>
+
+<h2>Tags</h2>
+
+<!-- Tag Buttons -->
+<div class="row">
+    <div class="col-md-3">
+        <div class="card mb-4">
+            <div class="tag-card">
+                <a href="javascript:void(0);" class="btn btn-card" id="showAllButton">All Posts (@allTags)</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card mb-4">
+            <div class="tag-card">
+                <a href="javascript:void(0);" class="btn btn-card" id="showNullButton">No Tags (@noTags)</a>
+            </div>
+        </div>
+    </div>
+    
+    @foreach (var tag in uniqueTags)
+    {
+            <div class="col-md-3">
+                <div class="card mb-4">
+                    <div class="tag-card">
+                        <a href="javascript:void(0);" class="btn btn-card tag-button" data-tag="@tag.Key"> @tag.Key (@tag.Value)    </a>
+                    </div>
+                </div>
+            </div>
+    }
+</div>
+<!-- Post Grid -->
+<div class="row" id="postGrid">
+    <h2 id="postTitle">All Posts</h2>
+
+    <svg width="100%" height="4"> <!-- 100% width and height for the line -->
+        <line x1="0" y1="2" x2="100%" y2="2" stroke="black" stroke-width="4" />
+    </svg>
+    @foreach (var post in Model)
+    {
+        <div class="col-md-4 post-card" data-tag="@post.Tag">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">@post.Title</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">By @post.Author on @post.CreatedDate.ToString("g")</h6>
+
+                    @if (!string.IsNullOrEmpty(post.ImageUrl))
+                    {
+                        <img src="@post.ImageUrl" alt="Image" class="img-thumbnail mb-2" />
+                    }
+
+                    <p class="card-text">@post.Content</p>
+                    <a href="/Post/Details/@post.Id" class="btn btn-info">Details</a>
+                    @if (!string.IsNullOrEmpty(post.Tag))
+                    {
+                    <a href="javascript:void(0);" class="btn btn-info tag-button" data-tag="@post.Tag">@post.Tag</a>
+                    }
+                    @if (post.Author == User.Identity.Name || User.IsInRole("Admin"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@post.Id" class="btn btn-primary">Edit</a>
+
+                        <form asp-action="Delete" asp-route-id="@post.Id" method="post" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-danger"
+                                onclick="return confirm('Are you sure you want to delete this post?');">Delete</button>
+                        </form>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- jQuery Script to filter posts -->
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // Click event for filtering posts based on selected tag
+            $('.tag-button').click(function() {
+                var selectedTag = $(this).data('tag'); // Get the selected tag
+
+                $('#postTitle').text(selectedTag); //Change  headline
+
+                // Show/Hide posts based on the selected tag
+                $('.post-card').each(function() {
+                    var postTag = $(this).data('tag');
+
+                    if (postTag === selectedTag) {
+                        $(this).show(); // Show matching post
+                    } else {
+                        $(this).hide(); // Hide non-matching post
+                    }
+                });
+            });
+
+            // Click event for showing all posts
+            $('#showAllButton').click(function() {
+                // Show all posts
+                $('.post-card').each(function() {
+                    $(this).show();
+                });
+                $('#postTitle').text("All Posts"); //Change  headline
+            });
+            // Click event for showing all posts without tags
+            $('#showNullButton').click(function() {
+                // Show all posts without tags
+                $('.post-card').each(function() {
+                    var postTag = $(this).data('tag');
+                    if(!postTag){
+                        $(this).show();
+                    }
+                    else{
+                        $(this).hide();
+                    }
+                $('#postTitle').text("No Tags"); //Change  headline
+                });
+            });
+        });
+    </script>
+}

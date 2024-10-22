@@ -60,6 +60,7 @@ namespace WebMVC.Controllers
                     Content = model.Content,
                     ImageUrl = model.ImageUrl,
                     Author = User.Identity.Name, // Set the Author from the logged-in user
+                    Tag = model.Tag,
                     CreatedDate = DateTime.Now
                 };
 
