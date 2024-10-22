@@ -23,7 +23,7 @@ namespace WebMVC.Controllers
         // GET: Post/Index
         public async Task<IActionResult> Index()
         {
-            var posts = await _postRepository.GetAllPostsAsync();
+            var posts = await _postRepository.GetAllPostsWithCommentCountAsync();
             if (posts == null)
             {
                 // Log an error if the posts list is not found and return a NotFound response.

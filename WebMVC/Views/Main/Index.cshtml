@@ -5,19 +5,20 @@
     int noTags = ViewBag.NoTags; // Number of posts without tags
     int allTags = ViewBag.AllTags; // Total number of posts
 }
+
 <head>
     <link rel="stylesheet" href="~/css/main.css" />
 
 </head>
 <div class="welcomebox">
-<h3 class="welcometitle">Communicate in countless ways
-from one place.</h3>
-<p>Are you a student overwhelmed by textbooks and assignments? A
-professional trying to juggle multiple projects and deadlines? Or simply
-someone who loves learning new things and sharing their knowledge with
-others? [Website Name] is here to help! Our platform is designed to make
-your life easier by providing a centralized space for organizing, sharing,
-and collaborating on notes, images, and other materials.</p>
+    <h3 class="welcometitle">Communicate in countless ways
+        from one place.</h3>
+    <p>Are you a student overwhelmed by textbooks and assignments? A
+        professional trying to juggle multiple projects and deadlines? Or simply
+        someone who loves learning new things and sharing their knowledge with
+        others? [Website Name] is here to help! Our platform is designed to make
+        your life easier by providing a centralized space for organizing, sharing,
+        and collaborating on notes, images, and other materials.</p>
 </div>
 
 <h2>Tags</h2>
@@ -38,16 +39,17 @@ and collaborating on notes, images, and other materials.</p>
             </div>
         </div>
     </div>
-    
+
     @foreach (var tag in uniqueTags)
     {
-            <div class="col-md-3">
-                <div class="card mb-4">
-                    <div class="tag-card">
-                        <a href="javascript:void(0);" class="btn btn-card tag-button" data-tag="@tag.Key"> @tag.Key (@tag.Value)    </a>
-                    </div>
+        <div class="col-md-3">
+            <div class="card mb-4">
+                <div class="tag-card">
+                    <a href="javascript:void(0);" class="btn btn-card tag-button" data-tag="@tag.Key"> @tag.Key (@tag.Value)
+                    </a>
                 </div>
             </div>
+        </div>
     }
 </div>
 <!-- Post Grid -->
@@ -71,10 +73,11 @@ and collaborating on notes, images, and other materials.</p>
                     }
 
                     <p class="card-text">@post.Content</p>
+                    <p><strong>Comments:</strong> @post.CommentCount</p> <!-- Display comment count -->
                     <a href="/Post/Details/@post.Id" class="btn btn-info">Details</a>
                     @if (!string.IsNullOrEmpty(post.Tag))
                     {
-                    <a href="javascript:void(0);" class="btn btn-info tag-button" data-tag="@post.Tag">@post.Tag</a>
+                        <a href="javascript:void(0);" class="btn btn-info tag-button" data-tag="@post.Tag">@post.Tag</a>
                     }
                     @if (post.Author == User.Identity.Name || User.IsInRole("Admin"))
                     {
@@ -96,15 +99,15 @@ and collaborating on notes, images, and other materials.</p>
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script type="text/javascript">
-        $(document).ready(function() {
+        $(document).ready(function () {
             // Click event for filtering posts based on selected tag
-            $('.tag-button').click(function() {
+            $('.tag-button').click(function () {
                 var selectedTag = $(this).data('tag'); // Get the selected tag
 
                 $('#postTitle').text(selectedTag); //Change  headline
 
                 // Show/Hide posts based on the selected tag
-                $('.post-card').each(function() {
+                $('.post-card').each(function () {
                     var postTag = $(this).data('tag');
 
                     if (postTag === selectedTag) {
@@ -116,25 +119,25 @@ and collaborating on notes, images, and other materials.</p>
             });
 
             // Click event for showing all posts
-            $('#showAllButton').click(function() {
+            $('#showAllButton').click(function () {
                 // Show all posts
-                $('.post-card').each(function() {
+                $('.post-card').each(function () {
                     $(this).show();
                 });
                 $('#postTitle').text("All Posts"); //Change  headline
             });
             // Click event for showing all posts without tags
-            $('#showNullButton').click(function() {
+            $('#showNullButton').click(function () {
                 // Show all posts without tags
-                $('.post-card').each(function() {
+                $('.post-card').each(function () {
                     var postTag = $(this).data('tag');
-                    if(!postTag){
+                    if (!postTag) {
                         $(this).show();
                     }
-                    else{
+                    else {
                         $(this).hide();
                     }
-                $('#postTitle').text("No Tags"); //Change  headline
+                    $('#postTitle').text("No Tags"); //Change  headline
                 });
             });
         });

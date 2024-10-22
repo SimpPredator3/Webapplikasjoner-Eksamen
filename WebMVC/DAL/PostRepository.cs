@@ -49,6 +49,8 @@ namespace WebMVC.DAL
             }
         }
 
+
+
         public async Task<bool> AddPostAsync(Post post)
         {
             try
@@ -66,6 +68,9 @@ namespace WebMVC.DAL
                 return false;
             }
         }
+
+
+
 
         public async Task<bool> UpdatePostAsync(Post post)
         {
@@ -102,6 +107,22 @@ namespace WebMVC.DAL
                 return false;
             }
 
+        }
+
+        public async Task<IEnumerable<Post>> GetAllPostsWithCommentCountAsync()
+        {
+            var posts = await _context.Posts.ToListAsync();
+
+            foreach (var post in posts)
+            {
+                // Make sure you're counting comments based on the correct PostId
+                post.CommentCount = await _context.Comments.CountAsync(c => c.PostId == post.Id);
+
+                // Log the post and comment count for debugging purposes
+                _logger.LogInformation("Post {PostId}: {CommentCount} comments found", post.Id, post.CommentCount);
+            }
+
+            return posts;
         }
     }
 }
