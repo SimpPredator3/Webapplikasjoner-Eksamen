@@ -40,16 +40,23 @@
         </div>
     </div>
 
-    @foreach (var tag in uniqueTags)
+    @if (uniqueTags != null && uniqueTags.Any())
     {
-        <div class="col-md-3">
-            <div class="card mb-4">
-                <div class="tag-card">
-                    <a href="javascript:void(0);" class="btn btn-card tag-button" data-tag="@tag.Key"> @tag.Key (@tag.Value)
-                    </a>
+        @foreach (var tag in uniqueTags)
+        {
+            <div class="col-md-3">
+                <div class="card mb-4">
+                    <div class="tag-card">
+                        <a href="javascript:void(0);" class="btn btn-card tag-button" data-tag="@tag.Key"> @tag.Key (@tag.Value)
+                        </a>
+                    </div>
                 </div>
             </div>
-        </div>
+        }
+    }
+    else
+    {
+        <p>No tags available.</p> <!-- Fallback message when uniqueTags is null or empty -->
     }
 </div>
 <!-- Post Grid -->
