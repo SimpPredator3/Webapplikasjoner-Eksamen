@@ -28,7 +28,7 @@ namespace WebMVC.DAL
             {
                 // Log an error if the retrieval of posts fails and return null.
                 _logger.LogError("[PostRepository] posts ToListAsync() failed when GetAllPostsAsunc(), error message: {e}", e.Message);
-                return null;
+                return new List<Post>(); // Return an empty list instead of null
             }
         }
 
@@ -99,7 +99,7 @@ namespace WebMVC.DAL
                 _logger.LogError("[PostRepository] post deletion failed for the PostId {PostId:0000}, error message: {e}", id, e.Message);
                 return false;
             }
-            
+
         }
     }
 }

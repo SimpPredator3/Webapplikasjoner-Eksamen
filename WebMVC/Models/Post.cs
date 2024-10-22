@@ -23,4 +23,7 @@ public class Post
 
     [Required]
     public required string Author { get; set; }
+
+    [Required]
+    public ICollection<Comment> Comments { get; set; } = []; // Initialize as an empty list
 }

@@ -15,17 +15,24 @@
     <p><strong>Posted on:</strong> @Model.CreatedDate.ToString("g")</p>
 </div>
 
-@foreach (var comment in Model.Comments)
+@if (Model.Comments != null && Model.Comments.Any())
 {
-    <div>
-        <p><strong>@comment.Author</strong> (@comment.CreatedDate.ToShortDateString()):</p>
-        <p>@comment.Text</p>
-    </div>
+    @foreach (var comment in Model.Comments)
+    {
+        <div>
+            <p><strong>@comment.Author</strong> (@comment.CreatedDate.ToShortDateString()):</p>
+            <p>@comment.Text</p>
+        </div>
+    }
+}
+else
+{
+    <p>No comments yet.</p>
 }
 
 <hr />
 
-@if (User.Identity.IsAuthenticated)
+@if (User?.Identity?.IsAuthenticated == true)
 {
     <h3>Add a Comment</h3>
     <form asp-action="Create" asp-controller="Comment" method="post">
