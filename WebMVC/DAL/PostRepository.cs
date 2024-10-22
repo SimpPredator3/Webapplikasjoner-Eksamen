@@ -36,13 +36,15 @@ namespace WebMVC.DAL
         {
             try
             {
-                // Attempt to find the post by its ID in the database.
-                return await _context.Posts.FindAsync(id);
+                // Use Include to load the related Comments when retrieving the Post
+                return await _context.Posts
+                    .Include(p => p.Comments)  // Include the related comments
+                    .FirstOrDefaultAsync(p => p.Id == id); // Use FirstOrDefaultAsync instead of FindAsync
             }
             catch (Exception e)
             {
                 // Log an error if the retrieval of the post fails and return null.
-                _logger.LogError("[PostRepository] post FindAsync(id) failed whenGetPostByIdAsync() for PostId {PostId:0000}, error message: {e}", id, e.Message);
+                _logger.LogError("[PostRepository] post FindAsync(id) failed when GetPostByIdAsync() for PostId {PostId:0000}, error message: {e}", id, e.Message);
                 return null;
             }
         }
