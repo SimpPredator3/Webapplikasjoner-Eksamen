@@ -30,15 +30,6 @@ namespace WebMVC.Migrations
                     table.PrimaryKey("PK_Posts", x => x.Id);
                 });
 
-            migrationBuilder.InsertData(
-                table: "Posts",
-                columns: new[] { "Id", "Author", "Content", "CreatedDate", "ImageUrl", "Title" },
-                values: new object[,]
-                {
-                    { 1, "John Doe", "This is the first post", new DateTime(2024, 9, 30, 19, 12, 13, 144, DateTimeKind.Local).AddTicks(5881), null, "First Post" },
-                    { 2, "Jane Smith", "This is the second post", new DateTime(2024, 9, 30, 19, 12, 13, 144, DateTimeKind.Local).AddTicks(5925), null, "Second Post" },
-                    { 3, "Jim Beam", "This is the third post", new DateTime(2024, 9, 30, 19, 12, 13, 144, DateTimeKind.Local).AddTicks(5926), null, "Third Post" }
-                });
         }
 
         /// <inheritdoc />

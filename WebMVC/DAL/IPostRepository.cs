@@ -7,9 +7,10 @@ namespace WebMVC.DAL
     public interface IPostRepository
     {
         Task<IEnumerable<Post>> GetAllPostsAsync();
-        Task<Post> GetPostByIdAsync(int id);
-        Task AddPostAsync(Post post);
-        Task UpdatePostAsync(Post post);
-        Task DeletePostAsync(int id);
+        Task<Post?> GetPostByIdAsync(int id);
+        Task<bool> AddPostAsync(Post post);
+        Task<bool> UpdatePostAsync(Post post);
+        Task<bool> DeletePostAsync(int id);
+        Task<IEnumerable<Post>> GetAllPostsWithCommentCountAsync();
     }
 }

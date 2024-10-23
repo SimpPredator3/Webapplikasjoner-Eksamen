@@ -5,10 +5,10 @@ KodeGjengen
 ### Oversikt over hva hver enkelt jobber
 Dette er en oversikt over alle medlemmer i prosjektet og hva de jobber med for øyeblikket. Hver person har sitt navn oppført, etterfulgt av en beskrivelse av deres nåværende oppgave. Listen oppdateres fortløpende for å holde teamet informert om pågående arbeid. 
 <br> **Sjekk denne før man begynner på noe nytt på siden, da slipper vi å jobbe dobbelt.**
-* Ask - Jobbe med Forsiden. muligens kategorier
-* Adrian - Add unit testing 
-* Martin - Jobber med Posts og DB.
-* Rick - Jobbe med å legge til kommentar-funksjonalitet.
+* Ask -
+* Adrian - lager noen design layouts. redigere smått med HomeView
+* Martin -
+* Rick -
 
 ------------------------------------------------------------------
 
@@ -27,16 +27,3 @@ where you let users create/read/update/delete their notes, photos, etc. Users co
 | 31 Oktober | Make it look pretty |
 | ???? | React Website |
 | 2 Desember | **Innlevering** |
-
-------------------------------------------------------------------
-
-### Oppmøteoversikt
-
-| Navn    | Datoer tilstede | Antall møter tilstede |
-|---------|----------------|--------------|
-| Ask     | 24. sep, 01. okt, 09.okt| 3            |
-| Adrian  | 24. sep, 01. okt, 09.okt| 3            |
-| Martin  | 24. sep. 01. okt, 09.okt| 3            |
-| Rick    | 24. sep (digitalt)| 1            |
-
-Total gruppemøter: 3

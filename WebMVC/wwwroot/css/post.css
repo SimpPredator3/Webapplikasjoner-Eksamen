@@ -1,0 +1,21 @@
+.card-text {
+    display: -webkit-box;          /* For Safari and older Chrome */
+    display: box;                  /* For other browsers */
+    -webkit-box-orient: vertical; /* For Safari and older Chrome */
+    -webkit-line-clamp: 3;        /* For Safari and older Chrome */
+    line-clamp: 3;                /* Standard property */
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card img {
+    max-height: 200px;
+    object-fit: cover;
+}
+.post-details-container {
+    border: 2px solid #aeb7b8;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    background-color: #f1ebeb;
+}
