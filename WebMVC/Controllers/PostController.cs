@@ -225,5 +225,40 @@ namespace WebMVC.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+ // GET: Admin/Post/Delete/{id} for admin to delete any post
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AdminDelete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var post = await _postRepository.GetPostByIdAsync(id.Value);
+            if (post == null)
+            {
+                _logger.LogError("[PostController] Post not found for the PostId {PostId:0000}", id);
+                return BadRequest("Post not found for the PostId");
+            }
+
+            return View(post); // Return view for admin to confirm deletion
+        }
+
+        // POST: Admin/Post/DeleteConfirmed/{id} for admin to delete any post
+        [HttpPost, ActionName("AdminDelete")]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AdminDeleteConfirmed(int id)
+        {
+            var post = await _postRepository.GetPostByIdAsync(id);
+            if (post == null)
+            {
+                _logger.LogError("[PostController] Post deletion failed for the PostId {PostId:0000}", id);
+                return BadRequest("Post deletion failed");
+            }
+
+            await _postRepository.DeletePostAsync(id);
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
