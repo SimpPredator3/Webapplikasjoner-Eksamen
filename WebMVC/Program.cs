@@ -20,7 +20,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 });
 
 
-builder.Services.AddDefaultIdentity<IdentityUser>().AddEntityFrameworkStores<ApplicationDbContext>();
+// Ensure you include the RoleManager in the identity setup
+builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
+    .AddRoles<IdentityRole>() // Add this line to enable role management
+    .AddEntityFrameworkStores<ApplicationDbContext>();
 
 // Register the PostRepository for Dependency Injection
 builder.Services.AddScoped<IPostRepository, PostRepository>();
@@ -47,6 +50,22 @@ builder.Services.AddSession();
 
 var app = builder.Build();
 
+// Seed the database
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        await SeedDatabase(services);
+    }
+    catch (Exception ex)
+    {
+        var seedlogger = services.GetRequiredService<ILogger<Program>>();
+        seedlogger.LogError(ex, "An error occurred while seeding the database.");
+    }
+}
+
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -72,3 +91,33 @@ app.MapRazorPages();
 
 
 app.Run();
+
+
+
+// Database seeding method
+async Task SeedDatabase(IServiceProvider serviceProvider)
+{
+    var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+
+    // Create Admin role if it doesn't exist
+    if (!await roleManager.RoleExistsAsync("Admin"))
+    {
+        await roleManager.CreateAsync(new IdentityRole("Admin"));
+    }
+
+    // Create admin user if it doesn't exist
+    var adminUser = await userManager.FindByEmailAsync("admin@gmail.com");
+    if (adminUser == null)
+    {
+        adminUser = new IdentityUser 
+        { 
+            UserName = "admin@gmail.com", 
+            Email = "admin@gmail.com" 
+        };
+        await userManager.CreateAsync(adminUser, "Admin123!"); // password
+    }
+
+    // Assign the admin user to the Admin role
+    await userManager.AddToRoleAsync(adminUser, "Admin");
+}
