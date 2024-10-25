@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WebMVC.Models;
 
@@ -19,8 +20,17 @@ public class Post
     [Url(ErrorMessage = "Please enter a valid URL")]
     public string? ImageUrl { get; set; }
 
+    public string? Tag { get; set; }
     public DateTime CreatedDate { get; set; }
 
     [Required]
     public required string Author { get; set; }
+
+    [NotMapped]
+    public int CommentCount { get; set; }
+
+    [Required]
+    public ICollection<Comment> Comments { get; set; } = []; // Initialize as an empty list
+
+    public int Upvotes { get; set; }
 }

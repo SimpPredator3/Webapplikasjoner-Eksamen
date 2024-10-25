@@ -22,15 +22,16 @@ namespace WebMVC.Controllers
         // GET: Post/Index
         public async Task<IActionResult> Index()
         {
-            var posts = await _postRepository.GetAllPostsAsync();
+            var posts = await _postRepository.GetAllPostsWithCommentCountAsync();
             if (posts == null)
             {
-                 // Log an error if the posts list is not found and return a NotFound response.
+                // Log an error if the posts list is not found and return a NotFound response.
                 _logger.LogError("[PostController] Post list not found while executing _postRepository.GetAllPostsAsync()");
                 return NotFound("Post list not found");
             }
             return View(posts);
         }
+
 
         // GET: Post/Create
         [Authorize] // Only logged-in users can access this method
@@ -47,6 +48,12 @@ namespace WebMVC.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Check if User.Identity and User.Identity.Name are not null
+                if (User?.Identity?.IsAuthenticated != true || User.Identity.Name == null)
+                {
+                    return Forbid(); // Return a 403 Forbidden response if the user is not authenticated
+                }
+
                 // Map ViewModel to Post entity
                 var post = new Post
                 {
@@ -54,6 +61,7 @@ namespace WebMVC.Controllers
                     Content = model.Content,
                     ImageUrl = model.ImageUrl,
                     Author = User.Identity.Name, // Set the Author from the logged-in user
+                    Tag = model.Tag,
                     CreatedDate = DateTime.Now
                 };
 
@@ -87,6 +95,13 @@ namespace WebMVC.Controllers
         [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
+            // Check if the id is null before using id.Value
+            if (id == null)
+            {
+                _logger.LogError("[PostController] Edit action called with a null PostId.");
+                return NotFound("PostId cannot be null.");
+            }
+
             var post = await _postRepository.GetPostByIdAsync(id.Value);
 
             // Check if the post was found. If not, log an error and return a BadRequest response.
@@ -94,6 +109,12 @@ namespace WebMVC.Controllers
             {
                 _logger.LogError("[PostController] Post not found when updating the PostId {PostId:0000}", id);
                 return BadRequest("Post not found for the PostId");
+            }
+
+            // Check if User.Identity and User.Identity.Name are not null
+            if (User?.Identity?.IsAuthenticated != true || User.Identity.Name == null)
+            {
+                return Forbid(); // Return a 403 Forbidden response if the user is not authenticated
             }
 
             // Ensure the logged-in user is the author or an admin
@@ -116,6 +137,12 @@ namespace WebMVC.Controllers
                 return NotFound();
             }
 
+            // Check if User.Identity and User.Identity.Name are not null
+            if (User?.Identity?.IsAuthenticated != true || User.Identity.Name == null)
+            {
+                return Forbid(); // Return a 403 Forbidden response if the user is not authenticated
+            }
+
             // Ensure the logged-in user is the author or an admin
             if (post.Author != User.Identity.Name && !User.IsInRole("Admin"))
             {
@@ -131,7 +158,7 @@ namespace WebMVC.Controllers
                 }
             }
 
-             // Log a warning if the post update failed and return the view with the model.
+            // Log a warning if the post update failed and return the view with the model.
             _logger.LogWarning("[PostController] post update failed {@post}", post);
             return View(post);
         }
@@ -153,6 +180,12 @@ namespace WebMVC.Controllers
                 return BadRequest("IPost not found for the PostId");
             }
 
+            // Check if User.Identity and User.Identity.Name are not null
+            if (User?.Identity?.IsAuthenticated != true || User.Identity.Name == null)
+            {
+                return Forbid(); // Return a 403 Forbidden response if the user is not authenticated
+            }
+
             // Ensure the logged-in user is the author or an admin
             if (post.Author != User.Identity.Name && !User.IsInRole("Admin"))
             {
@@ -169,17 +202,21 @@ namespace WebMVC.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var post = await _postRepository.GetPostByIdAsync(id);
-            bool returnOK = post != null;
-
-            if (!returnOK)
+            if (post == null)
             {
-                 // Log an error if the post deletion fails and return a BadRequest response.
+                // Log an error if the post deletion fails and return a BadRequest response.
                 _logger.LogError("[PostController] Post deletion failed for the PostId {PostId:0000}", id);
                 return BadRequest("Post deletion failed");
             }
 
-            // Ensure the logged-in user is the author or an admin
-            if (post.Author != User.Identity.Name && !User.IsInRole("Admin"))
+            // Check if User.Identity and User.Identity.Name are not null
+            if (User?.Identity?.IsAuthenticated != true || User.Identity.Name == null)
+            {
+                return Forbid(); // Return a 403 Forbidden response if the user is not authenticated
+            }
+
+            // Ensure the post's Author is not null and that the logged-in user is the author or an admin
+            if (post.Author == null || (post.Author != User.Identity.Name && !User.IsInRole("Admin")))
             {
                 return Forbid(); // Return a 403 Forbidden response
             }

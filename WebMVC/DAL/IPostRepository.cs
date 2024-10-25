@@ -11,5 +11,6 @@ namespace WebMVC.DAL
         Task<bool> AddPostAsync(Post post);
         Task<bool> UpdatePostAsync(Post post);
         Task<bool> DeletePostAsync(int id);
+        Task<IEnumerable<Post>> GetAllPostsWithCommentCountAsync();
     }
 }

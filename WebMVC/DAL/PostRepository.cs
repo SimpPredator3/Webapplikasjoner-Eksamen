@@ -28,7 +28,7 @@ namespace WebMVC.DAL
             {
                 // Log an error if the retrieval of posts fails and return null.
                 _logger.LogError("[PostRepository] posts ToListAsync() failed when GetAllPostsAsunc(), error message: {e}", e.Message);
-                return null;
+                return new List<Post>(); // Return an empty list instead of null
             }
         }
 
@@ -36,16 +36,20 @@ namespace WebMVC.DAL
         {
             try
             {
-                // Attempt to find the post by its ID in the database.
-                return await _context.Posts.FindAsync(id);
+                // Use Include to load the related Comments when retrieving the Post
+                return await _context.Posts
+                    .Include(p => p.Comments)  // Include the related comments
+                    .FirstOrDefaultAsync(p => p.Id == id); // Use FirstOrDefaultAsync instead of FindAsync
             }
             catch (Exception e)
             {
                 // Log an error if the retrieval of the post fails and return null.
-                _logger.LogError("[PostRepository] post FindAsync(id) failed whenGetPostByIdAsync() for PostId {PostId:0000}, error message: {e}", id, e.Message);
+                _logger.LogError("[PostRepository] post FindAsync(id) failed when GetPostByIdAsync() for PostId {PostId:0000}, error message: {e}", id, e.Message);
                 return null;
             }
         }
+
+
 
         public async Task<bool> AddPostAsync(Post post)
         {
@@ -64,6 +68,9 @@ namespace WebMVC.DAL
                 return false;
             }
         }
+
+
+
 
         public async Task<bool> UpdatePostAsync(Post post)
         {
@@ -99,7 +106,23 @@ namespace WebMVC.DAL
                 _logger.LogError("[PostRepository] post deletion failed for the PostId {PostId:0000}, error message: {e}", id, e.Message);
                 return false;
             }
-            
+
+        }
+
+        public async Task<IEnumerable<Post>> GetAllPostsWithCommentCountAsync()
+        {
+            var posts = await _context.Posts.ToListAsync();
+
+            foreach (var post in posts)
+            {
+                // Make sure you're counting comments based on the correct PostId
+                post.CommentCount = await _context.Comments.CountAsync(c => c.PostId == post.Id);
+
+                // Log the post and comment count for debugging purposes
+                _logger.LogInformation("Post {PostId}: {CommentCount} comments found", post.Id, post.CommentCount);
+            }
+
+            return posts;
         }
     }
 }

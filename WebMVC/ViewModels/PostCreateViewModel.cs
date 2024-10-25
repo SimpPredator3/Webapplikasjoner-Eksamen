@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Mvc.Rendering;
-using WebMVC.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace WebMVC.ViewModels;
@@ -17,4 +15,8 @@ public class PostCreateViewModel
     [Required]
     [Url]
     public string ImageUrl { get; set; } = default!;
+   
+    [Required]
+    [StringLength(30)]
+    public string Tag { get; set; } = default!;
 }
