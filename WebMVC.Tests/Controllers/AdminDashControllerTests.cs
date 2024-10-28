@@ -32,7 +32,7 @@ public class AdminDashControllerTests
             new Post { Id = 1, Title = "Post 1", Content = "Content 1", Author = "John Doe", Tag = "Health" },
             new Post { Id = 2, Title = "Post 2", Content = "Content 2", Author = "Jane Smith", Tag = "Test" }
         };
-        _mockPostRepository.Setup(repo => repo.GetAllPostsAsync()).ReturnsAsync(postList);
+        _mockPostRepository.Setup(repo => repo.GetAllPostsWithCommentCountAsync()).ReturnsAsync(postList);
 
         // Act
         var result = await _adminDashController.Index();

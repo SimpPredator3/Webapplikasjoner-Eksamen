@@ -52,7 +52,7 @@ public class PostControllerTests
         };
 
         var mockPostRepository = new Mock<IPostRepository>();
-        mockPostRepository.Setup(repo => repo.GetAllPostsAsync()).ReturnsAsync(postList);
+        mockPostRepository.Setup(repo => repo.GetAllPostsWithCommentCountAsync()).ReturnsAsync(postList);
         var mockLogger = new Mock<ILogger<PostController>>();
         var postController = new PostController(mockPostRepository.Object, mockLogger.Object);
 
