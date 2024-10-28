@@ -5,10 +5,9 @@
     int noTags = ViewBag.NoTags; // Number of posts without tags
     int allTags = ViewBag.AllTags; // Total number of posts
 }
-
 <head>
-    <link rel="stylesheet" href="~/css/main.css" />
-
+    <link rel="stylesheet" href="@Url.Content("~/css/main.css")" />
+    <link rel="stylesheet" href="@Url.Content("~/css/custom.css")" />
 </head>
 <div class="welcomebox">
     <h3 class="welcometitle">Communicate in countless ways
@@ -104,7 +103,12 @@
                     <button class="btn btn-success like-btn" data-post-id="@post.Id">Upvote</button>
 
                     <!-- Link to post details -->
-                    <a href="/Post/Details/@post.Id" class="btn btn-info">Details</a>
+
+                    <a href="javascript:void(0);" class="btn btn-info details-btn">Details</a>
+                    <div class="hiddenDiv custom-hidden">
+                        
+                        <a href="javascript:void(0);" class="btn btn-info hide-details-btn">Hide Details</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -167,6 +171,15 @@
                         $(this).hide();
                     }
                 });
+            });
+            //______________________________________________________
+            $('.details-btn').on('click', function() {
+                var details = $(this);
+                details.next('.hiddenDiv').removeClass('custom-hidden');
+            });
+            $('.hide-details-btn').on('click', function() {
+                var hidedetails = $(this);
+                hidedetails.closest('.hiddenDiv').addClass('custom-hidden');
             });
         });
 
