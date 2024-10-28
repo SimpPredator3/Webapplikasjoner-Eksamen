@@ -17,7 +17,7 @@
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Main" asp-action="Index">
-                    <img src="images/pins.png" id="logo" alt="Pinstagram">
+                    <img src="~/images/pins.png" id="logo" alt="Pinstagram">
                     <p id="logotext">Pinstagram</p>
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
@@ -29,7 +29,7 @@
                         <li class="nav-item d-flex">
                             <!-- Adding a link to the Posts page -->
                             <a class="nav-link text-dark" asp-area="" asp-controller="Post"
-                                asp-action="Index">Posts</a>
+                                asp-action="Index">My Posts</a>
                             <!-- Adding a link to the Admin dashboard page -->
                             @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
                             {

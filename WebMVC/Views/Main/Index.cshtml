@@ -23,7 +23,12 @@
 
 <h2>Tags</h2>
 
-<!-- Tag Buttons -->
+<!-- Tag search bar -->
+<div class="tag-search" style="margin-bottom: 30px;">
+    <input type="text" id="tagSearchInput" class="form-control" placeholder="Search tags...">
+</div>
+
+<!-- Tag buttons -->
 <div class="row">
     <div class="col-md-3">
         <div class="card mb-4">
@@ -42,9 +47,11 @@
 
     @if (uniqueTags != null && uniqueTags.Any())
     {
+        int i = 0;
         @foreach (var tag in uniqueTags)
         {
-            <div class="col-md-3">
+            if(i<6){
+            <div class="col-md-3 tag-item" data-tag="@tag.Key">
                 <div class="card mb-4">
                     <div class="tag-card">
                         <a href="javascript:void(0);" class="btn btn-card tag-button" data-tag="@tag.Key"> @tag.Key (@tag.Value)
@@ -52,6 +59,8 @@
                     </div>
                 </div>
             </div>
+            i++;
+            }
         }
     }
     else
@@ -76,6 +85,7 @@
             <div class="card mb-4">
                 <div class="card-body">
                     <h5 class="card-title">@post.Title</h5>
+                    <h6 class="tag-disp">#@post.Tag</h6>
                     <h6 class="card-subtitle mb-2 text-muted">By @post.Author on @post.CreatedDate.ToString("g")</h6>
 
                     <!-- Check if an image URL is present, display image if available -->
@@ -144,6 +154,18 @@
                         $(this).hide();
                     }
                     $('#postTitle').text("No Tags"); //Change  headline
+                });
+            })
+            // Search functionality for filtering tag buttons
+            $('#tagSearchInput').on('keyup', function() {
+                var searchQuery = $(this).val().toLowerCase();
+                $('.tag-item').each(function() {
+                    var tagText = $(this).data('tag').toLowerCase();
+                    if (tagText.includes(searchQuery)) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
                 });
             });
         });
