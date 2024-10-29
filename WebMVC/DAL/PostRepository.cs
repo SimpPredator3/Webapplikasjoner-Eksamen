@@ -111,7 +111,10 @@ namespace WebMVC.DAL
 
         public async Task<IEnumerable<Post>> GetAllPostsWithCommentCountAsync()
         {
-            var posts = await _context.Posts.ToListAsync();
+            var posts = await _context.Posts
+                .Include(p => p.Comments) // Load comments with each post
+                .ToListAsync();
+
 
             foreach (var post in posts)
             {

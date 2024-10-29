@@ -107,6 +107,39 @@
                     <a href="javascript:void(0);" class="btn btn-info details-btn">Details</a>
                     <div class="hiddenDiv custom-hidden">
                         
+                        
+                        <div class="postComments" style= "width: 500px;">
+                            @if (post.Comments != null && post.CommentCount !=0)
+                            {
+                                @foreach (var comment in post.Comments)
+                                {
+                                    <div>
+                                        <p><strong>@comment.Author</strong> (@comment.CreatedDate.ToShortDateString()):</p>
+                                        <p>@comment.Text</p>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <p>No comments yet.</p>
+                            }
+
+                            <hr />
+
+                            @if (User?.Identity?.IsAuthenticated == true)
+                            {
+                                <h3>Add a Comment</h3>
+                                <form asp-action="Create" asp-controller="Comment" method="post">
+                                    <input type="hidden" name="postId" value="@post.Id" />
+                                    <textarea name="Text" class="form-control"></textarea>
+                                    <button type="submit" class="btn btn-primary mt-2">Submit</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <p>You must be logged in to add a comment.</p>
+                            }
+                        </div>
                         <a href="javascript:void(0);" class="btn btn-info hide-details-btn">Hide Details</a>
                     </div>
                 </div>
@@ -176,10 +209,12 @@
             $('.details-btn').on('click', function() {
                 var details = $(this);
                 details.next('.hiddenDiv').removeClass('custom-hidden');
+                details.closest('.post-card').addClass('col-md-12');
             });
             $('.hide-details-btn').on('click', function() {
                 var hidedetails = $(this);
                 hidedetails.closest('.hiddenDiv').addClass('custom-hidden');
+                hidedetails.closest('.post-card').removeClass('col-md-12');
             });
         });
 
