@@ -12,11 +12,9 @@ public class PostCreateViewModel
     [StringLength(1000)]
     public string Content { get; set; } = default!;
 
-    [Required]
     [Url]
-    public string ImageUrl { get; set; } = default!;
-   
-    [Required]
+    public string? ImageUrl { get; set; } = default!;
+
     [StringLength(30)]
-    public string Tag { get; set; } = default!;
+    public string? Tag { get; set; } = default!;
 }
