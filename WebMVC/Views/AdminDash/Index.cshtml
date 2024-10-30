@@ -23,7 +23,7 @@
                     @* Check if User.Identity and User.Identity.Name are not null *@
                     @if (User?.Identity?.IsAuthenticated == true && User.Identity.Name != null)
                     {
-                        @if (post.Author == User.Identity.Name || User.IsInRole("Admin"))
+                        @if (User.IsInRole("Admin"))
                         {
                             <a asp-action="Edit" asp-route-id="@post.Id" class="btn btn-primary">Edit</a>
 

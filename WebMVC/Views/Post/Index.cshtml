@@ -14,7 +14,7 @@
         <div class="row">
         @foreach (var post in Model)
         {
-            @if(post.Author == User.Identity.Name || User.IsInRole("Admin"))
+            @if(post.Author == User.Identity.Name || (User.IsInRole("Admin") && post.Author == User.Identity.Name))
             {
                 <div class="col-md-4">
                     <div class="card mb-4">
