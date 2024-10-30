@@ -13,14 +13,14 @@ namespace WebMVC.Controllers
     public class MainController : Controller
     {
         private readonly IPostRepository _postRepository;
-        private readonly ILikesRepository _likesRepository;  // Add ILikesRepository
+        private readonly ILikesRepository _likesRepository;
         private readonly ILogger<MainController> _logger;
 
-        // Update the constructor to inject ILikesRepository
+        // Constructor to inject repository
         public MainController(IPostRepository postRepository, ILikesRepository likesRepository, ILogger<MainController> logger)
         {
             _postRepository = postRepository;
-            _likesRepository = likesRepository;  // Assign it to a field
+            _likesRepository = likesRepository;
             _logger = logger;
         }
 
