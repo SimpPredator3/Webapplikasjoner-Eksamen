@@ -6,8 +6,9 @@
     int allTags = ViewBag.AllTags; // Total number of posts
 }
 <head>
-    <link rel="stylesheet" href="@Url.Content("~/css/main.css")" />
-    <link rel="stylesheet" href="@Url.Content("~/css/custom.css")" />
+    <link rel="stylesheet" href="~/css/main.css" />
+    <link rel="stylesheet" href="~/css/custom.css" />
+    <link rel="stylesheet" href="~/css/scroll.css" />
 </head>
 <div class="welcomebox">
     <h3 class="welcometitle">Communicate in countless ways
@@ -28,7 +29,7 @@
 </div>
 
 <!-- Tag buttons -->
-<div class="row">
+<div class="row scroll">
     <div class="col-md-3">
         <div class="card mb-4">
             <div class="tag-card">
@@ -46,10 +47,8 @@
 
     @if (uniqueTags != null && uniqueTags.Any())
     {
-        int i = 0;
         @foreach (var tag in uniqueTags)
         {
-            if(i<6){
             <div class="col-md-3 tag-item" data-tag="@tag.Key">
                 <div class="card mb-4">
                     <div class="tag-card">
@@ -58,8 +57,6 @@
                     </div>
                 </div>
             </div>
-            i++;
-            }
         }
     }
     else
