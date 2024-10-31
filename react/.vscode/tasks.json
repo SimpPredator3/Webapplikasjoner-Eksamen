@@ -1,0 +1,26 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "type": "shell",
+            "command": "dotnet build",
+            "group": "build",
+            "problemMatcher": [],
+            "detail": "Builds the .NET API project",
+            "options": {
+                "cwd": "${workspaceFolder}/api"
+            }
+        },
+        {
+            "label": "Start React App",
+            "type": "shell",
+            "command": "npm start",
+            "problemMatcher": [],
+            "detail": "Starts the React development server",
+            "options": {
+                "cwd": "${workspaceFolder}/reactapp"
+            }
+        }
+    ]
+}
