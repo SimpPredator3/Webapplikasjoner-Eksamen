@@ -1,10 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace WebMVC.ViewModels;
-
-    public class CommentCreateViewModel
+namespace WebMVC.ViewModels
+{
+    public class CommentEditViewModel
     {
-        [Required(ErrorMessage = "Comment cannot be empty")]
-        [StringLength(500, ErrorMessage = "The comment cannot exceed 500 characters")]
-        public string Text { get; set; } = default!;
+        [Required(ErrorMessage = "Content is required")]
+        [StringLength(500, ErrorMessage = "The content cannot exceed 500 characters")]
+        public string Content { get; set; } = default!;
     }
+}
