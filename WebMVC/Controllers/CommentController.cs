@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
 using WebMVC.DAL;
 using WebMVC.Models;
+using WebMVC.ViewModels;
 using Microsoft.Extensions.Logging;
 
 namespace WebMVC.Controllers
@@ -18,19 +19,42 @@ namespace WebMVC.Controllers
             _logger = logger;
         }
 
+        // POST: Comment/Create
+        [HttpPost]
+        public async Task<IActionResult> Create(CommentCreateViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var comment = new Comment
+                {
+                    Content = model.Content,
+                    Author = User.Identity.Name, // Get the author's name from the logged-in user
+                    CreatedDate = DateTime.Now,
+                    PostId = model.PostId
+                };
+
+                bool success = await _commentRepository.AddCommentAsync(comment);
+                if (success)
+                {
+                    return RedirectToAction("Details", "Post", new { id = model.PostId });
+                }
+            }
+
+            _logger.LogWarning("[CommentController] Comment creation failed {@comment}", model);
+            return BadRequest("Failed to create comment.");
+        }
+
         // DELETE: Comment/Delete/{id}
         [HttpDelete]
-        [Authorize]
         public async Task<IActionResult> Delete(int id)
         {
             var comment = await _commentRepository.GetCommentByIdAsync(id);
             if (comment == null)
             {
-                _logger.LogError("[CommentController] Comment not found for the CommentId {CommentId}", id);
+                _logger.LogError("[CommentController] Comment not found for CommentId {CommentId}", id);
                 return NotFound("Comment not found.");
             }
 
-            // Only allow the owner or an admin to delete the comment
             if (comment.Author != User.Identity.Name && !User.IsInRole("Admin"))
             {
                 _logger.LogWarning("[CommentController] Unauthorized delete attempt by user {User} for CommentId {CommentId}", User.Identity.Name, id);
@@ -49,7 +73,6 @@ namespace WebMVC.Controllers
 
         // PUT: Comment/Edit/{id}
         [HttpPut]
-        [Authorize]
         public async Task<IActionResult> Edit(int id, [FromBody] CommentEditViewModel model)
         {
             if (!ModelState.IsValid)
@@ -60,18 +83,16 @@ namespace WebMVC.Controllers
             var comment = await _commentRepository.GetCommentByIdAsync(id);
             if (comment == null)
             {
-                _logger.LogError("[CommentController] Comment not found for the CommentId {CommentId}", id);
+                _logger.LogError("[CommentController] Comment not found for CommentId {CommentId}", id);
                 return NotFound("Comment not found.");
             }
 
-            // Only allow the owner to edit the comment
             if (comment.Author != User.Identity.Name)
             {
                 _logger.LogWarning("[CommentController] Unauthorized edit attempt by user {User} for CommentId {CommentId}", User.Identity.Name, id);
                 return Forbid();
             }
 
-            // Update comment content and last modified date
             comment.Content = model.Content;
             comment.LastModifiedDate = DateTime.Now;
 
@@ -85,4 +106,3 @@ namespace WebMVC.Controllers
             return Ok("Comment updated successfully.");
         }
     }
-
