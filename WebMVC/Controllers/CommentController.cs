@@ -1,76 +1,88 @@
 using Microsoft.AspNetCore.Mvc;
-using WebMVC.DAL;
-using WebMVC.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
-using WebMVC.ViewModels;
+using WebMVC.DAL;
+using WebMVC.Models;
+using Microsoft.Extensions.Logging;
 
-namespace WebMVC.Controllers;
-
-public class CommentController : Controller
-{
-    private readonly ICommentRepository _commentRepository;
-    private readonly IPostRepository _postRepository;
-    private readonly ILogger<CommentController> _logger;
-
-    public CommentController(ICommentRepository commentRepository, IPostRepository postRepository, ILogger<CommentController> logger)
-    {
-        _commentRepository = commentRepository;
-        _postRepository = postRepository;
-        _logger = logger;
-    }
-
-    // GET: Comments for a specific post
-    public async Task<IActionResult> Index(int postId)
-    {
-        var post = await _postRepository.GetPostByIdAsync(postId);
-        if (post == null)
-        {
-            _logger.LogError("[CommentController] Post not found for PostId {PostId}", postId);
-            return NotFound("Post not found");
-        }
-
-        var comments = await _commentRepository.GetCommentsByPostIdAsync(postId);
-        return View(comments);
-    }
-
-    // POST: Add a new comment
-    [HttpPost]
-    [ValidateAntiForgeryToken]
+namespace WebMVC.Controllers
     [Authorize]
-    public async Task<IActionResult> Create(int postId, CommentCreateViewModel model)
+    public class CommentController : Controller
     {
-        if (ModelState.IsValid)
+        private readonly ICommentRepository _commentRepository;
+        private readonly ILogger<CommentController> _logger;
+
+        public CommentController(ICommentRepository commentRepository, ILogger<CommentController> logger)
         {
-            var post = await _postRepository.GetPostByIdAsync(postId);
-            if (post == null)
-            {
-                _logger.LogError("[CommentController] Post not found for PostId {PostId}", postId);
-                return NotFound("Post not found");
-            }
-
-            // Check if User.Identity and User.Identity.Name are not null
-            if (User?.Identity?.IsAuthenticated != true || User.Identity.Name == null)
-            {
-                return Forbid(); // Return a 403 Forbidden response if the user is not authenticated
-            }
-
-            var comment = new Comment
-            {
-                Text = model.Text,
-                Author = User.Identity.Name!,
-                CreatedDate = DateTime.Now,
-                PostId = postId
-            };
-
-            bool result = await _commentRepository.AddCommentAsync(comment);
-            if (result)
-            {
-                return RedirectToAction("Details", "Post", new { id = postId });
-            }
+            _commentRepository = commentRepository;
+            _logger = logger;
         }
 
-        _logger.LogWarning("[CommentController] Comment creation failed {@model}", model);
-        return View(model);
+        // DELETE: Comment/Delete/{id}
+        [HttpDelete]
+        [Authorize]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var comment = await _commentRepository.GetCommentByIdAsync(id);
+            if (comment == null)
+            {
+                _logger.LogError("[CommentController] Comment not found for the CommentId {CommentId}", id);
+                return NotFound("Comment not found.");
+            }
+
+            // Only allow the owner or an admin to delete the comment
+            if (comment.Author != User.Identity.Name && !User.IsInRole("Admin"))
+            {
+                _logger.LogWarning("[CommentController] Unauthorized delete attempt by user {User} for CommentId {CommentId}", User.Identity.Name, id);
+                return Forbid();
+            }
+
+            bool success = await _commentRepository.DeleteCommentAsync(id);
+            if (!success)
+            {
+                _logger.LogError("[CommentController] Comment deletion failed for CommentId {CommentId}", id);
+                return BadRequest("Comment deletion failed.");
+            }
+
+            return Ok("Comment deleted successfully.");
+        }
+
+        // PUT: Comment/Edit/{id}
+        [HttpPut]
+        [Authorize]
+        public async Task<IActionResult> Edit(int id, [FromBody] CommentEditViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Invalid data.");
+            }
+
+            var comment = await _commentRepository.GetCommentByIdAsync(id);
+            if (comment == null)
+            {
+                _logger.LogError("[CommentController] Comment not found for the CommentId {CommentId}", id);
+                return NotFound("Comment not found.");
+            }
+
+            // Only allow the owner to edit the comment
+            if (comment.Author != User.Identity.Name)
+            {
+                _logger.LogWarning("[CommentController] Unauthorized edit attempt by user {User} for CommentId {CommentId}", User.Identity.Name, id);
+                return Forbid();
+            }
+
+            // Update comment content and last modified date
+            comment.Content = model.Content;
+            comment.LastModifiedDate = DateTime.Now;
+
+            bool success = await _commentRepository.UpdateCommentAsync(comment);
+            if (!success)
+            {
+                _logger.LogError("[CommentController] Comment update failed for CommentId {CommentId}", id);
+                return BadRequest("Comment update failed.");
+            }
+
+            return Ok("Comment updated successfully.");
+        }
     }
-}
+
