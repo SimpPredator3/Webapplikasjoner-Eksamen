@@ -1,24 +1,42 @@
-using System;
-using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
+using WebMVC.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace WebMVC.Models;
+namespace WebMVC.DAL
 
-    public class Comment
+    public class CommentRepository : ICommentRepository
     {
-        public int Id { get; set; }
+        private readonly AppDbContext _context;
 
-        [Required(ErrorMessage = "Comment text is required")]
-        [StringLength(500, ErrorMessage = "The comment cannot exceed 500 characters")]
-        public string Text { get; set; } = default!;
+        public CommentRepository(AppDbContext context)
+        {
+            _context = context;
+        }
 
-        [Required]
-        public string Author { get; set; } = default!; // Comment's author
+        public async Task<bool> AddCommentAsync(Comment comment)
+        {
+            _context.Comments.Add(comment);
+            return await _context.SaveChangesAsync() > 0;
+        }
 
-        public DateTime CreatedDate { get; set; }
+        public async Task<Comment?> GetCommentByIdAsync(int id)
+        {
+            return await _context.Comments.FindAsync(id);
+        }
 
-        // Foreign key for the associated Post
-        [Required]
-        public int PostId { get; set; }
-        
-        public Post Post { get; set; } = default!;
+        public async Task<bool> DeleteCommentAsync(int id)
+        {
+            var comment = await _context.Comments.FindAsync(id);
+            if (comment == null)
+                return false;
+
+            _context.Comments.Remove(comment);
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> UpdateCommentAsync(Comment comment)
+        {
+            _context.Comments.Update(comment);
+            return await _context.SaveChangesAsync() > 0;
+        }
     }
