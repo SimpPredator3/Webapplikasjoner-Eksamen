@@ -10,5 +10,6 @@ namespace WebMVC.DAL
         Task<Comment?> GetCommentByIdAsync(int id);
         Task<bool> AddCommentAsync(Comment comment);
         Task<bool> DeleteCommentAsync(int id);
+        Task<bool> UpdateCommentAsync(Comment comment);
     }
 }
