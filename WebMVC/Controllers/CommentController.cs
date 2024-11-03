@@ -24,6 +24,12 @@ namespace WebMVC.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CommentCreateViewModel model)
         {
+            // Check if the user is authenticated and has a valid identity name
+            if (User?.Identity?.IsAuthenticated != true || User.Identity.Name == null)
+            {
+                return Forbid(); // Return a 403 Forbidden response if the user is not authenticated
+            }
+
             if (ModelState.IsValid)
             {
                 var comment = new Comment
@@ -55,6 +61,12 @@ namespace WebMVC.Controllers
                 return NotFound("Comment not found.");
             }
 
+            // Check if User.Identity and User.Identity.Name are not null
+            if (User?.Identity?.IsAuthenticated != true || User.Identity.Name == null)
+            {
+                return Forbid(); // Return a 403 Forbidden response if the user is not authenticated
+            }
+
             if (comment.Author != User.Identity.Name && !User.IsInRole("Admin"))
             {
                 _logger.LogWarning("[CommentController] Unauthorized delete attempt by user {User} for CommentId {CommentId}", User.Identity.Name, id);
@@ -84,6 +96,12 @@ namespace WebMVC.Controllers
             {
                 _logger.LogError("[CommentController] Comment not found for CommentId {CommentId}", id);
                 return NotFound("Comment not found.");
+            }
+
+            // Check if User.Identity and User.Identity.Name are not null
+            if (User?.Identity?.IsAuthenticated != true || User.Identity.Name == null)
+            {
+                return Forbid(); // Return a 403 Forbidden response if the user is not authenticated
             }
 
             if (comment.Author != User.Identity.Name && !User.IsInRole("Admin"))

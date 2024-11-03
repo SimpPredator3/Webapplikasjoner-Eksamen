@@ -1,20 +1,20 @@
-@model IEnumerable<WebMVC.Models.Post>
+@if (User?.Identity?.IsAuthenticated != true)
+{
+    <p style="width: 500px;">Log in to your existing account or register a new account to create your own posts and join the
+        Pinstagram community</p>
+    <a class="btn btn-primary mb-3" asp-area="Identity" asp-page="/Account/Login">Login</a>
+    <a class="btn btn-primary mb-3" asp-area="Identity" asp-page="/Account/Register">Register</a>
+}
+else
+{
+    <h2>My Posts</h2>
 
-
-    @if(User?.Identity?.IsAuthenticated == false)
-    {
-        <p style="width: 500px;">Log in to your existing account or register a new account to create your own posts and join the Pinstagram community</p>
-        <a class="btn btn-primary mb-3" asp-area="Identity" asp-page="/Account/Login">Login</a>
-        <a class="btn btn-primary mb-3" asp-area="Identity" asp-page="/Account/Register">Register</a>
-    }
-    else{
-        <h2>My Posts</h2>
-
-        <a href="/Post/Create" class="btn btn-primary mb-3">Create New Post</a>
-        <div class="row">
+    <a href="/Post/Create" class="btn btn-primary mb-3">Create New Post</a>
+    <div class="row">
         @foreach (var post in Model)
         {
-            @if(post.Author == User.Identity.Name || (User.IsInRole("Admin") && post.Author == User.Identity.Name))
+            // Check if User and User.Identity are not null and if the user is the author or an admin
+            if ((User?.Identity?.Name == post.Author) || (User?.IsInRole("Admin") ?? false))
             {
                 <div class="col-md-4">
                     <div class="card mb-4">
@@ -41,5 +41,5 @@
                 </div>
             }
         }
-        </div>
-    }
+    </div>
+}
