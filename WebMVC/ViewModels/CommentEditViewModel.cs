@@ -6,6 +6,6 @@ namespace WebMVC.ViewModels
     {
         [Required(ErrorMessage = "Content is required")]
         [StringLength(500, ErrorMessage = "The content cannot exceed 500 characters")]
-        public string Content { get; set; } = default!;
+        public string Text { get; set; } = default!;
     }
 }

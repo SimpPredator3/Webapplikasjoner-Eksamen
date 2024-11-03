@@ -7,6 +7,7 @@ using WebMVC.ViewModels;
 using Microsoft.Extensions.Logging;
 
 namespace WebMVC.Controllers
+{
     [Authorize]
     public class CommentController : Controller
     {
@@ -27,7 +28,7 @@ namespace WebMVC.Controllers
             {
                 var comment = new Comment
                 {
-                    Content = model.Content,
+                    Text = model.Text,
                     Author = User.Identity.Name, // Get the author's name from the logged-in user
                     CreatedDate = DateTime.Now,
                     PostId = model.PostId
@@ -44,8 +45,7 @@ namespace WebMVC.Controllers
             return BadRequest("Failed to create comment.");
         }
 
-        // DELETE: Comment/Delete/{id}
-        [HttpDelete]
+        [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
             var comment = await _commentRepository.GetCommentByIdAsync(id);
@@ -68,12 +68,11 @@ namespace WebMVC.Controllers
                 return BadRequest("Comment deletion failed.");
             }
 
-            return Ok("Comment deleted successfully.");
+            return RedirectToAction("Details", "Post", new { id = comment.PostId });
         }
 
-        // PUT: Comment/Edit/{id}
-        [HttpPut]
-        public async Task<IActionResult> Edit(int id, [FromBody] CommentEditViewModel model)
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, [FromForm] CommentEditViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -87,13 +86,13 @@ namespace WebMVC.Controllers
                 return NotFound("Comment not found.");
             }
 
-            if (comment.Author != User.Identity.Name)
+            if (comment.Author != User.Identity.Name && !User.IsInRole("Admin"))
             {
                 _logger.LogWarning("[CommentController] Unauthorized edit attempt by user {User} for CommentId {CommentId}", User.Identity.Name, id);
                 return Forbid();
             }
 
-            comment.Content = model.Content;
+            comment.Text = model.Text;
             comment.LastModifiedDate = DateTime.Now;
 
             bool success = await _commentRepository.UpdateCommentAsync(comment);
@@ -103,6 +102,7 @@ namespace WebMVC.Controllers
                 return BadRequest("Comment update failed.");
             }
 
-            return Ok("Comment updated successfully.");
+            return RedirectToAction("Details", "Post", new { id = comment.PostId });
         }
     }
+}

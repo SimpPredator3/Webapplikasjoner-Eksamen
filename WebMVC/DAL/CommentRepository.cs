@@ -8,9 +8,9 @@ namespace WebMVC.DAL
 {
     public class CommentRepository : ICommentRepository
     {
-        private readonly AppDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public CommentRepository(AppDbContext context)
+        public CommentRepository(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -44,10 +44,10 @@ namespace WebMVC.DAL
         }
 
         // Delete a comment, checking that the author matches or user is an admin
-        public async Task<bool> DeleteCommentAsync(int id, string userId)
+        public async Task<bool> DeleteCommentAsync(int id)
         {
             var comment = await GetCommentByIdAsync(id);
-            if (comment == null || comment.Author != userId) return false;
+            if (comment == null) return false;
 
             _context.Comments.Remove(comment);
             return await _context.SaveChangesAsync() > 0;

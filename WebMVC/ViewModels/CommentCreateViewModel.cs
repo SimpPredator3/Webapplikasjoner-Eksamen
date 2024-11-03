@@ -6,7 +6,7 @@ namespace WebMVC.ViewModels
     {
         [Required(ErrorMessage = "Content is required")]
         [StringLength(500, ErrorMessage = "The content cannot exceed 500 characters")]
-        public string Content { get; set; } = default!;
+        public string Text { get; set; } = default!;
 
         [Required]
         public int PostId { get; set; } // The post ID to which this comment belongs
