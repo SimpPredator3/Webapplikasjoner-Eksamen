@@ -21,4 +21,5 @@ public class Comment
     public int PostId { get; set; }
 
     public Post Post { get; set; } = default!;
+    public DateTime LastModifiedDate { get; internal set; }
 }

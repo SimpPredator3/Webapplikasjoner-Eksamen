@@ -24,6 +24,27 @@
             <p><strong>@comment.Author</strong> (@comment.CreatedDate.ToShortDateString()):</p>
             <p>@comment.Text</p>
         </div>
+        @if ((User?.Identity?.Name == comment.Author) || (User?.IsInRole("Admin") ?? false))
+        {
+            <div class="comment-actions">
+                <!-- Delete Form -->
+                <form asp-action="Delete" asp-controller="Comment" method="post" style="display:inline;">
+                    <input type="hidden" name="id" value="@comment.Id" />
+                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                </form>
+
+                <!-- Edit Button -->
+                <button type="button" class="btn btn-secondary btn-sm" onclick="toggleEditForm(@comment.Id)">Edit</button>
+
+                <!-- Edit Form (hidden by default) -->
+                <form asp-action="Edit" asp-controller="Comment" method="post" id="edit-form-@comment.Id" class="edit-form"
+                    style="display:none;">
+                    <input type="hidden" name="id" value="@comment.Id" />
+                    <input type="text" name="Text" value="@comment.Text" class="form-control form-control-sm mt-1" />
+                    <button type="submit" class="btn btn-primary btn-sm mt-1">Save</button>
+                </form>
+            </div>
+        }
     }
 }
 else
@@ -46,3 +67,16 @@ else
 {
     <p>You must be logged in to add a comment.</p>
 }
+
+
+@* For Edit comment: Shows the edit inputfield when edit button is clicked. *@
+<script>
+    function toggleEditForm(commentId) {
+        const editForm = document.getElementById(`edit-form-${commentId}`);
+        if (editForm.style.display === "none") {
+            editForm.style.display = "block";
+        } else {
+            editForm.style.display = "none";
+        }
+    }
+</script>
