@@ -2,36 +2,87 @@ using Microsoft.AspNetCore.Mvc;
 using api.DAL;
 using api.Models;
 using api.ViewModels;
+using api.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace api.Controllers
 {
+    [ApiController]
+    [Route("api/admindash")]
     public class AdminDashController : Controller
     {
         private readonly IPostRepository _postRepository;
         private readonly ILogger<AdminDashController> _logger;
 
-        // Constructor that injects the repository
         public AdminDashController(IPostRepository postRepository, ILogger<AdminDashController> logger)
         {
             _postRepository = postRepository;
             _logger = logger;
         }
 
-        // GET: AdminDash/Index
-        public async Task<IActionResult> Index()
+        // GET: api/admindash
+        [HttpGet]
+        public async Task<IActionResult> GetAllPosts()
         {
             var posts = await _postRepository.GetAllPostsWithCommentCountAsync();
             if (posts == null)
             {
-                _logger.LogError("[AdminDashController] Post list not found while executing _postRepository.GetAllPostsAsync()");
+                _logger.LogError("[AdminDashController] Post list not found while executing GetAllPosts()");
                 return NotFound("Post list not found");
             }
-            return View("~/Views/AdminDash/Index.cshtml", posts); // Updated view path for AdminDash
+
+            // Inline mapping to PostDto
+            var postDtos = posts.Select(post => new PostDto
+            {
+                Id = post.Id,
+                Title = post.Title,
+                Content = post.Content,
+                ImageUrl = post.ImageUrl,
+                Tag = post.Tag,
+                CreatedDate = post.CreatedDate,
+                Author = post.Author,
+                CommentCount = post.CommentCount,
+                Upvotes = post.Upvotes
+            }); 
+
+            return Ok(postDtos);
         }
 
+
+        // GET: api/admindash/{id}
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetPostById(int id)
+        {
+            var post = await _postRepository.GetPostByIdAsync(id);
+            if (post == null)
+            {
+                _logger.LogError("[AdminDashController] Post not found for the PostId {PostId}", id);
+                return NotFound("Post not found for the PostId");
+            }
+
+            // Inline mapping to PostDto
+            var postDto = new PostDto
+            {
+                Id = post.Id,
+                Title = post.Title,
+                Content = post.Content,
+                ImageUrl = post.ImageUrl,
+                Tag = post.Tag,
+                CreatedDate = post.CreatedDate,
+                Author = post.Author,
+                CommentCount = post.CommentCount,
+                Upvotes = post.Upvotes
+            };
+
+            return Ok(postDto);
+        }
+
+
         // GET: AdminDash/Create
+        [HttpPost("create")]
         [Authorize]
         public IActionResult Create()
         {
@@ -42,16 +93,19 @@ namespace api.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Create(PostCreateViewModel model)
-        {
-            if (ModelState.IsValid)
+         public async Task<IActionResult> Create([FromBody] PostCreateViewModel model)
+         {
+            if (!ModelState.IsValid)
             {
-                if (User?.Identity?.IsAuthenticated != true || User.Identity.Name == null)
-                {
-                    return Forbid();
-                }
+                return BadRequest(ModelState);
+            }
 
-                var post = new Post
+            if (User?.Identity?.IsAuthenticated != true || User.Identity.Name == null)
+            {
+                return Forbid();
+            }
+
+             var post = new Post
                 {
                     Title = model.Title,
                     Content = model.Content,
@@ -62,64 +116,33 @@ namespace api.Controllers
                 };
 
                 bool returnOK = await _postRepository.AddPostAsync(post);
-                if (returnOK)
+                if (!returnOK)
                 {
-                    return RedirectToAction(nameof(Index));
+                    _logger.LogWarning("[AdminDashController] Post creation failed {@post}", model);
+                    return StatusCode(500, "A problem happened while handling your request.");
                 }
-            }
 
-            _logger.LogWarning("[AdminDashController] Post creation failed {@post}", model);
-            return View(model);
-        }
+                var postDto = new PostDto
+                {
+                    Id = post.Id,
+                    Title = post.Title,
+                    Content = post.Content,
+                    ImageUrl = post.ImageUrl,
+                    Tag = post.Tag,
+                    CreatedDate = post.CreatedDate,
+                    Author = post.Author,
+                    CommentCount = post.CommentCount,
+                    Upvotes = post.Upvotes
+                };
 
-        // GET: AdminDash/Details/{id}
-        public async Task<IActionResult> Details(int id)
-        {
-            var post = await _postRepository.GetPostByIdAsync(id);
-            if (post == null)
-            {
-                _logger.LogError("[AdminDashController] Post not found for the PostId {PostId:0000}", id);
-                return NotFound("Post not found for the PostId");
-            }
-            return View(post);
-        }
+                return CreatedAtAction(nameof(GetPostById), new { id = post.Id }, postDto);
+         }
 
-        // GET: AdminDash/Edit/{id}
+
+        // PUT: api/admindash/edit/{id}
+        [HttpPut("edit/{id}")]
         [Authorize]
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                _logger.LogError("[AdminDashController] Edit action called with a null PostId.");
-                return NotFound("PostId cannot be null.");
-            }
-
-            var post = await _postRepository.GetPostByIdAsync(id.Value);
-
-            if (post == null)
-            {
-                _logger.LogError("[AdminDashController] Post not found when updating the PostId {PostId:0000}", id);
-                return BadRequest("Post not found for the PostId");
-            }
-
-            if (User?.Identity?.IsAuthenticated != true || User.Identity.Name == null)
-            {
-                return Forbid();
-            }
-
-            if (post.Author != User.Identity.Name && !User.IsInRole("Admin"))
-            {
-                return Forbid();
-            }
-
-            return View(post);
-        }
-
-        // POST: AdminDash/Edit/{id}
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize]
-        public async Task<IActionResult> Edit(int id, Post post)
+        public async Task<IActionResult> Edit(int id, [FromBody] Post post)
         {
             if (id != post.Id)
             {
@@ -141,54 +164,25 @@ namespace api.Controllers
                 bool returnOK = await _postRepository.UpdatePostAsync(post);
                 if (returnOK)
                 {
-                    return RedirectToAction(nameof(Index));
+                    return NoContent();
                 }
             }
 
-            _logger.LogWarning("[AdminDashController] post update failed {@post}", post);
-            return View(post);
+            _logger.LogWarning("[AdminDashController] Post update failed {@post}", post);
+            return BadRequest(ModelState);
         }
 
-        // GET: AdminDash/Delete/{id}
+
+        // DELETE: api/admindash/delete/{id}
+        [HttpDelete("delete/{id}")]
         [Authorize]
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var post = await _postRepository.GetPostByIdAsync(id.Value);
-            if (post == null)
-            {
-                _logger.LogError("[AdminDashController] Post not found for the PostId {PostId:0000}", id);
-                return BadRequest("Post not found for the PostId");
-            }
-
-            if (User?.Identity?.IsAuthenticated != true || User.Identity.Name == null)
-            {
-                return Forbid();
-            }
-
-            if (post.Author != User.Identity.Name && !User.IsInRole("Admin"))
-            {
-                return Forbid();
-            }
-
-            return View(post);
-        }
-
-        // POST: AdminDash/DeleteConfirmed/{id}
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        [Authorize]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             var post = await _postRepository.GetPostByIdAsync(id);
             if (post == null)
             {
                 _logger.LogError("[AdminDashController] Post deletion failed for the PostId {PostId:0000}", id);
-                return BadRequest("Post deletion failed");
+                return NotFound("Post not found");
             }
 
             if (User?.Identity?.IsAuthenticated != true || User.Identity.Name == null)
@@ -202,7 +196,7 @@ namespace api.Controllers
             }
 
             await _postRepository.DeletePostAsync(id);
-            return RedirectToAction(nameof(Index));
+            return NoContent();
         }
     }
 }

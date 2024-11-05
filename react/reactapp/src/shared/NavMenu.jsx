@@ -21,7 +21,7 @@ const NavMenu = () => {
                             Separated link
                         </NavDropdown.Item>
                     </NavDropdown>
-                    <Nav.Link href="/">Admin Dashboard</Nav.Link>
+                    <Nav.Link href="/AdminDash">Admin Dashboard</Nav.Link>
                 </Nav>
             </Navbar.Collapse>
         </Navbar>
