@@ -27,8 +27,9 @@ function Login() {
                 setError("Login failed: " + errorData.message);
             }
         } catch (error) {
-            console.error("Error during login:", error);
-            setError("An error occurred. Please try again.");
+            console.error("Login failed with error:", error);
+            const errorResponse = await error.response?.json();
+            setError("An error occurred: " + (errorResponse?.message || error.message));
         }
     };
 
