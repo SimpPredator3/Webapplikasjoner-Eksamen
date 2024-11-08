@@ -1,7 +1,13 @@
+// NavMenu.js
 import React from 'react';
 import { Nav, Navbar, NavDropdown } from 'react-bootstrap';
+import { useUser } from '../components/UserContext';
 
 const NavMenu = () => {
+    const { user } = useUser();
+    const isAdmin = user?.role === 'Admin';
+    console.log('User context in NavMenu:', user); // Debugging log
+
     return (
         <Navbar expand="lg">
             <Navbar.Brand href="/">Pinstagram</Navbar.Brand>
@@ -15,7 +21,9 @@ const NavMenu = () => {
                         <NavDropdown.Divider />
                         <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
                     </NavDropdown>
-                    <Nav.Link href="/AdminDash">Admin Dashboard</Nav.Link>
+                    {isAdmin && (
+                        <Nav.Link href="/AdminDash">Admin Dashboard</Nav.Link>
+                    )}
                 </Nav>
             </Navbar.Collapse>
         </Navbar>
