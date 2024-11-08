@@ -69,9 +69,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseStaticFiles();
 app.UseRouting();
+app.UseCors("CorsPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseCors("CorsPolicy");
 app.MapControllerRoute(name: "api", pattern: "{controller}/{action=Index}/{id?}");
 
 app.Run();

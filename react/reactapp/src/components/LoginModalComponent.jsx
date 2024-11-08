@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { Button, Modal, Form, Navbar } from "react-bootstrap";
+import { Button, Modal, Form } from "react-bootstrap";
 import "./LoginModalComponent.css";
 
 function LoginModalComponent() {
     const [showLoginModal, setShowLoginModal] = useState(false);
+    const [showRegisterModal, setShowRegisterModal] = useState(false); 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [registerEmail, setRegisterEmail] = useState(""); 
+    const [registerPassword, setRegisterPassword] = useState(""); 
     const [error, setError] = useState("");
     const [userName, setUserName] = useState(null);
 
-
-     // Function to fetch the user's identity from the backend
-     const fetchUserIdentity = async () => {
+    // Fetch user identity
+    const fetchUserIdentity = async () => {
         try {
             const response = await fetch("http://localhost:5141/api/auth/user", {
                 method: "GET",
@@ -19,9 +21,9 @@ function LoginModalComponent() {
             });
             if (response.ok) {
                 const data = await response.json();
-                setUserName(data.name); // Set the user name if authenticated
+                setUserName(data.name);
             } else {
-                setUserName(null); // Clear name if not authenticated
+                setUserName(null);
             }
         } catch (error) {
             console.error("Error fetching user identity:", error);
@@ -29,32 +31,24 @@ function LoginModalComponent() {
         }
     };
 
-    // Call fetchUserIdentity on component mount to check if the user is already logged in
     useEffect(() => {
         fetchUserIdentity();
     }, []);
 
-
     // Login function
     const handleLogin = async (e) => {
         e.preventDefault();
-        setError(""); // Reset error on new login attempt
-
+        setError("");
         try {
             const response = await fetch("http://localhost:5141/api/auth/login", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
                 credentials: "include",
                 body: JSON.stringify({ email, password, rememberMe: true }),
             });
-
             if (response.ok) {
-                const data = await response.json();
-                console.log("Login successful:", data.message);
-                setShowLoginModal(false); // Close modal on successful login
-                fetchUserIdentity(); // Fetch the user's identity after login
+                setShowLoginModal(false);
+                fetchUserIdentity();
             } else {
                 const errorData = await response.json();
                 setError("Login failed: " + (errorData.message || "Unknown error"));
@@ -65,15 +59,42 @@ function LoginModalComponent() {
         }
     };
 
-      // Logout function
-      const handleLogout = async () => {
+    // Register function with debugging
+    const handleRegister = async (e) => {
+        e.preventDefault();
+        setError("");
+        console.log("Register button clicked"); // Debugging
+
+        try {
+            const response = await fetch("http://localhost:5141/api/auth/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email: registerEmail, password: registerPassword }),
+            });
+
+            if (response.ok) {
+                console.log("Registration successful"); // Debugging
+                setShowRegisterModal(false);
+                setShowLoginModal(true); // Open login modal after registration
+            } else {
+                const errorData = await response.json();
+                setError("Registration failed: " + (errorData.message || "Unknown error"));
+            }
+        } catch (error) {
+            console.error("Error during registration:", error);
+            setError("An error occurred. Please try again.");
+        }
+    };
+
+    // Logout function
+    const handleLogout = async () => {
         try {
             const response = await fetch("http://localhost:5141/api/auth/logout", {
                 method: "POST",
                 credentials: "include",
             });
             if (response.ok) {
-                setUserName(null); // Clear the user name on logout
+                setUserName(null);
             } else {
                 setError("Logout failed");
             }
@@ -85,7 +106,6 @@ function LoginModalComponent() {
 
     return (
         <>
-            {/* Top-right login/logout button */}
             <div className="top-right-corner">
                 {userName ? (
                     <>
@@ -118,7 +138,6 @@ function LoginModalComponent() {
                                 required
                             />
                         </Form.Group>
-
                         <Form.Group controlId="formBasicPassword">
                             <Form.Label>Password</Form.Label>
                             <Form.Control
@@ -129,13 +148,70 @@ function LoginModalComponent() {
                                 required
                             />
                         </Form.Group>
-
                         {error && <p style={{ color: "red" }}>{error}</p>}
-
                         <Button variant="primary" type="submit" className="mt-3">
                             Login
                         </Button>
                     </Form>
+                    <div className="text-center mt-3">
+                        <a
+                            href="#"
+                            onClick={() => {
+                                console.log("Switching to Register modal"); // Debugging
+                                setShowLoginModal(false);
+                                setShowRegisterModal(true);
+                            }}
+                        >
+                            Don't have an account? Register here
+                        </a>
+                    </div>
+                </Modal.Body>
+            </Modal>
+
+            {/* Registration Modal */}
+            <Modal show={showRegisterModal} onHide={() => setShowRegisterModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Register</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form onSubmit={handleRegister}>
+                        <Form.Group controlId="registerEmail">
+                            <Form.Label>Email address</Form.Label>
+                            <Form.Control
+                                type="email"
+                                placeholder="Enter email"
+                                value={registerEmail}
+                                onChange={(e) => setRegisterEmail(e.target.value)}
+                                required
+                            />
+                        </Form.Group>
+                        <Form.Group controlId="registerPassword">
+                            <Form.Label>Password</Form.Label>
+                            <Form.Control
+                                type="password"
+                                placeholder="Password"
+                                value={registerPassword}
+                                onChange={(e) => setRegisterPassword(e.target.value)}
+                                required
+                            />
+                        </Form.Group>
+                        {error && <p style={{ color: "red" }}>{error}</p>}
+                        <Button variant="primary" type="submit" className="mt-3">
+                            Register
+                        </Button>
+                    </Form>
+                    <div className="text-center mt-3">
+                        <a
+                            href="#"
+                            onClick={() => {
+                                console.log("Switching to Login modal"); // Debugging
+                                setShowRegisterModal(false);
+                                setShowLoginModal(true);
+                            }}
+                        >
+                            Already have an account? Login here
+                        </a>
+                    </div>
                 </Modal.Body>
             </Modal>
         </>
