@@ -22,6 +22,18 @@ namespace api.Controllers
             _logger = logger;
         }
 
+        // GET: api/auth/user
+        [HttpGet("user")]
+        [Authorize]
+        public IActionResult GetUserIdentity()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                return Ok(new { name = User.Identity.Name });
+            }
+            return Unauthorized(new { message = "User is not authenticated." });
+        }
+
         // POST: api/auth/login
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
