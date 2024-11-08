@@ -4,6 +4,10 @@ using Serilog;
 using Serilog.Events;
 using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Identity;
+
+
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +15,15 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
 {
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
 });
+
+// Add Identity services
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => 
+{
+    options.SignIn.RequireConfirmedAccount = false;
+})
+.AddEntityFrameworkStores<ApplicationDbContext>();
+
+
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -25,8 +38,13 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddControllers();
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("CorsPolicy",
-        builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+    options.AddPolicy("CorsPolicy", builder =>
+    {
+        builder.WithOrigins("http://localhost:3000") // Specify the frontend origin
+               .AllowAnyMethod()
+               .AllowAnyHeader()
+               .AllowCredentials(); // Allows cookies for session handling
+    });
 });
 
 builder.Services.AddScoped<IPostRepository, PostRepository>();
@@ -51,6 +69,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseStaticFiles();
 app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
 app.UseCors("CorsPolicy");
 app.MapControllerRoute(name: "api", pattern: "{controller}/{action=Index}/{id?}");
 
