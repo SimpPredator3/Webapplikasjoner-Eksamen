@@ -1,12 +1,16 @@
 // NavMenu.js
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Nav, Navbar, NavDropdown } from 'react-bootstrap';
 import { useUser } from '../components/UserContext';
 
 const NavMenu = () => {
     const { user } = useUser();
-    const isAdmin = user?.role === 'Admin';
-    console.log('User context in NavMenu:', user); // Debugging log
+    const [isAdmin, setIsAdmin] = useState(false);
+    
+
+    useEffect(() => {
+        setIsAdmin(user?.role === 'Admin'); // Update isAdmin whenever user role changes
+    }, [user]);
 
     return (
         <Navbar expand="lg">

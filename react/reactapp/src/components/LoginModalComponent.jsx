@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Button, Modal, Form } from "react-bootstrap";
+import { useUser } from '../components/UserContext';
 import "./LoginModalComponent.css";
 
 function LoginModalComponent() {
@@ -11,6 +12,7 @@ function LoginModalComponent() {
     const [registerPassword, setRegisterPassword] = useState(""); 
     const [error, setError] = useState("");
     const [userName, setUserName] = useState(null);
+    const { refreshUserRole, setUser } = useUser();
 
     // Fetch user identity
     const fetchUserIdentity = async () => {
@@ -49,6 +51,7 @@ function LoginModalComponent() {
             if (response.ok) {
                 setShowLoginModal(false);
                 fetchUserIdentity();
+                refreshUserRole();
             } else {
                 const errorData = await response.json();
                 setError("Login failed: " + (errorData.message || "Unknown error"));
@@ -94,6 +97,7 @@ function LoginModalComponent() {
                 credentials: "include",
             });
             if (response.ok) {
+                setUser(null);
                 setUserName(null);
             } else {
                 setError("Logout failed");
@@ -154,16 +158,17 @@ function LoginModalComponent() {
                         </Button>
                     </Form>
                     <div className="text-center mt-3">
-                        <a
-                            href="#"
-                            onClick={() => {
-                                console.log("Switching to Register modal"); // Debugging
-                                setShowLoginModal(false);
-                                setShowRegisterModal(true);
-                            }}
-                        >
-                            Don't have an account? Register here
-                        </a>
+                    <button
+                        type="button"
+                        className="link-button" // This class makes the button look like a link
+                        onClick={() => {
+                            console.log("Switching to Register modal"); // Debugging
+                            setShowLoginModal(false);
+                            setShowRegisterModal(true);
+                        }}
+                    >
+                        Don't have an account? Register here
+                    </button>
                     </div>
                 </Modal.Body>
             </Modal>
@@ -201,16 +206,17 @@ function LoginModalComponent() {
                         </Button>
                     </Form>
                     <div className="text-center mt-3">
-                        <a
-                            href="#"
-                            onClick={() => {
-                                console.log("Switching to Login modal"); // Debugging
-                                setShowRegisterModal(false);
-                                setShowLoginModal(true);
-                            }}
-                        >
-                            Already have an account? Login here
-                        </a>
+                    <button
+                        type="button"
+                        className="link-button" // This class makes the button look like a link
+                        onClick={() => {
+                            console.log("Switching to Login modal"); // Debugging
+                            setShowRegisterModal(false);
+                            setShowLoginModal(true);
+                        }}
+                    >
+                        Already have an account? Login here
+                    </button>
                     </div>
                 </Modal.Body>
             </Modal>
