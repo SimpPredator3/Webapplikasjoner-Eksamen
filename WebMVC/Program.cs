@@ -22,7 +22,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 // Ensure you include the RoleManager in the identity setup
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
-    .AddRoles<IdentityRole>() // Add this line to enable role management
+    .AddRoles<IdentityRole>() // enable role management
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 // Register the PostRepository for Dependency Injection
