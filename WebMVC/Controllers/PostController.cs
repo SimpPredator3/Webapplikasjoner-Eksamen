@@ -224,6 +224,5 @@ namespace WebMVC.Controllers
             await _postRepository.DeletePostAsync(id);
             return RedirectToAction(nameof(Index));
         }
-
     }
 }

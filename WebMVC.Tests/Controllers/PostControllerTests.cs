@@ -37,7 +37,8 @@ public class PostControllerTests
                 Title = "Post 1", 
                 Content = "Content 1",
                 Author = "John Doe",
-                ImageUrl = "https://miro.medium.com/v2/resize:fit:1200/1*uNCVd_VqFOcdxhsL71cT5Q.jpeg"
+                ImageUrl = "https://miro.medium.com/v2/resize:fit:1200/1*uNCVd_VqFOcdxhsL71cT5Q.jpeg",
+                Tag = "Technology"
             },
             new Post
             {
@@ -45,12 +46,13 @@ public class PostControllerTests
                 Title = "Post 2", 
                 Content = "Content 2",
                 Author = "Jane Smith",
-                ImageUrl = "https://t3.ftcdn.net/jpg/07/46/74/96/360_F_746749607_zDV4D3BHULyb1NVvRVWujOSwNJWv8ufK.jpg"
+                ImageUrl = "https://t3.ftcdn.net/jpg/07/46/74/96/360_F_746749607_zDV4D3BHULyb1NVvRVWujOSwNJWv8ufK.jpg",
+                Tag = "Health"
             }
         };
 
         var mockPostRepository = new Mock<IPostRepository>();
-        mockPostRepository.Setup(repo => repo.GetAllPostsAsync()).ReturnsAsync(postList);
+        mockPostRepository.Setup(repo => repo.GetAllPostsWithCommentCountAsync()).ReturnsAsync(postList);
         var mockLogger = new Mock<ILogger<PostController>>();
         var postController = new PostController(mockPostRepository.Object, mockLogger.Object);
 

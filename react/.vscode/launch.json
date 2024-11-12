@@ -1,0 +1,39 @@
+{
+    "version": "0.2.0",
+    "configurations": [ //To debug the react app have the ../react/ as the open folder, not the "main" folder with both projects.
+        {
+            "name": ".NET Core Launch (web)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/api/bin/Debug/net8.0/api.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/api",
+            "stopAtEntry": false,
+            "launchBrowser": {
+                "enabled": false
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            }
+        },
+        {
+            "name": "Launch React App",
+            "type": "chrome",
+            "request": "launch",
+            "preLaunchTask": "Start React App",
+            "url": "http://localhost:3000",
+            "webRoot": "${workspaceFolder}/reactapp",
+            "cwd": "${workspaceFolder}/reactapp"
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Launch API and React App",
+            "configurations": [
+                ".NET Core Launch (web)",
+                "Launch React App"
+            ]
+        }
+    ]
+}

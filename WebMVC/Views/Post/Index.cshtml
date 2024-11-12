@@ -1,30 +1,34 @@
-@model IEnumerable<WebMVC.Models.Post>
+@if (User?.Identity?.IsAuthenticated != true)
+{
+    <p style="width: 500px;">Log in to your existing account or register a new account to create your own posts and join the
+        Pinstagram community</p>
+    <a class="btn btn-primary mb-3" asp-area="Identity" asp-page="/Account/Login">Login</a>
+    <a class="btn btn-primary mb-3" asp-area="Identity" asp-page="/Account/Register">Register</a>
+}
+else
+{
+    <h2>My Posts</h2>
 
-<h2>Posts</h2>
+    <a href="/Post/Create" class="btn btn-primary mb-3">Create New Post</a>
+    <div class="row">
+        @foreach (var post in Model)
+        {
+            // Check if User and User.Identity are not null and if the user is the author or an admin
+            if ((User?.Identity?.Name == post.Author) || (User?.IsInRole("Admin") ?? false))
+            {
+                <div class="col-md-4">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">@post.Title</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">By @post.Author on @post.CreatedDate.ToString("g")</h6>
 
-<a href="/Post/Create" class="btn btn-primary mb-3">Create New Post</a>
-<div class="row">
-    @foreach (var post in Model)
-    {
-        <div class="col-md-4">
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h5 class="card-title">@post.Title</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">By @post.Author on @post.CreatedDate.ToString("g")</h6>
+                            @if (!string.IsNullOrEmpty(post.ImageUrl))
+                            {
+                                <img src="@post.ImageUrl" alt="Image" class="img-thumbnail mb-2" />
+                            }
 
-                    @if (!string.IsNullOrEmpty(post.ImageUrl))
-                    {
-                        <img src="@post.ImageUrl" alt="Image" class="img-thumbnail mb-2" />
-                    }
-
-                    <p class="card-text">@post.Content</p>
-                    <a href="/Post/Details/@post.Id" class="btn btn-info">Details</a>
-
-                    @* Check if User.Identity and User.Identity.Name are not null *@
-                    @if (User?.Identity?.IsAuthenticated == true && User.Identity.Name != null)
-                    {
-                        @if (post.Author == User.Identity.Name || User.IsInRole("Admin"))
-                        {
+                            <p class="card-text">@post.Content</p>
+                            <a href="/Post/Details/@post.Id" class="btn btn-info">Details</a>
                             <a asp-action="Edit" asp-route-id="@post.Id" class="btn btn-primary">Edit</a>
 
                             <form asp-action="Delete" asp-route-id="@post.Id" method="post" class="d-inline">
@@ -32,10 +36,10 @@
                                 <button type="submit" class="btn btn-danger"
                                     onclick="return confirm('Are you sure you want to delete this post?');">Delete</button>
                             </form>
-                        }
-                    }
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-    }
-</div>
+            }
+        }
+    </div>
+}
