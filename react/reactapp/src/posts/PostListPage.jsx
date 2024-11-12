@@ -8,7 +8,7 @@ const PostListPage = () => {
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [view, setView] = useState("table"); // Initial view is set to "table"
+    const [view, setView] = useState("grid"); // Initial view is set to "table"
 
     const fetchPosts = async () => {
         setLoading(true);
@@ -33,7 +33,7 @@ const PostListPage = () => {
     }, []);
 
     const toggleView = () => {
-        setView(prevView => (prevView === "table" ? "grid" : "table"));
+        setView(prevView => (prevView === "grid" ? "table" : "grid"));
     };
 
     return (
