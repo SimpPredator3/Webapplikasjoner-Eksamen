@@ -1,9 +1,15 @@
 import React from 'react';
 import { Card, Col, Row } from 'react-bootstrap';
+import { Post } from '../types/Post'; // Import the Post type
 
-const PostGrid = ({ posts, API_URL }) => (
+interface PostGridProps {
+    posts: Post[];
+    API_URL: string;
+}
+
+const PostGrid: React.FC<PostGridProps> = ({ posts, API_URL }) => (
     <Row xs={1} sm={2} md={3} className="g-4">
-        {posts.map(post => (
+        {posts.map((post) => (
             <Col key={post.id}>
                 <Card>
                     {post.imageUrl && (

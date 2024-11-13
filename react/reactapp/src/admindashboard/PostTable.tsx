@@ -1,7 +1,13 @@
 import React from 'react';
 import { Table } from 'react-bootstrap';
+import { Post } from '../types/Post';
 
-const PostTable = ({ posts, API_URL }) => (
+interface PostTableProps {
+    posts: Post[];
+    API_URL: string;
+}
+
+const PostTable: React.FC<PostTableProps> = ({ posts, API_URL }) => (
     <Table striped bordered hover responsive="md" className="mt-4">
         <thead>
             <tr>
@@ -14,7 +20,7 @@ const PostTable = ({ posts, API_URL }) => (
             </tr>
         </thead>
         <tbody>
-            {posts.map(post => (
+            {posts.map((post) => (
                 <tr key={post.id}>
                     <td>{post.id}</td>
                     <td>{post.title}</td>

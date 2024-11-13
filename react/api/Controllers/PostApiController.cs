@@ -50,7 +50,28 @@ namespace api.Controllers
 
             return Ok(postDtos);
         }
+        [HttpPost("create")]
+        public async Task<IActionResult> Create([FromBody] PostDto postDto)
+        {
+            if (postDto == null)
+            {
+                return BadRequest("Post cannot be null");
+            }
+            var newPost = new Post
+            {
+                Title = postDto.Title,
+                Content = postDto.Content,
+                Author = postDto.Author,
+                ImageUrl = postDto.ImageUrl,
+                Tag = postDto.Tag
+            };        
+            bool returnOk = await _postRepository.AddPostAsync(newPost);
+            if (returnOk)
+                return CreatedAtAction(nameof(GetAllPosts), new { id = newPost.Id }, newPost);
 
+            _logger.LogWarning("[PostAPIController] Post creation failed {@post}", newPost);
+            return StatusCode(500, "Internal server error");
+        }
         // GET: api/Post/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPostById(int id)
