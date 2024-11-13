@@ -6,8 +6,9 @@ import PostListPage from './posts/PostListPage';
 import AdminListPage from './admindashboard/AdminListPage';
 import LoginModalComponent from "./components/LoginModalComponent";
 import { UserProvider } from './components/UserContext';
+import PostCreatePage from './posts/PostCreatePage';
 
-function App() {
+const App: React.FC = () => {
   return (
     <UserProvider>
       <Router>
@@ -18,6 +19,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/posts" element={<PostListPage />} />
             <Route path="/AdminDash" element={<AdminListPage />} />
+            <Route path="/postcreate" element={<PostCreatePage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Container>
