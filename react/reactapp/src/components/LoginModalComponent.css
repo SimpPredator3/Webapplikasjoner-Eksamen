@@ -2,7 +2,7 @@
     position: fixed;
     top: 10px;
     right: 10px;
-    z-index: 1000; /* Ensure it stays on top of other elements */
+    z-index: 1000;
     display: flex;
     align-items: center;
 }
