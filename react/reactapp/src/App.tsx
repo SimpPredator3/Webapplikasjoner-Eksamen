@@ -7,7 +7,7 @@ import AdminListPage from './admindashboard/AdminListPage';
 import LoginModalComponent from "./components/LoginModalComponent";
 import { UserProvider } from './components/UserContext';
 
-function App() {
+const App: React.FC = () => {
   return (
     <UserProvider>
       <Router>

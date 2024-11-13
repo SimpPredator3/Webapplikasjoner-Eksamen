@@ -4,7 +4,7 @@ import PostGrid from './PostGrid';
 import { Spinner, Alert, Button, Container } from 'react-bootstrap';
 import { API_URL } from '../apiConfig'; // Import API_URL from your config if you have it there
 
-const PostListPage = () => {
+const PostListPage: React.FC = () => {
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -56,6 +56,7 @@ const PostListPage = () => {
             {!loading && !error && (
                 view === "table" ? <PostTable posts={posts} API_URL={API_URL} /> : <PostGrid posts={posts} API_URL={API_URL} />
             )}
+            <Button href='/postcreate' className='btn btn-secondary mt-3'>Create New Post</Button>
         </Container>
     );
 };
