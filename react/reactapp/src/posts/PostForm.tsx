@@ -46,23 +46,12 @@ const PostForm: React.FC<PostFormProps> = ({ onPostChanged, postId }) => {
         />
       </Form.Group>
 
-      <Form.Group controlId="formPostAuthor">
-        <Form.Label>Author</Form.Label>
-        <Form.Control
-          type="text"
-          placeholder="Enter Author name"
-          value={author}
-          onChange={(e) => setAuthor(e.target.value)}
-          required
-        />
-      </Form.Group>
-
       <Form.Group controlId="formPostContent">
         <Form.Label>Content</Form.Label>
         <Form.Control
           as="textarea"
           rows={3}
-          placeholder="Enter Post content"
+          placeholder="Enter post content"
           value={content}
           onChange={(e) => setContent(e.target.value)}
         />
