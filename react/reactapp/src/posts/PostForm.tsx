@@ -1,36 +1,36 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Form, Button } from 'react-bootstrap';
-import { Post } from '../types/Post';
+import { useNavigate } from 'react-router-dom';
+import { Post } from '../types/Post'; // Ensure this path is correct
 
 interface PostFormProps {
-  onPostChanged: (newPost: Post) => void;
-  postId?: number;
+  onPostCreated: (newPost: Post) => void; // Define `onPostCreated` in props
 }
 
-const PostForm: React.FC<PostFormProps> = ({ onPostChanged, postId }) => {
-  const [title, setTitle] = useState<string>('');
-  const [author, setAuthor] = useState<string>('');
-  const [content, setContent] = useState<string>('');
-  const [imageUrl, setImageUrl] = useState<string>('');
+const PostForm: React.FC<PostFormProps> = ({ onPostCreated }) => {
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  const onCancel = () => {
-    navigate(-1); // Navigate back one step in the history
-  };
-
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    const post: Post = {
-      id: postId ?? 0, // Default to 0 if postId is undefined
+
+    const newPost: Post = {
+      id: 0, // Temporarily set to 0, assuming the backend will assign a real ID
       title,
-      author,
+      author: 'Default Author', // Set a default author or collect it from a form field
       content,
-      imageUrl,
-      createdDate: new Date().toISOString(),
+      imageUrl: imageUrl || undefined,
+      createdDate: new Date().toISOString()
     };
-    onPostChanged(post); // Call the passed function with the Post data
+
+    try {
+      onPostCreated(newPost); // Call the function passed from PostCreatePage
+    } catch (err: any) {
+      setError(err.message || 'An unexpected error occurred');
+    }
   };
 
   return (
@@ -70,7 +70,7 @@ const PostForm: React.FC<PostFormProps> = ({ onPostChanged, postId }) => {
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
       <Button variant="primary" type="submit">Create Post</Button>
-      <Button variant="secondary" onClick={onCancel} className="ms-2">Cancel</Button>
+      <Button variant="secondary" onClick={() => navigate(-1)} className="ms-2">Cancel</Button>
     </Form>
   );
 };
