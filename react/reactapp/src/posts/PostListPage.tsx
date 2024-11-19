@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import PostTable from './PostTable';
+import PostTable from './PostList';
 import PostGrid from './PostGrid';
 import { Spinner, Alert, Button, Container } from 'react-bootstrap';
 import { API_URL } from '../apiConfig';
 import { Post } from '../types/Post';
+import './PostListPage.css';
 
 interface PostListPageProps {
-    initialView?: "table" | "grid"; // Optional prop for initial view
-    lockedView?: "table" | "grid";  // Optional prop to lock the view
+    initialView?: "list" | "grid"; // Optional prop for initial view
+    lockedView?: "list" | "grid";  // Optional prop to lock the view
 }
 
 const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", lockedView }) => {
     const [posts, setPosts] = useState<Post[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
-    const [view, setView] = useState<"table" | "grid">(lockedView ?? initialView);
+    const [view, setView] = useState<"list" | "grid">(lockedView ?? initialView);
 
     const fetchPosts = async () => {
         setLoading(true);
@@ -38,20 +39,30 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
         fetchPosts();
     }, []);
 
-    const toggleView = () => {
-        if (!lockedView) {
-            setView(prevView => (prevView === "grid" ? "table" : "grid"));
-        }
-    };
+    const toggleToGrid = () => setView("grid");
+    const toggleToList = () => setView("list");
 
     return (
         <Container className="mt-4">
             <div className="d-flex justify-content-between align-items-center mb-3">
                 <h1 className="mb-0">Posts</h1>
                 {!lockedView && (
-                    <Button onClick={toggleView} variant="primary">
-                        {view === "table" ? "Switch to Grid View" : "Switch to Table View"}
-                    </Button>
+                    <div className="d-flex">
+                        <button
+                            onClick={toggleToGrid}
+                            className={`btn me-2 ${view === "grid" ? "active-btn" : "inactive-btn"}`}
+                            title="Grid View"
+                        >
+                            <i className="fas fa-th"></i>
+                        </button>
+                        <button
+                            onClick={toggleToList}
+                            className={`btn ${view === "list" ? "active-btn" : "inactive-btn"}`}
+                            title="List View"
+                        >
+                            <i className="fas fa-list"></i>
+                        </button>
+                    </div>
                 )}
             </div>
 
@@ -64,7 +75,7 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
             )}
             {error && <Alert variant="danger">{error}</Alert>}
             {!loading && !error && (
-                (lockedView ?? view) === "table" 
+                (lockedView ?? view) === "list" 
                     ? <PostTable posts={posts} API_URL={API_URL} /> 
                     : <PostGrid posts={posts} API_URL={API_URL} />
             )}

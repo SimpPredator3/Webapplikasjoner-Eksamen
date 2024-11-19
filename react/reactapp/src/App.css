@@ -14,27 +14,36 @@
 }
 
 .App-header {
-  background-color: #282c34;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
 }
-
 .App-link {
   color: #61dafb;
 }
 
 /*DARKMODE*/
+/* Default background for light mode */
+body[data-bs-theme='light'] {
+  background-color: #ffe8d1; /* Light background color */
+  color: #000000; /* Dark text color */
+}
+
+/* Background for dark mode */
+body[data-bs-theme='dark'] {
+  background-color: #212529; /* Dark background color */
+  color: #ffffff; /* Light text color */
+}
+
+
 .darkmode-btn {
   position: absolute;
   top: 80px;
   right: 20px;
-  background-color: #ff914d;
-  color: white;
+  background-color: #005246;
+  color: #ffe8d1;
   border: none;
   border-radius: 50%;
   width: 50px;
@@ -50,8 +59,8 @@
 
 /* Hover effect */
 .darkmode-btn:hover {
-  background-color: #727272;
-  color: #000;
+  background-color: #a16e50;
+  color: #0c0c0c;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.35);
 }
 

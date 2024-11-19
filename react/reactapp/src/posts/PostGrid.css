@@ -22,11 +22,8 @@
     font-weight: bold;
 }
 
-.post-card-subtitle .author {
+.author {
     color: #ff914d;
-}
-.post-card-subtitle{
-    font-size: 0.9rem;
 }
 .date{
     color: #777777;
