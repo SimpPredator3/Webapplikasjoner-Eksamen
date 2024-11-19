@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Col } from 'react-bootstrap';
+import { Card } from 'react-bootstrap';
 import { Post } from '../types/Post'; // Import the Post type
 import './PostList.css';
 
