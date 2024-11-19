@@ -341,3 +341,4 @@ web.config
 *.svd
 *.pdb
 *.opendb
+node_modules

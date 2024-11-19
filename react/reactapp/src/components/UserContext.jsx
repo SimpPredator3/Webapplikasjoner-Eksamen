@@ -11,7 +11,7 @@ export const UserProvider = ({ children }) => {
     const fetchUserRole = async () => {
         try {
             const response = await fetch('http://localhost:5141/api/auth/user/role', {
-                credentials: 'include' // Include cookies in the request
+                credentials: 'include'
             });
             if (response.ok) {
                 const { role } = await response.json();
@@ -30,7 +30,7 @@ export const UserProvider = ({ children }) => {
         fetchUserRole();
     }, []);
 
-    // Expose fetchUserRole as refreshUserRole for manual refresh
+    
     const refreshUserRole = fetchUserRole;
 
     return (
