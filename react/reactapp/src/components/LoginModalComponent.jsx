@@ -160,7 +160,7 @@ function LoginModalComponent() {
                     <div className="text-center mt-3">
                     <button
                         type="button"
-                        className="link-button" // This class makes the button look like a link
+                        className="link-button"
                         onClick={() => {
                             console.log("Switching to Register modal"); // Debugging
                             setShowLoginModal(false);
@@ -208,7 +208,7 @@ function LoginModalComponent() {
                     <div className="text-center mt-3">
                     <button
                         type="button"
-                        className="link-button" // This class makes the button look like a link
+                        className="link-button"
                         onClick={() => {
                             console.log("Switching to Login modal"); // Debugging
                             setShowRegisterModal(false);
