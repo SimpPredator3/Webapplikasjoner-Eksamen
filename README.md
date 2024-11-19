@@ -27,3 +27,6 @@ where you let users create/read/update/delete their notes, photos, etc. Users co
 | 31 Oktober | Make it look pretty |
 | ???? | React Website |
 | 2 Desember | **Innlevering** |
+
+Colors:
+![image](https://github.com/user-attachments/assets/3a22c18e-ab2b-4e38-af55-15c8aabcf076)
