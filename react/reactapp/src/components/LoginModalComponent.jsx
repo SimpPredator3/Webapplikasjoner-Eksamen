@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Modal, Form } from "react-bootstrap";
+import { Button, Modal, Form, NavDropdown } from "react-bootstrap";
 import { useUser } from '../components/UserContext';
 import "./LoginModalComponent.css";
 
@@ -110,7 +110,8 @@ function LoginModalComponent() {
 
     return (
         <>
-            <div className="top-right-corner">
+            {/* Top-right corner visible on large screens */}
+            <div className="top-right-corner d-none d-lg-block">
                 {userName ? (
                     <>
                         <span className="me-2">Welcome, {userName}</span>
@@ -124,7 +125,30 @@ function LoginModalComponent() {
                     </Button>
                 )}
             </div>
-
+    
+            {/* Add to Hamburger Menu for small screens */}
+            <div className="d-lg-none">
+                {userName ? (
+                    <NavDropdown title="Account" id="user-nav-dropdown">
+                        <NavDropdown.Item disabled>{userName}</NavDropdown.Item>
+                        <NavDropdown.Divider />
+                        <NavDropdown.Item>
+                            <Button variant="outline-danger" onClick={handleLogout}>
+                                Logout
+                            </Button>
+                        </NavDropdown.Item>
+                    </NavDropdown>
+                ) : (
+                    <NavDropdown title="Account" id="guest-nav-dropdown">
+                        <NavDropdown.Item>
+                            <Button variant="outline-primary" onClick={() => setShowLoginModal(true)}>
+                                Login
+                            </Button>
+                        </NavDropdown.Item>
+                    </NavDropdown>
+                )}
+            </div>
+    
             {/* Login Modal */}
             <Modal show={showLoginModal} onHide={() => setShowLoginModal(false)}>
                 <Modal.Header closeButton>
@@ -158,21 +182,21 @@ function LoginModalComponent() {
                         </Button>
                     </Form>
                     <div className="text-center mt-3">
-                    <button
-                        type="button"
-                        className="link-button"
-                        onClick={() => {
-                            console.log("Switching to Register modal"); // Debugging
-                            setShowLoginModal(false);
-                            setShowRegisterModal(true);
-                        }}
-                    >
-                        Don't have an account? Register here
-                    </button>
+                        <button
+                            type="button"
+                            className="link-button"
+                            onClick={() => {
+                                console.log("Switching to Register modal"); // Debugging
+                                setShowLoginModal(false);
+                                setShowRegisterModal(true);
+                            }}
+                        >
+                            Don't have an account? Register here
+                        </button>
                     </div>
                 </Modal.Body>
             </Modal>
-
+    
             {/* Registration Modal */}
             <Modal show={showRegisterModal} onHide={() => setShowRegisterModal(false)}>
                 <Modal.Header closeButton>
@@ -206,22 +230,23 @@ function LoginModalComponent() {
                         </Button>
                     </Form>
                     <div className="text-center mt-3">
-                    <button
-                        type="button"
-                        className="link-button"
-                        onClick={() => {
-                            console.log("Switching to Login modal"); // Debugging
-                            setShowRegisterModal(false);
-                            setShowLoginModal(true);
-                        }}
-                    >
-                        Already have an account? Login here
-                    </button>
+                        <button
+                            type="button"
+                            className="link-button"
+                            onClick={() => {
+                                console.log("Switching to Login modal"); // Debugging
+                                setShowRegisterModal(false);
+                                setShowLoginModal(true);
+                            }}
+                        >
+                            Already have an account? Login here
+                        </button>
                     </div>
                 </Modal.Body>
             </Modal>
         </>
     );
+    
 }
 
 export default LoginModalComponent;
