@@ -15,7 +15,7 @@ const PostGrid: React.FC<PostGridProps> = ({ posts, API_URL }) => (
                     {post.imageUrl && (
                         <Card.Img
                             variant="top"
-                            src={`${API_URL}${post.imageUrl}`}
+                            src={`${post.imageUrl}`}
                             alt={post.title}
                             style={{ height: '200px', objectFit: 'cover' }}
                         />
