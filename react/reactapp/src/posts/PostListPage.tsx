@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import PostTable from './PostList';
+import React, { useState, useEffect, useContext } from 'react';
 import PostGrid from './PostGrid';
 import { Spinner, Alert, Button, Container } from 'react-bootstrap';
 import { API_URL } from '../apiConfig';
 import { Post } from '../types/Post';
 import './PostListPage.css';
+import PostList from './PostList';
+
 
 interface PostListPageProps {
     initialView?: "list" | "grid"; // Optional prop for initial view
@@ -27,13 +28,14 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
                 throw new Error('Failed to fetch posts');
             }
             const data: Post[] = await response.json();
-            setPosts(data.slice(0, 20));
+            setPosts(data);
         } catch (err: any) {
             setError(err.message);
         } finally {
             setLoading(false);
         }
     };
+
 
     useEffect(() => {
         fetchPosts();
@@ -42,10 +44,52 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
     const toggleToGrid = () => setView("grid");
     const toggleToList = () => setView("list");
 
+    const handleDeletePost = async (id: number) => {
+        try {
+            const response = await fetch(`${API_URL}/api/post/${id}`, {
+                method: 'DELETE',
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to delete post');
+            }
+
+            // Remove the deleted post from the state
+            setPosts(posts.filter(post => post.id !== id));
+        } catch (err) {
+            console.error(err.message);
+            setError('Failed to delete the post.');
+        }
+    };
+
+    const handleEditPost = async (id: number, updatedPost: Partial<Post>) => {
+        try {
+            const response = await fetch(`${API_URL}/api/post/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updatedPost),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to update post');
+            }
+
+            const updatedData = await response.json();
+
+            // Update the local state with the updated post
+            setPosts((prevPosts) =>
+                prevPosts.map((post) => (post.id === id ? { ...post, ...updatedData } : post))
+            );
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     return (
         <Container className="mt-4">
             <div className="d-flex justify-content-between align-items-center mb-3">
                 <h1 className="mb-0">Posts</h1>
+                <Button href='/postcreate' className='btn btn-secondary mt-3'>Create New Post</Button>
                 {!lockedView && (
                     <div className="d-flex">
                         <button
@@ -75,11 +119,10 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
             )}
             {error && <Alert variant="danger">{error}</Alert>}
             {!loading && !error && (
-                (lockedView ?? view) === "list" 
-                    ? <PostTable posts={posts} API_URL={API_URL} /> 
-                    : <PostGrid posts={posts} API_URL={API_URL} />
+                (lockedView ?? view) === "list"
+                    ? <PostList posts={posts} API_URL={API_URL} onDelete={handleDeletePost} />
+                    : <PostGrid posts={posts} API_URL={API_URL} onDelete={handleDeletePost} />
             )}
-            <Button href='/postcreate' className='btn btn-secondary mt-3'>Create New Post</Button>
         </Container>
     );
 };

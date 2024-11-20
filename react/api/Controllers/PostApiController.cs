@@ -50,6 +50,8 @@ namespace api.Controllers
 
             return Ok(postDtos);
         }
+
+
         [HttpPost("create")]
         public async Task<IActionResult> Create([FromBody] PostDto postDto)
         {
@@ -64,7 +66,7 @@ namespace api.Controllers
                 Author = postDto.Author,
                 ImageUrl = postDto.ImageUrl,
                 Tag = postDto.Tag
-            };        
+            };
             bool returnOk = await _postRepository.AddPostAsync(newPost);
             if (returnOk)
                 return CreatedAtAction(nameof(GetAllPosts), new { id = newPost.Id }, newPost);
@@ -72,6 +74,8 @@ namespace api.Controllers
             _logger.LogWarning("[PostAPIController] Post creation failed {@post}", newPost);
             return StatusCode(500, "Internal server error");
         }
+
+
         // GET: api/Post/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPostById(int id)
@@ -146,6 +150,55 @@ namespace api.Controllers
             };
 
             return CreatedAtAction(nameof(GetPostById), new { id = post.Id }, postDto);
+        }
+
+        // PUT: api/post/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdatePost(int id, [FromBody] PostDto model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var post = await _postRepository.GetPostByIdAsync(id);
+            if (post == null)
+            {
+                return NotFound("Post not found");
+            }
+
+            // Update the post details
+            post.Title = model.Title;
+            post.Content = model.Content;
+            post.ImageUrl = model.ImageUrl;
+            post.Tag = model.Tag;
+
+            bool result = await _postRepository.UpdatePostAsync(post);
+            if (!result)
+            {
+                return StatusCode(500, "A problem happened while updating the post.");
+            }
+
+            return Ok(model);
+        }
+
+        // DELETE: api/post/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeletePost(int id)
+        {
+            var post = await _postRepository.GetPostByIdAsync(id);
+            if (post == null)
+            {
+                return NotFound("Post not found");
+            }
+
+            bool result = await _postRepository.DeletePostAsync(id);
+            if (!result)
+            {
+                return StatusCode(500, "A problem happened while deleting the post.");
+            }
+
+            return NoContent();
         }
     }
 }
