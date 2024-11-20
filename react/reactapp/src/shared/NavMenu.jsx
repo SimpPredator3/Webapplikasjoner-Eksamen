@@ -5,8 +5,7 @@ import { useUser } from '../components/UserContext';
 import logo from '../assets/notehub.png';
 import LoginModalComponent from '../components/LoginModalComponent';
 
-
-const NavMenu = () => {
+const NavMenu = ({ theme, toggleTheme }) => {
     const { user } = useUser();
     const [isAdmin, setIsAdmin] = useState(false);
     
@@ -32,7 +31,15 @@ const NavMenu = () => {
                         <Nav.Link href="/AdminDash">Admin Dashboard</Nav.Link>
                     )}
                 </Nav>
+                {/* Dark Mode Toggle Button */}
                 <div className="top-right-corner">
+                    <button className="darkmode-btn" onClick={toggleTheme}>
+                        {theme === 'dark' ? (
+                            <i className="fas fa-sun"></i> /* Sun icon for light mode */
+                        ) : (
+                            <i className="fas fa-moon"></i> /* Moon icon for dark mode */
+                        )}
+                    </button>
                     <LoginModalComponent />
                 </div>
             </Navbar.Collapse>

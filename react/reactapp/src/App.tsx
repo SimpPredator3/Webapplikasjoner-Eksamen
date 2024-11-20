@@ -5,7 +5,6 @@ import HomePage from './home/HomePage';
 import NavMenu from './shared/NavMenu';
 import PostListPage from './posts/PostListPage';
 import AdminListPage from './admindashboard/AdminListPage';
-import LoginModalComponent from "./components/LoginModalComponent";
 import { UserProvider } from './components/UserContext';
 import PostCreatePage from './posts/PostCreatePage';
 import './App.css';
@@ -35,18 +34,7 @@ const App: React.FC = () => {
     <UserProvider>
       <Router>
         <Container>
-          <NavMenu />
-
-          {/* Dark Mode Toggle Button */}
-          <div className="d-none d-lg-block">
-            <button className="darkmode-btn" onClick={toggleTheme}>
-              {theme === 'dark' ? (
-                <i className="fas fa-sun"></i> /* Sun icon for light mode */
-              ) : (
-                <i className="fas fa-moon"></i> /* Moon icon for dark mode */
-              )}
-            </button>
-          </div>
+        <NavMenu theme={theme} toggleTheme={toggleTheme} />
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/posts" element={<PostListPage />} />
