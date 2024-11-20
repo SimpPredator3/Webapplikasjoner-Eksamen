@@ -102,7 +102,7 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
             );
         } catch (err) {
             console.error(err);
-            setError("Failed to upvote the post.");
+            setError("Login to upvote a post");
         }
     };
 

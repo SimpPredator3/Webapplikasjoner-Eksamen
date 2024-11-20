@@ -134,7 +134,7 @@ const PostEditPage: React.FC = () => {
                     <Button
                         className="mt-4 ms-2"
                         variant="secondary"
-                        onClick={() => navigate('/posts')}
+                        onClick={() => navigate('/')}
                         disabled={saving}
                     >
                         Cancel
