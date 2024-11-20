@@ -47,7 +47,6 @@ const App: React.FC = () => {
               )}
             </button>
           </div>
-          <LoginModalComponent />
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/posts" element={<PostListPage />} />

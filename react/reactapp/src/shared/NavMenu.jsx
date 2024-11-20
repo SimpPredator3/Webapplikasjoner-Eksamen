@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Nav, Navbar } from 'react-bootstrap';
 import { useUser } from '../components/UserContext';
 import logo from '../assets/notehub.png';
+import LoginModalComponent from '../components/LoginModalComponent';
 
 
 const NavMenu = () => {
@@ -15,7 +16,7 @@ const NavMenu = () => {
     }, [user]);
 
     return (
-        <Navbar expand="lg">
+        <Navbar expand="lg" className="navbar-container">
             <Navbar.Brand href="/">
                 <img
                     src={logo}
@@ -31,6 +32,9 @@ const NavMenu = () => {
                         <Nav.Link href="/AdminDash">Admin Dashboard</Nav.Link>
                     )}
                 </Nav>
+                <div className="top-right-corner">
+                    <LoginModalComponent />
+                </div>
             </Navbar.Collapse>
         </Navbar>
     );

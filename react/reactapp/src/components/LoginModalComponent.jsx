@@ -110,8 +110,8 @@ function LoginModalComponent() {
 
     return (
         <>
-            {/* Top-right corner visible on large screens */}
-            <div className="top-right-corner d-none d-lg-block">
+            {/* Top-right corner visible */}
+            <div className="top-right-corner">
                 {userName ? (
                     <>
                         <span className="me-2">Welcome, {userName}</span>
