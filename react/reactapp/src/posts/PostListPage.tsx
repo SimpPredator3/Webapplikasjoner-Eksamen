@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import PostGrid from './PostGrid';
-import { Spinner, Alert, Button, Container } from 'react-bootstrap';
+import { Spinner, Alert, Button, Container, Modal } from 'react-bootstrap';
 import { API_URL } from '../apiConfig';
 import { Post } from '../types/Post';
 import './PostListPage.css';
 import PostList from './PostList';
-
+import { useNavigate } from 'react-router-dom';
 
 interface PostListPageProps {
     initialView?: "list" | "grid"; // Optional prop for initial view
@@ -17,6 +17,9 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     const [view, setView] = useState<"list" | "grid">(lockedView ?? initialView);
+    const [showModal, setShowModal] = useState<boolean>(false);
+    const [postToDelete, setPostToDelete] = useState<number | null>(null);
+    const navigate = useNavigate();
 
     const fetchPosts = async () => {
         setLoading(true);
@@ -36,7 +39,6 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
         }
     };
 
-
     useEffect(() => {
         fetchPosts();
     }, []);
@@ -44,9 +46,21 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
     const toggleToGrid = () => setView("grid");
     const toggleToList = () => setView("list");
 
-    const handleDeletePost = async (id: number) => {
+    const confirmDeletePost = (id: number) => {
+        setPostToDelete(id);
+        setShowModal(true);
+    };
+
+    const cancelDelete = () => {
+        setPostToDelete(null);
+        setShowModal(false);
+    };
+
+    const handleDeletePost = async () => {
+        if (postToDelete === null) return;
+
         try {
-            const response = await fetch(`${API_URL}/api/post/${id}`, {
+            const response = await fetch(`${API_URL}/api/post/${postToDelete}`, {
                 method: 'DELETE',
             });
 
@@ -54,36 +68,18 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
                 throw new Error('Failed to delete post');
             }
 
-            // Remove the deleted post from the state
-            setPosts(posts.filter(post => post.id !== id));
+            setPosts(posts.filter(post => post.id !== postToDelete)); // Update the state
+            setShowModal(false); // Close the modal
+            setPostToDelete(null); // Clear the post to delete
+
+            // Redirect to homepage
+            navigate('/');
         } catch (err) {
             console.error(err.message);
             setError('Failed to delete the post.');
         }
     };
 
-    const handleEditPost = async (id: number, updatedPost: Partial<Post>) => {
-        try {
-            const response = await fetch(`${API_URL}/api/post/${id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(updatedPost),
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to update post');
-            }
-
-            const updatedData = await response.json();
-
-            // Update the local state with the updated post
-            setPosts((prevPosts) =>
-                prevPosts.map((post) => (post.id === id ? { ...post, ...updatedData } : post))
-            );
-        } catch (error) {
-            console.error(error);
-        }
-    };
 
     return (
         <Container className="mt-4">
@@ -120,9 +116,27 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
             {error && <Alert variant="danger">{error}</Alert>}
             {!loading && !error && (
                 (lockedView ?? view) === "list"
-                    ? <PostList posts={posts} API_URL={API_URL} onDelete={handleDeletePost} />
-                    : <PostGrid posts={posts} API_URL={API_URL} onDelete={handleDeletePost} />
+                    ? <PostList posts={posts} API_URL={API_URL} onDelete={confirmDeletePost} />
+                    : <PostGrid posts={posts} API_URL={API_URL} onDelete={confirmDeletePost} />
             )}
+
+            {/* Confirmation Modal */}
+            <Modal show={showModal} onHide={cancelDelete}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Confirm Deletion</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    Are you sure you want to delete this post? This action cannot be undone.
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={cancelDelete}>
+                        Cancel
+                    </Button>
+                    <Button variant="danger" onClick={handleDeletePost}>
+                        Delete
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </Container>
     );
 };

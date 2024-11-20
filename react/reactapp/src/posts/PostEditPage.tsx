@@ -55,7 +55,7 @@ const PostEditPage: React.FC = () => {
                 throw new Error('Failed to update post');
             }
 
-            navigate('/posts'); // Navigate back to the posts list after successful update
+            navigate('/');
         } catch (err) {
             setError(err.message);
         } finally {
