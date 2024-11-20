@@ -1,0 +1,40 @@
+/* Active Button Style */
+.active-btn {
+    background-color: #a16e50;
+    color: #ffe8d1;
+    border: none;
+    border-radius: 20%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.active-btn:hover {
+    background-color: rgb(173, 100, 55);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Inactive Button Style */
+.inactive-btn {
+    background-color: #ffe8d1;
+    color: #070707;
+    border: 2px solid #a16e50;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    transition: all 0.3s ease;
+}
+
+.inactive-btn:hover {
+    background-color: #ffe8d1;
+    color: #a16e50;
+}

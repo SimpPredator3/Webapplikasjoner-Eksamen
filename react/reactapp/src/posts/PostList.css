@@ -1,0 +1,40 @@
+.post-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Space between posts */
+}
+
+.post-list-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out;
+}
+
+.post-list-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.13);
+    transition: transform 0.2s ease-in-out;
+}
+
+.post-list-image img {
+    max-height: 250px;
+    object-fit: cover;
+}
+.post-card-subtitle .author {
+    color: #ff914d;
+}
+
+.post-list-body {
+    padding: 20px;
+}
+
+.post-list-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+.post-list-body small {
+    color: #999;
+}
