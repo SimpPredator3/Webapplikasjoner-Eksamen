@@ -80,6 +80,32 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
         }
     };
 
+    const handleUpvote = async (postId: number) => {
+
+        try {
+            const response = await fetch(`${API_URL}/api/upvote/${postId}`, {
+                method: "POST",
+                credentials: "include", // Ensure cookies are sent for auth
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to upvote post.");
+            }
+
+            const data = await response.json();
+
+            // Update the upvote count for the post in the state
+            setPosts((prevPosts) =>
+                prevPosts.map((post) =>
+                    post.id === postId ? { ...post, upvotes: data.upvotes } : post
+                )
+            );
+        } catch (err) {
+            console.error(err);
+            setError("Failed to upvote the post.");
+        }
+    };
+
 
     return (
         <Container className="mt-4">
@@ -116,8 +142,8 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
             {error && <Alert variant="danger">{error}</Alert>}
             {!loading && !error && (
                 (lockedView ?? view) === "list"
-                    ? <PostList posts={posts} API_URL={API_URL} onDelete={confirmDeletePost} />
-                    : <PostGrid posts={posts} API_URL={API_URL} onDelete={confirmDeletePost} />
+                    ? <PostList posts={posts} API_URL={API_URL} onDelete={confirmDeletePost} onUpvote={handleUpvote} />
+                    : <PostGrid posts={posts} API_URL={API_URL} onDelete={confirmDeletePost} onUpvote={handleUpvote} />
             )}
 
             {/* Confirmation Modal */}

@@ -45,7 +45,7 @@ namespace api.Controllers
                 CreatedDate = post.CreatedDate,
                 Author = post.Author,
                 CommentCount = post.CommentCount,
-                Upvotes = post.Upvotes
+                Upvotes = post.Upvotes.Count
             });
 
             return Ok(postDtos);
@@ -98,7 +98,7 @@ namespace api.Controllers
                 CreatedDate = post.CreatedDate,
                 Author = post.Author,
                 CommentCount = post.CommentCount,
-                Upvotes = post.Upvotes
+                Upvotes = post.Upvotes.Count
             };
 
             return Ok(postDto);
@@ -146,7 +146,7 @@ namespace api.Controllers
                 CreatedDate = post.CreatedDate,
                 Author = post.Author,
                 CommentCount = post.CommentCount,
-                Upvotes = post.Upvotes
+                Upvotes = post.Upvotes.Count
             };
 
             return CreatedAtAction(nameof(GetPostById), new { id = post.Id }, postDto);

@@ -9,9 +9,10 @@ interface PostGridProps {
     posts: Post[];
     API_URL: string;
     onDelete: (id: number) => void;
+    onUpvote: (id: number) => Promise<void>;
 }
 
-const PostGrid: React.FC<PostGridProps> = ({ posts, API_URL, onDelete }) => {
+const PostGrid: React.FC<PostGridProps> = ({ posts, API_URL, onDelete, onUpvote }) => {
     const navigate = useNavigate(); // Initialize navigate function
 
     return (
@@ -36,6 +37,15 @@ const PostGrid: React.FC<PostGridProps> = ({ posts, API_URL, onDelete }) => {
                             <Card.Text className="text-muted">
                                 <small>{new Date(post.createdDate).toLocaleDateString()}</small>
                             </Card.Text>
+                            <div className="d-flex justify-content-between align-items-center">
+                                <Button
+                                    variant="success"
+                                    size="sm"
+                                    onClick={() => onUpvote(post.id)}
+                                >
+                                    👍 {post.upvotes} Upvotes
+                                </Button>
+                            </div>
                             <div className="d-flex justify-content-between">
                                 <Button
                                     variant="warning"

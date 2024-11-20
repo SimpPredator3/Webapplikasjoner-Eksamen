@@ -8,9 +8,10 @@ interface PostListProps {
     posts: Post[];
     API_URL: string;
     onDelete: (id: number) => void;
+    onUpvote: (id: number) => Promise<void>;
 }
 
-const PostList: React.FC<PostListProps> = ({ posts, API_URL, onDelete }) => {
+const PostList: React.FC<PostListProps> = ({ posts, API_URL, onDelete, onUpvote }) => {
     const navigate = useNavigate(); // Initialize navigate function
 
     return (
@@ -36,6 +37,16 @@ const PostList: React.FC<PostListProps> = ({ posts, API_URL, onDelete }) => {
                             <Card.Text className="text-muted">
                                 <small>{new Date(post.createdDate).toLocaleDateString()}</small>
                             </Card.Text>
+                            <div className="d-flex justify-content-between align-items-center">
+                                <Button
+                                    variant="success"
+                                    size="sm"
+                                    onClick={() => onUpvote(post.id)}
+                                >
+                                    👍 {post.upvotes} Upvotes
+                                </Button>
+                                <span>{post.upvotes} Likes</span>
+                            </div>
                             <Button
                                 variant="warning"
                                 size="sm"

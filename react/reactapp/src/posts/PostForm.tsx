@@ -23,7 +23,8 @@ const PostForm: React.FC<PostFormProps> = ({ onPostCreated }) => {
       author: 'Default Author', // Set a default author or collect it from a form field
       content,
       imageUrl: imageUrl || undefined,
-      createdDate: new Date().toISOString()
+      createdDate: new Date().toISOString(),
+      upvotes: 0
     };
 
     try {
