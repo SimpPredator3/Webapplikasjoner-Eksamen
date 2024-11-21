@@ -32,6 +32,8 @@ bld/
 # Ignore SQLite temporary files
 WebMVC/WebMVC.db-shm
 WebMVC/WebMVC.db-wal
+react/api/WebMVC.db-shm
+react/api/WebMVC.db-wal
 
 
 # Visual Studio 2015/2017 cache/options directory
