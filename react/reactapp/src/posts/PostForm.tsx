@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { Post } from '../types/Post'; // Ensure this path is correct
+import { useUser } from '../components/UserContext'; // Import useUser to get the logged-in user
 
 interface PostFormProps {
   onPostCreated: (newPost: Post) => void; // Define `onPostCreated` in props
@@ -12,15 +13,27 @@ const PostForm: React.FC<PostFormProps> = ({ onPostCreated }) => {
   const [content, setContent] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const { user } = useUser(); // Get the logged-in user from useUser
   const navigate = useNavigate();
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
+    // Client-side validation
+    if (title.length < 5) {
+      setError('Title must be at least 5 characters long');
+      return;
+    }
+
+    if (content.length < 10) {
+      setError('Content must be at least 10 characters long');
+      return;
+    }
+
     const newPost: Post = {
       id: 0, // Temporarily set to 0, assuming the backend will assign a real ID
       title,
-      author: 'Default Author', // Set a default author or collect it from a form field
+      author: user?.username || user?.email || 'Unknown Author', // Set author to the logged-in user's username or email
       content,
       imageUrl: imageUrl || undefined,
       createdDate: new Date().toISOString(),
@@ -29,6 +42,7 @@ const PostForm: React.FC<PostFormProps> = ({ onPostCreated }) => {
 
     try {
       onPostCreated(newPost); // Call the function passed from PostCreatePage
+      setError(null); // Clear error if post is successfully created
     } catch (err: any) {
       setError(err.message || 'An unexpected error occurred');
     }
@@ -55,6 +69,7 @@ const PostForm: React.FC<PostFormProps> = ({ onPostCreated }) => {
           placeholder="Enter post content"
           value={content}
           onChange={(e) => setContent(e.target.value)}
+          required
         />
       </Form.Group>
 

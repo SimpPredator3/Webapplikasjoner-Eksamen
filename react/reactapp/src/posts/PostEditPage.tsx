@@ -63,6 +63,8 @@ const PostEditPage: React.FC = () => {
         }
     };
 
+    const isFormValid = post && post.title.length >= 5 && post.content.length >= 10;
+
     if (loading) {
         return (
             <Container className="text-center mt-5">
@@ -93,7 +95,11 @@ const PostEditPage: React.FC = () => {
                             name="title"
                             value={post.title}
                             onChange={handleInputChange}
+                            isInvalid={post.title.length < 5}
                         />
+                        <Form.Control.Feedback type="invalid">
+                            Title must be at least 5 characters long
+                        </Form.Control.Feedback>
                     </Form.Group>
                     <Form.Group controlId="formContent" className="mt-3">
                         <Form.Label>Content</Form.Label>
@@ -103,7 +109,11 @@ const PostEditPage: React.FC = () => {
                             name="content"
                             value={post.content}
                             onChange={handleInputChange}
+                            isInvalid={post.content.length < 10}
                         />
+                        <Form.Control.Feedback type="invalid">
+                            Content must be at least 10 characters long
+                        </Form.Control.Feedback>
                     </Form.Group>
                     <Form.Group controlId="formImageUrl" className="mt-3">
                         <Form.Label>Image URL</Form.Label>
@@ -114,20 +124,11 @@ const PostEditPage: React.FC = () => {
                             onChange={handleInputChange}
                         />
                     </Form.Group>
-                    {/* <Form.Group controlId="formTag" className="mt-3">
-                        <Form.Label>Tag</Form.Label>
-                        <Form.Control
-                            type="text"
-                            name="tag"
-                            value={post.tag || ''}
-                            onChange={handleInputChange}
-                        />
-                    </Form.Group> */}
                     <Button
                         className="mt-4"
                         variant="primary"
                         onClick={handleSave}
-                        disabled={saving}
+                        disabled={saving || !isFormValid}
                     >
                         {saving ? 'Saving...' : 'Save Changes'}
                     </Button>

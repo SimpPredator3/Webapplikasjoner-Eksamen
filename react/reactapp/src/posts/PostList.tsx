@@ -3,6 +3,7 @@ import { Button, Card } from 'react-bootstrap';
 import { Post } from '../types/Post'; // Import the Post type
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import './PostList.css';
+import { useUser } from '../components/UserContext'; // Import useUser to get current user
 
 interface PostListProps {
     posts: Post[];
@@ -13,6 +14,7 @@ interface PostListProps {
 
 const PostList: React.FC<PostListProps> = ({ posts, API_URL, onDelete, onUpvote }) => {
     const navigate = useNavigate(); // Initialize navigate function
+    const { user } = useUser(); // Get the current user from UserContext
 
     return (
         <div className="post-list">
@@ -47,21 +49,25 @@ const PostList: React.FC<PostListProps> = ({ posts, API_URL, onDelete, onUpvote 
                                 </Button>
                                 <span>{post.upvotes} Likes</span>
                             </div>
-                            <Button
-                                variant="warning"
-                                size="sm"
-                                onClick={() => navigate(`/post/edit/${post.id}`)} // Navigate to the edit page
-                            >
-                                Edit
-                            </Button>
-                            <Button
-                                variant="danger"
-                                size="sm"
-                                onClick={() => onDelete(post.id)} // Call the delete function
-                                className="me-2"
-                            >
-                                Delete
-                            </Button>
+                            {(user?.role === 'Admin' || user?.username === post.author) && (
+                                <div className="d-flex justify-content-between mt-2">
+                                    <Button
+                                        variant="warning"
+                                        size="sm"
+                                        onClick={() => navigate(`/post/edit/${post.id}`)} // Navigate to the edit page
+                                    >
+                                        Edit
+                                    </Button>
+                                    <Button
+                                        variant="danger"
+                                        size="sm"
+                                        onClick={() => onDelete(post.id)} // Call the delete function
+                                        className="me-2"
+                                    >
+                                        Delete
+                                    </Button>
+                                </div>
+                            )}
                         </Card.Body>
                     </div>
                 </Card>

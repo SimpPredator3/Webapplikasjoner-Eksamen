@@ -25,7 +25,7 @@ const PostCreatePage: React.FC = () => {
       console.log('Post created successfully:', data);
 
       // Redirect to posts page after successful creation
-      navigate('/posts');
+      navigate('/');
     } catch (error) {
       console.error('There was a problem with the fetch operation:', error);
     }

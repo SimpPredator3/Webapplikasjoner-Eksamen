@@ -6,6 +6,7 @@ import { Post } from '../types/Post';
 import './PostListPage.css';
 import PostList from './PostList';
 import { useNavigate } from 'react-router-dom';
+import { useUser } from '../components/UserContext';
 
 interface PostListPageProps {
     initialView?: "list" | "grid"; // Optional prop for initial view
@@ -20,6 +21,7 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
     const [showModal, setShowModal] = useState<boolean>(false);
     const [postToDelete, setPostToDelete] = useState<number | null>(null);
     const navigate = useNavigate();
+    const { user } = useUser();
 
     const fetchPosts = async () => {
         setLoading(true);
@@ -41,7 +43,13 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
 
     useEffect(() => {
         fetchPosts();
-    }, []);
+    }, [user]); // Re-run fetchPosts whenever the user changes
+
+    useEffect(() => {
+        if (user) {
+            setView(view); // Trigger a re-render when the user changes
+        }
+    }, [user]);
 
     const toggleToGrid = () => setView("grid");
     const toggleToList = () => setView("list");
@@ -81,7 +89,6 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
     };
 
     const handleUpvote = async (postId: number) => {
-
         try {
             const response = await fetch(`${API_URL}/api/upvote/${postId}`, {
                 method: "POST",
@@ -106,12 +113,13 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
         }
     };
 
-
     return (
         <Container className="mt-4">
             <div className="d-flex justify-content-between align-items-center mb-3">
                 <h1 className="mb-0">Posts</h1>
-                <Button href='/postcreate' className='btn btn-secondary mt-3'>Create New Post</Button>
+                {user?.role === 'Admin' || user?.role === 'User' ? (
+                    <Button href='/postcreate' className='btn btn-secondary mt-3'>Create New Post</Button>
+                ) : null}
                 {!lockedView && (
                     <div className="d-flex">
                         <button

@@ -5,14 +5,14 @@ import "./LoginModalComponent.css";
 
 function LoginModalComponent() {
     const [showLoginModal, setShowLoginModal] = useState(false);
-    const [showRegisterModal, setShowRegisterModal] = useState(false); 
+    const [showRegisterModal, setShowRegisterModal] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [registerEmail, setRegisterEmail] = useState(""); 
-    const [registerPassword, setRegisterPassword] = useState(""); 
+    const [registerEmail, setRegisterEmail] = useState("");
+    const [registerPassword, setRegisterPassword] = useState("");
     const [error, setError] = useState("");
     const [userName, setUserName] = useState(null);
-    const { refreshUserRole, setUser } = useUser();
+    const { refreshUserDetails, setUser } = useUser();
 
     // Fetch user identity
     const fetchUserIdentity = async () => {
@@ -24,8 +24,11 @@ function LoginModalComponent() {
             if (response.ok) {
                 const data = await response.json();
                 setUserName(data.name);
-            } else {
+            } else if (response.status === 401 || response.status === 404) {
+                // User not logged in or resource not found, clear user details
                 setUserName(null);
+            } else {
+                console.error("Unexpected response:", response.status);
             }
         } catch (error) {
             console.error("Error fetching user identity:", error);
@@ -51,7 +54,7 @@ function LoginModalComponent() {
             if (response.ok) {
                 setShowLoginModal(false);
                 fetchUserIdentity();
-                refreshUserRole();
+                refreshUserDetails(); // Update user details after login
             } else {
                 const errorData = await response.json();
                 setError("Login failed: " + (errorData.message || "Unknown error"));
@@ -125,7 +128,7 @@ function LoginModalComponent() {
                     </Button>
                 )}
             </div>
-    
+
             {/* Add to Hamburger Menu for small screens */}
             <div className="d-lg-none">
                 {userName ? (
@@ -148,7 +151,7 @@ function LoginModalComponent() {
                     </NavDropdown>
                 )}
             </div>
-    
+
             {/* Login Modal */}
             <Modal show={showLoginModal} onHide={() => setShowLoginModal(false)}>
                 <Modal.Header closeButton>
@@ -196,7 +199,7 @@ function LoginModalComponent() {
                     </div>
                 </Modal.Body>
             </Modal>
-    
+
             {/* Registration Modal */}
             <Modal show={showRegisterModal} onHide={() => setShowRegisterModal(false)}>
                 <Modal.Header closeButton>
@@ -246,7 +249,6 @@ function LoginModalComponent() {
             </Modal>
         </>
     );
-    
 }
 
 export default LoginModalComponent;
