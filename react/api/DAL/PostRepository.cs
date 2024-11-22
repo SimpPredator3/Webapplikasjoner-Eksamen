@@ -113,7 +113,8 @@ namespace api.DAL
         public async Task<IEnumerable<Post>> GetAllPostsWithCommentCountAsync()
         {
             var posts = await _context.Posts
-                .Include(p => p.Comments) // Load comments with each post
+                .Include(post => post.Comments) // Include comments
+                .Include(post => post.Upvotes) // Include upvotes
                 .ToListAsync();
 
 

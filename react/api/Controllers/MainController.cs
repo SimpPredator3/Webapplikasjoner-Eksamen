@@ -13,14 +13,14 @@ namespace api.Controllers
     public class MainController : Controller
     {
         private readonly IPostRepository _postRepository;
-        private readonly ILikesRepository _likesRepository;
+
         private readonly ILogger<MainController> _logger;
 
         // Constructor to inject repository
-        public MainController(IPostRepository postRepository, ILikesRepository likesRepository, ILogger<MainController> logger)
+        public MainController(IPostRepository postRepository, ILogger<MainController> logger)
         {
             _postRepository = postRepository;
-            _likesRepository = likesRepository;
+
             _logger = logger;
         }
 
@@ -69,85 +69,6 @@ namespace api.Controllers
 
             // Pass posts to the view
             return View(posts);
-        }
-
-        // Like Action
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize]
-        public async Task<IActionResult> Upvote(int postId)
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Get the logged-in user's ID
-            if (userId == null)
-            {
-                return Unauthorized(); // User must be logged in to vote
-            }
-
-            // Check if the user has already liked the post
-            var existingLike = await _likesRepository.GetLikesAsync(postId, userId);
-            if (existingLike != null)
-            {
-                // If the user has already liked the post, revoke the like
-                return await RevokeLike(postId); // Call the RevokeLike method
-            }
-
-            // Record the upvote
-            var like = new Likes
-            {
-                IsLike = true,
-                PostId = postId,
-                UserId = userId
-            };
-            await _likesRepository.AddLikeAsync(like);
-
-            // Safely update the post's upvote count
-            var post = await _postRepository.GetPostByIdAsync(postId);
-            if (post == null)
-            {
-                return NotFound("Post not found.");
-            }
-
-            post.Upvotes++;  // Now it's safe to increment
-            await _postRepository.UpdatePostAsync(post);
-
-            // Return JSON with the updated upvote count
-            return Json(new { success = true, upvotes = post.Upvotes });
-        }
-
-        //Revoke Like
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize]
-        public async Task<IActionResult> RevokeLike(int postId)
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Get the logged-in user's ID
-            if (userId == null)
-            {
-                return Unauthorized(); // User must be logged in to revoke like
-            }
-
-            // Check if the user has already liked the post
-            var existingLike = await _likesRepository.GetLikesAsync(postId, userId);
-            if (existingLike == null)
-            {
-                return BadRequest("You haven't liked this post yet.");
-            }
-
-            // Remove the like
-            await _likesRepository.RemoveLikeAsync(existingLike);
-
-            // Safely update the post's upvote count
-            var post = await _postRepository.GetPostByIdAsync(postId);
-            if (post == null)
-            {
-                return NotFound("Post not found.");
-            }
-
-            post.Upvotes--;  // Now it's safe to decrement
-            await _postRepository.UpdatePostAsync(post);
-
-            // Return JSON with the updated upvote count
-            return Json(new { success = true, upvotes = post.Upvotes });
         }
     }
 }

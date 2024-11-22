@@ -19,7 +19,7 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
 });
 
 // Configure Identity with roles
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => 
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
     options.SignIn.RequireConfirmedAccount = false;
 })
@@ -53,6 +53,7 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddScoped<IPostRepository, PostRepository>();
+builder.Services.AddScoped<IUpvoteRepository, UpvoteRepository>();
 
 var loggerConfiguration = new LoggerConfiguration()
     .MinimumLevel.Information() // levels: Trace < Information < Warning < Error < Fatal
@@ -108,10 +109,10 @@ async Task SeedDatabase(IServiceProvider serviceProvider)
     var adminUser = await userManager.FindByEmailAsync("admin@gmail.com");
     if (adminUser == null)
     {
-        adminUser = new IdentityUser 
-        { 
-            UserName = "admin@gmail.com", 
-            Email = "admin@gmail.com" 
+        adminUser = new IdentityUser
+        {
+            UserName = "admin@gmail.com",
+            Email = "admin@gmail.com"
         };
         await userManager.CreateAsync(adminUser, "Admin123!"); // password
     }

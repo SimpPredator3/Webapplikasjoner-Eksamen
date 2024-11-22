@@ -73,7 +73,7 @@ namespace api.Controllers
 
                 return Ok(new { role });
             }
-            
+
             return Unauthorized(new { message = "User is not authenticated." });
         }
 
@@ -114,7 +114,29 @@ namespace api.Controllers
             _logger.LogInformation("User logged out.");
             return Ok(new { Message = "Logout successful" });
         }
+
+        // GET: api/auth/user/details
+        [HttpGet("user/details")]
+        [Authorize]
+        public async Task<IActionResult> GetUserDetails()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user != null)
+                {
+                    return Ok(new
+                    {
+                        username = user.UserName,
+                        email = user.Email,
+                        role = User.IsInRole("Admin") ? "Admin" : "User" // Adjust roles as needed
+                    });
+                }
+            }
+            return Unauthorized(new { message = "User is not authenticated." });
+        }
     }
+
 
     public class LoginRequest
     {
@@ -129,13 +151,13 @@ namespace api.Controllers
     }
     public class RegisterRequest
     {
-    [Required]
-    [EmailAddress]
-    public string Email { get; set; } = string.Empty;
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; } = string.Empty;
 
-    [Required]
-    [MinLength(6)]
-    public string Password { get; set; } = string.Empty;
+        [Required]
+        [MinLength(6)]
+        public string Password { get; set; } = string.Empty;
     }
 
 }

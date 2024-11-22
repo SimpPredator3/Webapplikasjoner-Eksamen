@@ -1,6 +1,6 @@
 // NavMenu.js
 import React, { useEffect, useState } from 'react';
-import { Nav, Navbar } from 'react-bootstrap';
+import { Nav, Navbar, NavDropdown } from 'react-bootstrap';
 import { useUser } from '../components/UserContext';
 import logo from '../assets/notehub.png';
 import LoginModalComponent from '../components/LoginModalComponent';
@@ -8,7 +8,7 @@ import LoginModalComponent from '../components/LoginModalComponent';
 const NavMenu = ({ theme, toggleTheme }) => {
     const { user } = useUser();
     const [isAdmin, setIsAdmin] = useState(false);
-    
+
 
     useEffect(() => {
         setIsAdmin(user?.role === 'Admin'); // Update isAdmin whenever user role changes
@@ -31,17 +31,23 @@ const NavMenu = ({ theme, toggleTheme }) => {
                         <Nav.Link href="/AdminDash">Admin Dashboard</Nav.Link>
                     )}
                 </Nav>
-                {/* Dark Mode Toggle Button */}
-                <div className="top-right-corner">
-                    <button className="darkmode-btn" onClick={toggleTheme}>
-                        {theme === 'dark' ? (
-                            <i className="fas fa-sun"></i> /* Sun icon for light mode */
-                        ) : (
-                            <i className="fas fa-moon"></i> /* Moon icon for dark mode */
-                        )}
-                    </button>
+                <Nav className="ms-auto">
+                    {/* Dark Mode Toggle Button */}
+                    <Nav.Item className="d-flex align-items-center">
+                        <button
+                            className="darkmode-btn btn btn-outline-secondary me-3"
+                            onClick={toggleTheme}
+                        >
+                            {theme === "dark" ? (
+                                <i className="fas fa-sun"></i> /* Sun icon for light mode */
+                            ) : (
+                                <i className="fas fa-moon"></i> /* Moon icon for dark mode */
+                            )}
+                        </button>
+                    </Nav.Item>
+                    {/* Login Modal Component */}
                     <LoginModalComponent />
-                </div>
+                </Nav>
             </Navbar.Collapse>
         </Navbar>
     );

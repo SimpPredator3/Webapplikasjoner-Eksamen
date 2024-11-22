@@ -16,7 +16,6 @@ namespace api.Models
         [StringLength(1000, ErrorMessage = "The content cannot exceed 1000 characters")]
         public string Content { get; set; } = default!;
 
-
         [Url(ErrorMessage = "Please enter a valid URL")]
         public string? ImageUrl { get; set; }
 
@@ -30,8 +29,9 @@ namespace api.Models
         public int CommentCount { get; set; }
 
         [Required]
-        public ICollection<Comment> Comments { get; set; } = []; // Initialize as an empty list
+        public ICollection<Comment> Comments { get; set; } = new List<Comment>();
 
-        public int Upvotes { get; set; }
+        public ICollection<Upvote> Upvotes { get; set; } = new List<Upvote>();
+        public int UpvoteCount { get; set; }
     }
 }

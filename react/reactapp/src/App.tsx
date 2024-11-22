@@ -7,7 +7,11 @@ import PostListPage from './posts/PostListPage';
 import AdminListPage from './admindashboard/AdminListPage';
 import { UserProvider } from './components/UserContext';
 import PostCreatePage from './posts/PostCreatePage';
+import PostEditPage from './posts/PostEditPage';
 import './App.css';
+import ErrorBoundary from "./error-handling/ErrorBoundary";
+
+
 
 
 const App: React.FC = () => {
@@ -31,20 +35,23 @@ const App: React.FC = () => {
 
 
   return (
+    <ErrorBoundary>
     <UserProvider>
       <Router>
         <Container>
-        <NavMenu theme={theme} toggleTheme={toggleTheme} />
+          <NavMenu theme={theme} toggleTheme={toggleTheme} />
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/posts" element={<PostListPage />} />
             <Route path="/AdminDash" element={<AdminListPage />} />
             <Route path="/postcreate" element={<PostCreatePage />} />
+            <Route path="/post/edit/:id" element={<PostEditPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Container>
       </Router>
     </UserProvider>
+    </ErrorBoundary>
   );
 }
 
