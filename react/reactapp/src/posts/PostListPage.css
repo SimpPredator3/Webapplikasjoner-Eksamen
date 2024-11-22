@@ -38,3 +38,32 @@
     background-color: #ffe8d1;
     color: #a16e50;
 }
+
+/* Admin Dash */
+.admin-dashboard-container {
+    padding-top: 5rem; 
+}
+.admin-titel{
+    font-size: 2.5rem;
+}
+.admin-post-btn {
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+  }
+  
+  @media (max-width: 768px) {
+    .admin-post-btn {
+      font-size: 0.875rem;
+      padding: 0.4rem 0.8rem;
+    }
+    .admin-titel{
+        font-size: 1.7rem;
+    }
+  }
+  @media (max-width: 490px) {
+    .admin-titel{
+        font-size: 1.3rem;
+    }
+  }
+  
+
