@@ -1,6 +1,6 @@
 // NavMenu.js
 import React, { useEffect, useState } from 'react';
-import { Nav, Navbar, NavDropdown } from 'react-bootstrap';
+import { Nav, Navbar } from 'react-bootstrap';
 import { useUser } from '../components/UserContext';
 import logo from '../assets/notehub.png';
 import LoginModalComponent from '../components/LoginModalComponent';
