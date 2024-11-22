@@ -7,7 +7,7 @@ export const useUser = () => useContext(UserContext);
 export const UserProvider = ({ children }) => {
     const [user, setUser] = useState(null);
 
-    // Function to fetch user details
+    // Function to fetch user details from the backend API
     const fetchUserDetails = async () => {
         try {
             const response = await fetch('http://localhost:5141/api/auth/user/details', {

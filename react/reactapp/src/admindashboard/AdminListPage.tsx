@@ -8,11 +8,13 @@ import PostList from '../posts/PostList';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../components/UserContext';
 
+// Props for controlling the initial and locked view modes
 interface PostListPageProps {
     initialView?: "list" | "grid";
     lockedView?: "list" | "grid";  
 }
 
+// Main component for managing and displaying posts in Admin Dashboard
 const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", lockedView }) => {
     const [posts, setPosts] = useState<Post[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
@@ -23,6 +25,7 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
     const navigate = useNavigate();
     const { user } = useUser();
 
+    // Fetches the list of posts from the API
     const fetchPosts = async () => {
         setLoading(true);
         setError(null);
@@ -45,19 +48,25 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
         fetchPosts();
     }, [user]);
 
+    // Switch to grid view
     const toggleToGrid = () => setView("grid");
+
+    // Switch to list view
     const toggleToList = () => setView("list");
 
+    // Opens the confirmation modal for deleting a post
     const confirmDeletePost = (id: number) => {
         setPostToDelete(id);
         setShowModal(true);
     };
 
+    // Closes the delete confirmation modal
     const cancelDelete = () => {
         setPostToDelete(null);
         setShowModal(false);
     };
 
+    // Handles deleting a post
     const handleDeletePost = async () => {
         if (postToDelete === null) return;
 
@@ -79,6 +88,7 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
         }
     };
 
+    // Handles upvoting a post
     const handleUpvote = async (postId: number) => {
         try {
             const response = await fetch(`${API_URL}/api/upvote/${postId}`, {
@@ -104,6 +114,7 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
         }
     };
 
+    // Main UI rendering
     return (
         <Container className="admin-dashboard-container mt-4">
             <div className="d-flex justify-content-between align-items-center mb-3">

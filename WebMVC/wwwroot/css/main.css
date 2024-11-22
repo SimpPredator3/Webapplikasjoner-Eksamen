@@ -1,3 +1,6 @@
+body {
+    font-family: 'Montserrat', sans-serif;
+}
 .welcomebox {
     width: 550px;
     margin-left: 50px;
@@ -5,13 +8,19 @@
 .welcometitle {
     width: 350px;
 }
+.welcomebox p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #555;
+}
 .tag-card{
     height: 74px;
     background-color:rgb(200, 211, 248)    ;
     width:auto;
 }
 .btn-card{
-    color:rgb(35, 31, 32);
+    color:rgb(56, 56, 56);
+    background-color: #FF914D;
     font-weight: 700;
     font-size: 19px;
     height:100%;
@@ -21,7 +30,57 @@
     line-height: 74px;     
     text-align: center;    
 }
+.btn-card:hover {
+    color:rgb(219, 219, 219);
+    background-color: #b46432;
+}
+.tag-button {
+    font-weight: bold;
+}
 a {
     text-decoration: none;
     color: inherit;
+}
+.post-card:hover {
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+}
+.card-title {
+    font-size: 20px;
+    font-weight: bold;
+}
+.tag-disp {
+    font-family: 'Rubik', sans-serif;
+    font-size: 14px;
+    color: #007bff;
+}
+
+.card-subtitle {
+    font-size: 14px;
+    color: #888;
+}
+
+.card-text {
+    font-size: 16px;
+    color: #555;
+}
+
+.like-counter {
+    font-weight: bold;
+    color: #28a745;
+}
+.like-btn {
+    background-color: #28a745;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.like-btn:hover {
+    background-color: #218838;
+}
+.postComments {
+    margin-top: 20px;
 }
