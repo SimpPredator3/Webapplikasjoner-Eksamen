@@ -3,7 +3,7 @@ import { Form, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { Post } from '../types/Post'; // Ensure this path is correct
 import { useUser } from '../components/UserContext'; // Import useUser to get the logged-in user
-import '../shared/StyleShared.css';
+import '../App.css';
 
 interface PostFormProps {
   onPostCreated: (newPost: Post) => void; // Define `onPostCreated` in props

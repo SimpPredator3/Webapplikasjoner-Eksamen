@@ -7,7 +7,7 @@ import './PostListPage.css';
 import PostList from './PostList';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../components/UserContext';
-import '../shared/StyleShared.css';
+import '../App.css';
 
 interface PostListPageProps {
     initialView?: "list" | "grid"; // Optional prop for initial view

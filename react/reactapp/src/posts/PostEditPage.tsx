@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Form, Button, Container, Alert, Spinner } from 'react-bootstrap';
 import { API_URL } from '../apiConfig';
 import { Post } from '../types/Post';
-import '../shared/StyleShared.css';
+import '../App.css';
 
 const PostEditPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();

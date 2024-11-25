@@ -4,7 +4,7 @@ import { Post } from '../types/Post'; // Import the Post type
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import './PostList.css';
 import { useUser } from '../components/UserContext'; // Import useUser to get current user
-import '../shared/StyleShared.css';
+import '../App.css';
 
 interface PostListProps {
     posts: Post[];

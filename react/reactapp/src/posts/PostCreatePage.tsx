@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import PostForm from './PostForm';
 import { Post } from '../types/Post';
 import { API_URL } from '../apiConfig';
-import '../shared/StyleShared.css';
+import '../App.css';
 
 const PostCreatePage: React.FC = () => {
   const navigate = useNavigate();

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Table, Button } from 'react-bootstrap';
 import { Post } from '../types/Post'; // Import Post type
-import '../shared/StyleShared.css';
+import '../App.css';
 
 interface PostTableProps {
     posts: Post[];

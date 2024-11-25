@@ -4,7 +4,7 @@ import { Nav, Navbar } from 'react-bootstrap';
 import { useUser } from '../components/UserContext';
 import logo from '../assets/notehub.png';
 import LoginModalComponent from '../components/LoginModalComponent';
-import '../shared/StyleShared.css';
+import '../App.css';
 
 const NavMenu = ({ theme, toggleTheme }) => {
     const { user } = useUser();

@@ -7,7 +7,7 @@ import { Post } from '../types/Post';
 import '../posts/PostListPage.css';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../components/UserContext';
-import '../shared/StyleShared.css';
+import '../App.css';
 
 // Props for controlling the initial and locked view modes
 interface PostListPageProps {

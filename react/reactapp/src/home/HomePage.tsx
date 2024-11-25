@@ -1,6 +1,6 @@
 import React from 'react';
 import PostListPage from '../posts/PostListPage';
-import '../shared/StyleShared.css';
+import '../App.css';
 
 
 const HomePage: React.FC = () => {
