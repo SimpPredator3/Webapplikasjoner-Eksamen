@@ -7,6 +7,7 @@ import { Post } from '../types/Post';
 import '../posts/PostListPage.css';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../components/UserContext';
+import '../shared/StyleShared.css';
 
 // Props for controlling the initial and locked view modes
 interface PostListPageProps {
@@ -153,7 +154,7 @@ const AdminListPage: React.FC<PostListPageProps> = ({ initialView = "grid", lock
             <div className="d-flex justify-content-between align-items-center mb-3">
                 <h1 className="mb-0 admin-titel">Admin Dashboard</h1>
                 {user?.role === 'Admin' && (
-                    <Button href='/postcreate' className='admin-post-btn btn btn-secondary mt-3'>Create New Post</Button>
+                    <Button href='/postcreate' className='admin-post-btn create-btn btn btn-secondary mt-3'>Create New Post</Button>
                 )}
                 {!lockedView && (
                     <div className="d-flex">
