@@ -1,0 +1,26 @@
+.nav-custom {
+    font-family: 'Lato', sans-serif;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+}
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+} 
+p, span, label, button, input, textarea, table, td, th {
+    font-family: 'Karla', sans-serif;
+}
+.intro-text{
+    font-weight: 430;
+    font-size: 1.1em;
+}
+.btn, .btn-secondary {
+    font-family: 'Karla', sans-serif !important;
+}
+.custom-button {
+    margin-top: 17px;
+    margin-right: 2px;  
+}
+  

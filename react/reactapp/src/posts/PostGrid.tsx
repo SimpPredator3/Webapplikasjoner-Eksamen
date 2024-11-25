@@ -4,6 +4,7 @@ import { Post } from '../types/Post';
 import './PostGrid.css';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import { useUser } from '../components/UserContext'; // Import useUser to get current user
+import '../shared/StyleShared.css';
 
 interface PostGridProps {
     posts: Post[];
