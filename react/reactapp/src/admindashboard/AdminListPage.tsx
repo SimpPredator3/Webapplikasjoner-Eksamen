@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import PostGrid from '../posts/PostGrid';
+import PostList from '../posts/PostList';
 import { Spinner, Alert, Button, Container, Modal } from 'react-bootstrap';
 import { API_URL } from '../apiConfig';
 import { Post } from '../types/Post';
 import '../posts/PostListPage.css';
-import PostList from '../posts/PostList';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../components/UserContext';
+import '../App.css';
 
 // Props for controlling the initial and locked view modes
 interface PostListPageProps {
@@ -15,23 +16,50 @@ interface PostListPageProps {
 }
 
 // Main component for managing and displaying posts in Admin Dashboard
-const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", lockedView }) => {
+const AdminListPage: React.FC<PostListPageProps> = ({ initialView = "grid", lockedView }) => {
     const [posts, setPosts] = useState<Post[]>([]);
-    const [loading, setLoading] = useState<boolean>(false);
+    const [loadingPosts, setLoadingPosts] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     const [view, setView] = useState<"list" | "grid">(lockedView ?? initialView);
     const [showModal, setShowModal] = useState<boolean>(false);
     const [postToDelete, setPostToDelete] = useState<number | null>(null);
     const navigate = useNavigate();
-    const { user } = useUser();
+    const { user, fetchUserRole, loading } = useUser();
+
+    useEffect(() => {
+        const checkAccess = async () => {
+            if (loading) {
+                console.log('Waiting for user context to finish loading...');
+                return; // Wait until user details are fully loaded
+            }
+            if (!user) {
+                console.log("User not logged in. Redirecting to login...");
+                navigate('/login'); // Redirect to login if user is not authenticated
+                return;
+            }
+            
+            console.log("User's role:", user.role);
+            if (user.role !== 'Admin') {
+                console.log("User is not authorized. Redirecting to unauthorized...");
+                navigate('/unauthorized'); // Redirect unauthorized users
+                return;
+            }
+    
+            console.log("User is Admin. Fetching posts...");
+            fetchPosts();
+        };
+    
+        checkAccess();
+    }, [user, loading, navigate]);
+
 
     // Fetches the list of posts from the API
     const fetchPosts = async () => {
-        setLoading(true);
+        setLoadingPosts(true);
         setError(null);
 
         try {
-            const response = await fetch(`${API_URL}/api/admindash`);
+            const response = await fetch(`${API_URL}/api/admindash`, { credentials: 'include' });
             if (!response.ok) {
                 throw new Error('Failed to fetch posts');
             }
@@ -40,13 +68,9 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
         } catch (err: any) {
             setError(err.message);
         } finally {
-            setLoading(false);
+            setLoadingPosts(false);
         }
     };
-
-    useEffect(() => {
-        fetchPosts();
-    }, [user]);
 
     // Switch to grid view
     const toggleToGrid = () => setView("grid");
@@ -114,13 +138,23 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
         }
     };
 
+    if (loading) {
+        // Show a spinner while user details are loading
+        return (
+            <div className="text-center">
+                <Spinner animation="border" role="status">
+                    <span className="sr-only">Loading...</span>
+                </Spinner>
+            </div>
+        );
+    }
     // Main UI rendering
     return (
         <Container className="admin-dashboard-container mt-4">
             <div className="d-flex justify-content-between align-items-center mb-3">
                 <h1 className="mb-0 admin-titel">Admin Dashboard</h1>
                 {user?.role === 'Admin' && (
-                    <Button href='/postcreate' className='admin-post-btn btn btn-secondary mt-3'>Create New Post</Button>
+                    <Button href='/postcreate' className='admin-post-btn create-btn btn btn-secondary mt-3'>Create New Post</Button>
                 )}
                 {!lockedView && (
                     <div className="d-flex">
@@ -177,5 +211,5 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
     );
 };
 
-export default PostListPage;
+export default AdminListPage;
 

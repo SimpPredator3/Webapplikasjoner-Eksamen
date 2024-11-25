@@ -7,6 +7,7 @@ import './PostListPage.css';
 import PostList from './PostList';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../components/UserContext';
+import '../App.css';
 
 interface PostListPageProps {
     initialView?: "list" | "grid"; // Optional prop for initial view
@@ -118,7 +119,7 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
             <div className="d-flex justify-content-between align-items-center mb-3">
                 <h1 className="mb-0">Posts</h1>
                 {user?.role === 'Admin' || user?.role === 'User' ? (
-                    <Button href='/postcreate' className='btn btn-secondary mt-3'>Create New Post</Button>
+                    <Button href='/postcreate' className='create-btn btn btn-secondary mt-3'>Create New Post</Button>
                 ) : null}
                 {!lockedView && (
                     <div className="d-flex">

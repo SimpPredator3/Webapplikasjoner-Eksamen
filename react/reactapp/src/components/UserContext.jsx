@@ -6,9 +6,11 @@ export const useUser = () => useContext(UserContext);
 
 export const UserProvider = ({ children }) => {
     const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true)
 
     // Function to fetch user details from the backend API
     const fetchUserDetails = async () => {
+        setLoading(true);
         try {
             const response = await fetch('http://localhost:5141/api/auth/user/details', {
                 credentials: 'include'
@@ -27,6 +29,8 @@ export const UserProvider = ({ children }) => {
         } catch (error) {
             console.error('Error fetching user details:', error);
             setUser(null);
+        }finally {
+            setLoading(false); // Ensure loading state is updated
         }
     };
 
@@ -38,7 +42,7 @@ export const UserProvider = ({ children }) => {
     const refreshUserDetails = fetchUserDetails;
 
     return (
-        <UserContext.Provider value={{ user, setUser, refreshUserDetails }}>
+        <UserContext.Provider value={{ user, setUser, refreshUserDetails, loading }}>
             {children}
         </UserContext.Provider>
     );

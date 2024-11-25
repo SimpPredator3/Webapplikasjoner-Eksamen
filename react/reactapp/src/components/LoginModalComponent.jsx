@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button, Modal, Form, NavDropdown } from "react-bootstrap";
 import { useUser } from '../components/UserContext';
 import "./LoginModalComponent.css";
+import '../App.css';
 
 function LoginModalComponent() {
     // State for toggling login and register modals
