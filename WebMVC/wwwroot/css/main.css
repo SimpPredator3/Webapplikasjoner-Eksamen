@@ -66,20 +66,18 @@ a {
 
 .like-counter {
     font-weight: bold;
-    color: #28a745;
+    color: #005246;
 }
 .like-btn {
-    background-color: #28a745;
+    background-color: #005246;
     color: white;
-    padding: 8px 15px;
     border: none;
-    border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
 .like-btn:hover {
-    background-color: #218838;
+    background-color: #038874;
 }
 .postComments {
     margin-top: 20px;
@@ -95,13 +93,14 @@ a {
     background-color: #b46432;
 }
 
-.btn-info {
-    background-color: #17a2b8;
+.details-btn {
+    background-color: #FF914D;
     color: white;
     border: none;
 }
-.btn-info:hover {
-    background-color: #138496;
+.details-btn:hover {
+    background-color: #b46432;
+    color: white;
 }
 
 .btn-danger {
@@ -111,4 +110,12 @@ a {
 }
 .btn-danger:hover {
     background-color: #c82333;
+}
+.edit-btn{
+    background-color: #FF914D;
+    color: white;
+    border: none;
+}
+.edit-btn:hover{
+    background-color: #b46432;
 }
