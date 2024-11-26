@@ -1,7 +1,5 @@
 import React from 'react';
 import PostListPage from '../posts/PostListPage';
-import '../App.css';
-
 
 const HomePage: React.FC = () => {
     return (

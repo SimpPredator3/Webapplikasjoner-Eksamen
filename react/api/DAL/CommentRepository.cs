@@ -40,5 +40,11 @@ namespace api.DAL
             _context.Comments.Remove(comment);
             return await _context.SaveChangesAsync() > 0;
         }
+
+        public async Task<bool> UpdateCommentAsync(Comment comment)
+        {
+            _context.Comments.Update(comment);
+            return await _context.SaveChangesAsync() > 0;
+        }
     }
 }

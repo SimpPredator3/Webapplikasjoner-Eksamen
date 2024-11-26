@@ -9,8 +9,6 @@ import { UserProvider } from './components/UserContext';
 import PostCreatePage from './posts/PostCreatePage';
 import PostEditPage from './posts/PostEditPage';
 import './App.css';
-import ErrorBoundary from "./error-handling/ErrorBoundary";
-
 
 
 
@@ -35,7 +33,6 @@ const App: React.FC = () => {
 
 
   return (
-    <ErrorBoundary>
     <UserProvider>
       <Router>
         <Container>
@@ -51,7 +48,6 @@ const App: React.FC = () => {
         </Container>
       </Router>
     </UserProvider>
-    </ErrorBoundary>
   );
 }
 

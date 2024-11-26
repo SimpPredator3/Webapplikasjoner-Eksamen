@@ -3,7 +3,6 @@ import { Form, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { Post } from '../types/Post'; // Ensure this path is correct
 import { useUser } from '../components/UserContext'; // Import useUser to get the logged-in user
-import '../App.css';
 
 interface PostFormProps {
   onPostCreated: (newPost: Post) => void; // Define `onPostCreated` in props
@@ -86,8 +85,8 @@ const PostForm: React.FC<PostFormProps> = ({ onPostCreated }) => {
 
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
-      <Button variant="primary" type="submit" className="custom-button">Create Post</Button>
-      <Button variant="secondary" onClick={() => navigate(-1)} className="ms-2 custom-button">Cancel</Button>
+      <Button variant="primary" type="submit">Create Post</Button>
+      <Button variant="secondary" onClick={() => navigate(-1)} className="ms-2">Cancel</Button>
     </Form>
   );
 };

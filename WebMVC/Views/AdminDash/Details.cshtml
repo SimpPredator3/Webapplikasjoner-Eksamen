@@ -34,7 +34,7 @@
                 </form>
 
                 <!-- Edit Button -->
-                <button type="button" class="edit-btn btn btn-secondary btn-sm" onclick="toggleEditForm(@comment.Id)">Edit</button>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="toggleEditForm(@comment.Id)">Edit</button>
 
                 <!-- Edit Form (hidden by default) -->
                 <form asp-action="Edit" asp-controller="Comment" method="post" id="edit-form-@comment.Id" class="edit-form"

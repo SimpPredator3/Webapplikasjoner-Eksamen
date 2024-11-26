@@ -2,7 +2,6 @@
 
 <h2>Edit Post</h2>
 
-
 <form asp-action="Edit" method="post">
     @Html.AntiForgeryToken()
 
@@ -27,7 +26,7 @@
         <span asp-validation-for="ImageUrl" class="text-danger"></span>
     </div>
 
-    <div class="last-form form-group">
+    <div class="form-group">
         <label asp-for="Tag"></label>
         <textarea asp-for="Tag" class="form-control"></textarea>
         <span asp-validation-for="Tag" class="text-danger"></span>

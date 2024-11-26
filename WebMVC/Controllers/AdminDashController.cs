@@ -7,7 +7,6 @@ using WebMVC.ViewModels;
 
 namespace WebMVC.Controllers
 {
-    [Authorize(Roles = "Admin")]
     public class AdminDashController : Controller
     {
         private readonly IPostRepository _postRepository;

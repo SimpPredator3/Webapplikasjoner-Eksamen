@@ -11,8 +11,8 @@ using api.DAL;
 namespace api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241122095043_UpdateNew")]
-    partial class UpdateNew
+    [Migration("20241121172944_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

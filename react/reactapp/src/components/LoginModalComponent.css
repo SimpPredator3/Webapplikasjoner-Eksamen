@@ -1,10 +1,9 @@
 .navbar-container {
-    position: relative;
+    position: relative; /* Ensure the Navbar acts as the parent for absolute positioning */
 }
 
 .top-right-corner {
     position: absolute;
-    display: block;
     top: 10px;
     right: 10px;
     z-index: 1000;
@@ -26,13 +25,5 @@
     cursor: pointer;
     padding: 0;
     font: inherit;
-}
-
-
-/* Hide on small screens */
-@media (max-width: 989px) {
-    .top-right-corner {
-        display: none;
-    }
 }
 

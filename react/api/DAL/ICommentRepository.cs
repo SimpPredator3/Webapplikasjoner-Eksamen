@@ -1,6 +1,4 @@
 using api.Models;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace api.DAL
 {
@@ -10,5 +8,8 @@ namespace api.DAL
         Task<Comment?> GetCommentByIdAsync(int id);
         Task<bool> AddCommentAsync(Comment comment);
         Task<bool> DeleteCommentAsync(int id);
+
+        Task<bool> UpdateCommentAsync(Comment comment);
+
     }
 }

@@ -1,179 +1,336 @@
-import React, { useState, useEffect } from 'react';
-import PostGrid from './PostGrid';
-import { Spinner, Alert, Button, Container, Modal } from 'react-bootstrap';
-import { API_URL } from '../apiConfig';
-import { Post } from '../types/Post';
-import './PostListPage.css';
-import PostList from './PostList';
-import { useNavigate } from 'react-router-dom';
-import { useUser } from '../components/UserContext';
-import '../App.css';
+import React, { useState, useEffect } from "react";
+import PostGrid from "./PostGrid";
+import { Spinner, Alert, Button, Container, Modal } from "react-bootstrap";
+import { API_URL } from "../apiConfig";
+import { Post } from "../types/Post";
+import "./PostListPage.css";
+import PostList from "./PostList";
+import { useNavigate } from "react-router-dom";
+import { useUser } from "../components/UserContext";
 
 interface PostListPageProps {
-    initialView?: "list" | "grid"; // Optional prop for initial view
-    lockedView?: "list" | "grid";  // Optional prop to lock the view
+  initialView?: "list" | "grid"; // Optional prop for initial view
+  lockedView?: "list" | "grid"; // Optional prop to lock the view
 }
 
-const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", lockedView }) => {
-    const [posts, setPosts] = useState<Post[]>([]);
-    const [loading, setLoading] = useState<boolean>(false);
-    const [error, setError] = useState<string | null>(null);
-    const [view, setView] = useState<"list" | "grid">(lockedView ?? initialView);
-    const [showModal, setShowModal] = useState<boolean>(false);
-    const [postToDelete, setPostToDelete] = useState<number | null>(null);
-    const navigate = useNavigate();
-    const { user } = useUser();
+interface Comment {
+  id: number;
+  postId: number;
+  text: string;
+}
 
-    const fetchPosts = async () => {
-        setLoading(true);
-        setError(null);
+const PostListPage: React.FC<PostListPageProps> = ({
+  initialView = "grid",
+  lockedView,
+}) => {
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [view, setView] = useState<"list" | "grid">(lockedView ?? initialView);
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [postToDelete, setPostToDelete] = useState<number | null>(null);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [visibleCommentPostId, setVisibleCommentPostId] = useState<
+    number | null
+  >(null);
 
-        try {
-            const response = await fetch(`${API_URL}/api/post`);
-            if (!response.ok) {
-                throw new Error('Failed to fetch posts');
-            }
-            const data: Post[] = await response.json();
-            setPosts(data);
-        } catch (err: any) {
-            setError(err.message);
-        } finally {
-            setLoading(false);
-        }
-    };
+  const navigate = useNavigate();
+  const { user } = useUser();
 
-    useEffect(() => {
-        fetchPosts();
-    }, [user]); // Re-run fetchPosts whenever the user changes
+  const fetchPosts = async () => {
+    setLoading(true);
+    setError(null);
 
-    useEffect(() => {
-        if (user) {
-            setView(view); // Trigger a re-render when the user changes
-        }
-    }, [user]);
+    try {
+      const response = await fetch(`${API_URL}/api/post`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch posts");
+      }
+      const data: Post[] = await response.json();
+      setPosts(data);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const toggleToGrid = () => setView("grid");
-    const toggleToList = () => setView("list");
+  useEffect(() => {
+    fetchPosts();
+  }, [user]); // Re-run fetchPosts whenever the user changes
 
-    const confirmDeletePost = (id: number) => {
-        setPostToDelete(id);
-        setShowModal(true);
-    };
+  useEffect(() => {
+    if (user) {
+      setView(view); // Trigger a re-render when the user changes
+    }
+  }, [user]);
 
-    const cancelDelete = () => {
-        setPostToDelete(null);
-        setShowModal(false);
-    };
+  const toggleToGrid = () => setView("grid");
+  const toggleToList = () => setView("list");
 
-    const handleDeletePost = async () => {
-        if (postToDelete === null) return;
+  const confirmDeletePost = (id: number) => {
+    setPostToDelete(id);
+    setShowModal(true);
+  };
 
-        try {
-            const response = await fetch(`${API_URL}/api/post/${postToDelete}`, {
-                method: 'DELETE',
-            });
+  const cancelDelete = () => {
+    setPostToDelete(null);
+    setShowModal(false);
+  };
 
-            if (!response.ok) {
-                throw new Error('Failed to delete post');
-            }
+  const handleDeletePost = async () => {
+    if (postToDelete === null) return;
 
-            setPosts(posts.filter(post => post.id !== postToDelete)); // Update the state
-            setShowModal(false); // Close the modal
-            setPostToDelete(null); // Clear the post to delete
+    try {
+      const response = await fetch(`${API_URL}/api/post/${postToDelete}`, {
+        method: "DELETE",
+      });
 
-            // Redirect to homepage
-            navigate('/');
-        } catch (err) {
-            console.error(err.message);
-            setError('Failed to delete the post.');
-        }
-    };
+      if (!response.ok) {
+        throw new Error("Failed to delete post");
+      }
 
-    const handleUpvote = async (postId: number) => {
-        try {
-            const response = await fetch(`${API_URL}/api/upvote/${postId}`, {
-                method: "POST",
-                credentials: "include", // Ensure cookies are sent for auth
-            });
+      setPosts(posts.filter((post) => post.id !== postToDelete)); // Update the state
+      setShowModal(false); // Close the modal
+      setPostToDelete(null); // Clear the post to delete
 
-            if (!response.ok) {
-                throw new Error("Failed to upvote post.");
-            }
+      // Redirect to homepage
+      navigate("/");
+    } catch (err) {
+      console.error(err.message);
+      setError("Failed to delete the post.");
+    }
+  };
 
-            const data = await response.json();
+  const handleUpvote = async (postId: number) => {
+    try {
+      const response = await fetch(`${API_URL}/api/upvote/${postId}`, {
+        method: "POST",
+        credentials: "include", // Ensure cookies are sent for auth
+      });
 
-            // Update the upvote count for the post in the state
-            setPosts((prevPosts) =>
-                prevPosts.map((post) =>
-                    post.id === postId ? { ...post, upvotes: data.upvotes } : post
-                )
-            );
-        } catch (err) {
-            console.error(err);
-            setError("Login to upvote a post");
-        }
-    };
+      if (!response.ok) {
+        throw new Error("Failed to upvote post.");
+      }
 
-    return (
-        <Container className="mt-4">
-            <div className="d-flex justify-content-between align-items-center mb-3">
-                <h1 className="mb-0">Posts</h1>
-                {user?.role === 'Admin' || user?.role === 'User' ? (
-                    <Button href='/postcreate' className='create-btn btn btn-secondary mt-3'>Create New Post</Button>
-                ) : null}
-                {!lockedView && (
-                    <div className="d-flex">
-                        <button
-                            onClick={toggleToGrid}
-                            className={`btn me-2 ${view === "grid" ? "active-btn" : "inactive-btn"}`}
-                            title="Grid View"
-                        >
-                            <i className="fas fa-th"></i>
-                        </button>
-                        <button
-                            onClick={toggleToList}
-                            className={`btn ${view === "list" ? "active-btn" : "inactive-btn"}`}
-                            title="List View"
-                        >
-                            <i className="fas fa-list"></i>
-                        </button>
-                    </div>
-                )}
-            </div>
+      const data = await response.json();
 
-            {loading && (
-                <div className="text-center">
-                    <Spinner animation="border" role="status">
-                        <span className="sr-only">Loading...</span>
-                    </Spinner>
-                </div>
-            )}
-            {error && <Alert variant="danger">{error}</Alert>}
-            {!loading && !error && (
-                (lockedView ?? view) === "list"
-                    ? <PostList posts={posts} API_URL={API_URL} onDelete={confirmDeletePost} onUpvote={handleUpvote} />
-                    : <PostGrid posts={posts} API_URL={API_URL} onDelete={confirmDeletePost} onUpvote={handleUpvote} />
-            )}
+      // Update the upvote count for the post in the state
+      setPosts((prevPosts) =>
+        prevPosts.map((post) =>
+          post.id === postId ? { ...post, upvotes: data.upvotes } : post
+        )
+      );
+    } catch (err) {
+      console.error(err);
+      setError("Login to upvote a post");
+    }
+  };
 
-            {/* Confirmation Modal */}
-            <Modal show={showModal} onHide={cancelDelete}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Confirm Deletion</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    Are you sure you want to delete this post? This action cannot be undone.
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={cancelDelete}>
-                        Cancel
-                    </Button>
-                    <Button variant="danger" onClick={handleDeletePost}>
-                        Delete
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-        </Container>
-    );
+  //handling comment
+  const handleAddComment = async (postId: number, text: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(`${API_URL}/api/comment/${postId}`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ text }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to add comment");
+      }
+      const data: Comment = await response.json();
+      setComments((prev) => [...prev, data]);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEditComment = async (
+    postId: number,
+    commentId: number,
+    text: string,
+    author: string
+  ) => {
+    setLoading(true);
+    setError(null);
+    try {
+      fetch(`${API_URL}/api/comment/${commentId}`, {
+        method: "PUT",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          comment: text,
+          postId,
+          author,
+          commentId,
+          createdDate: new Date(),
+        }),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Failed to edit comment");
+          }
+          setComments((prev) =>
+            prev.map((comment) =>
+              comment.id === commentId ? { ...comment, text } : comment
+            )
+          );
+        })
+        .catch((err) => {
+          setError(err.message);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteComment = async (commentId: number) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(`${API_URL}/api/comment/${commentId}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (!response.ok) {
+        throw new Error("Failed to delete comment");
+      }
+      setComments(comments.filter((comment) => comment.id !== commentId));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchComment = async (id: number) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch(`${API_URL}/api/comment/${id}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch comments");
+      }
+      const data: Comment[] = await response.json();
+
+      setComments(data);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Container className="mt-4">
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <h1 className="mb-0">Posts</h1>
+        {user?.role === "Admin" || user?.role === "User" ? (
+          <Button href="/postcreate" className="btn btn-secondary mt-3">
+            Create New Post
+          </Button>
+        ) : null}
+        {!lockedView && (
+          <div className="d-flex">
+            <button
+              onClick={toggleToGrid}
+              className={`btn me-2 ${
+                view === "grid" ? "active-btn" : "inactive-btn"
+              }`}
+              title="Grid View"
+            >
+              <i className="fas fa-th"></i>
+            </button>
+            <button
+              onClick={toggleToList}
+              className={`btn ${
+                view === "list" ? "active-btn" : "inactive-btn"
+              }`}
+              title="List View"
+            >
+              <i className="fas fa-list"></i>
+            </button>
+          </div>
+        )}
+      </div>
+
+      {loading && (
+        <div className="text-center">
+          <Spinner animation="border" role="status">
+            <span className="sr-only">Loading...</span>
+          </Spinner>
+        </div>
+      )}
+      {error && <Alert variant="danger">{error}</Alert>}
+      {!loading &&
+        !error &&
+        ((lockedView ?? view) === "list" ? (
+          <PostList
+            posts={posts}
+            API_URL={API_URL}
+            onDelete={confirmDeletePost}
+            onUpvote={handleUpvote}
+            onAddComment={handleAddComment}
+            onEditComment={handleEditComment}
+            onDeleteComment={handleDeleteComment}
+            onVote={handleUpvote}
+            comments={comments}
+            fetchComments={fetchComment}
+            setVisibleCommentPostId={setVisibleCommentPostId}
+            visibleCommentPostId={visibleCommentPostId}
+          />
+        ) : (
+          <PostGrid
+            posts={posts}
+            API_URL={API_URL}
+            onDelete={confirmDeletePost}
+            onUpvote={handleUpvote}
+            onAddComment={handleAddComment}
+            onEditComment={handleEditComment}
+            onDeleteComment={handleDeleteComment}
+            onVote={handleUpvote}
+            comments={comments}
+            fetchComments={fetchComment}
+            setVisibleCommentPostId={setVisibleCommentPostId}
+            visibleCommentPostId={visibleCommentPostId}
+          />
+        ))}
+
+      {/* Confirmation Modal */}
+      <Modal show={showModal} onHide={cancelDelete}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm Deletion</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Are you sure you want to delete this post? This action cannot be
+          undone.
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={cancelDelete}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={handleDeletePost}>
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </Container>
+  );
 };
 
 export default PostListPage;
