@@ -124,7 +124,7 @@ public class PostControllerTests
         public async Task TestDetails_PostNotFound()
         {
             // Arrange
-            _mockPostRepository.Setup(repo => repo.GetPostByIdAsync(1)).ReturnsAsync((Post)null);
+            _mockPostRepository.Setup(repo => repo.GetPostByIdAsync(1)).ReturnsAsync((Post?)null);
 
             // Act
             var result = await _postController.Details(1);
@@ -155,7 +155,7 @@ public class PostControllerTests
         public async Task TestEdit_PostNotFound()
         {
             // Arrange
-            _mockPostRepository.Setup(repo => repo.GetPostByIdAsync(1)).ReturnsAsync((Post)null);
+            _mockPostRepository.Setup(repo => repo.GetPostByIdAsync(1)).ReturnsAsync((Post?)null);
 
             // Act
             var result = await _postController.Edit(1);
@@ -201,7 +201,7 @@ public class PostControllerTests
         public async Task TestDelete_PostNotFound()
         {
             // Arrange
-            _mockPostRepository.Setup(repo => repo.GetPostByIdAsync(1)).ReturnsAsync((Post)null);
+            _mockPostRepository.Setup(repo => repo.GetPostByIdAsync(1)).ReturnsAsync((Post?)null);
 
             // Act
             var result = await _postController.Delete(1);
@@ -246,7 +246,7 @@ public class PostControllerTests
         public async Task TestDeleteConfirmed_PostNotFound()
         {
             // Arrange
-            _mockPostRepository.Setup(repo => repo.GetPostByIdAsync(1)).ReturnsAsync((Post)null);
+            _mockPostRepository.Setup(repo => repo.GetPostByIdAsync(1)).ReturnsAsync((Post?)null);
 
             // Act
             var result = await _postController.DeleteConfirmed(1);
