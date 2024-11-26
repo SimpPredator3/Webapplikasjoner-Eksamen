@@ -92,14 +92,17 @@ a {
 .btn-primary:hover {
     background-color: #b46432;
 }
+.create-btn-create{
+    margin-top: 20px;
+}
 
 .details-btn {
-    background-color: #FF914D;
+    background-color: #1c8cc0;
     color: white;
     border: none;
 }
 .details-btn:hover {
-    background-color: #b46432;
+    background-color: #187aa7;
     color: white;
 }
 
@@ -109,7 +112,7 @@ a {
     border: none;
 }
 .btn-danger:hover {
-    background-color: #c82333;
+    background-color: #b31d2c;
 }
 .edit-btn{
     background-color: #FF914D;
@@ -118,4 +121,7 @@ a {
 }
 .edit-btn:hover{
     background-color: #b46432;
+}
+.last-form{
+    margin-bottom: 20px;
 }
