@@ -24,6 +24,39 @@
   color: #61dafb;
 }
 
+/*Font and other*/
+.nav-custom {
+  font-family: 'Lato', sans-serif;
+}
+
+body {
+  font-family: 'Montserrat', sans-serif;
+}
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+} 
+p, span, label, button, input, textarea, table, td, th {
+  font-family: 'Karla', sans-serif;
+}
+.intro-text{
+  font-weight: 430;
+  font-size: 1.1em;
+}
+.btn, .btn-secondary {
+  font-family: 'Karla', sans-serif !important;
+}
+.custom-button {
+  margin-top: 17px;
+  margin-right: 2px;  
+}
+.dropdown-toggle {
+  font-family: 'Lato', sans-serif;
+}
+
+
+
+
 /*DARKMODE*/
 /* Default background for light mode */
 body[data-bs-theme='light'] {
@@ -64,7 +97,17 @@ body[data-bs-theme='dark'] {
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.35);
 }
 
-
+/* Adjust dark button for small screens */
+@media (max-width: 989px) {
+  .darkmode-btn {
+    top: 110px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+  }
+}
 
 @keyframes App-logo-spin {
   from {
