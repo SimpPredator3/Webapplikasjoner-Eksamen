@@ -2,17 +2,24 @@ import React, { useState, useEffect } from "react";
 import { Button, Modal, Form, NavDropdown } from "react-bootstrap";
 import { useUser } from '../components/UserContext';
 import "./LoginModalComponent.css";
+import '../App.css';
 
 function LoginModalComponent() {
+    // State for toggling login and register modals
     const [showLoginModal, setShowLoginModal] = useState(false);
-    const [showRegisterModal, setShowRegisterModal] = useState(false); 
+    const [showRegisterModal, setShowRegisterModal] = useState(false);
+
+    // States for user input fields
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [registerEmail, setRegisterEmail] = useState(""); 
-    const [registerPassword, setRegisterPassword] = useState(""); 
+    const [registerEmail, setRegisterEmail] = useState("");
+    const [registerPassword, setRegisterPassword] = useState("");
+
+    // State for error messages and logged-in user information
     const [error, setError] = useState("");
     const [userName, setUserName] = useState(null);
-    const { refreshUserRole, setUser } = useUser();
+
+    const { refreshUserDetails, setUser } = useUser();
 
     // Fetch user identity
     const fetchUserIdentity = async () => {
@@ -24,8 +31,11 @@ function LoginModalComponent() {
             if (response.ok) {
                 const data = await response.json();
                 setUserName(data.name);
-            } else {
+            } else if (response.status === 401 || response.status === 404) {
+                // Handle cases where the user is not logged in
                 setUserName(null);
+            } else {
+                console.error("Unexpected response:", response.status);
             }
         } catch (error) {
             console.error("Error fetching user identity:", error);
@@ -37,7 +47,7 @@ function LoginModalComponent() {
         fetchUserIdentity();
     }, []);
 
-    // Login function
+    // Handle user login
     const handleLogin = async (e) => {
         e.preventDefault();
         setError("");
@@ -51,7 +61,7 @@ function LoginModalComponent() {
             if (response.ok) {
                 setShowLoginModal(false);
                 fetchUserIdentity();
-                refreshUserRole();
+                refreshUserDetails(); // Update user details after login
             } else {
                 const errorData = await response.json();
                 setError("Login failed: " + (errorData.message || "Unknown error"));
@@ -62,11 +72,11 @@ function LoginModalComponent() {
         }
     };
 
-    // Register function with debugging
+    // Handle user registration
     const handleRegister = async (e) => {
         e.preventDefault();
         setError("");
-        console.log("Register button clicked"); // Debugging
+        console.log("Register button clicked");
 
         try {
             const response = await fetch("http://localhost:5141/api/auth/register", {
@@ -76,9 +86,9 @@ function LoginModalComponent() {
             });
 
             if (response.ok) {
-                console.log("Registration successful"); // Debugging
+                console.log("Registration successful");
                 setShowRegisterModal(false);
-                setShowLoginModal(true); // Open login modal after registration
+                setShowLoginModal(true);
             } else {
                 const errorData = await response.json();
                 setError("Registration failed: " + (errorData.message || "Unknown error"));
@@ -89,7 +99,7 @@ function LoginModalComponent() {
         }
     };
 
-    // Logout function
+    // Handle user logout
     const handleLogout = async () => {
         try {
             const response = await fetch("http://localhost:5141/api/auth/logout", {
@@ -110,8 +120,7 @@ function LoginModalComponent() {
 
     return (
         <>
-            {/* Top-right corner visible on large screens */}
-            <div className="top-right-corner d-none d-lg-block">
+            <div className="top-right-corner">
                 {userName ? (
                     <>
                         <span className="me-2">Welcome, {userName}</span>
@@ -125,7 +134,7 @@ function LoginModalComponent() {
                     </Button>
                 )}
             </div>
-    
+
             {/* Add to Hamburger Menu for small screens */}
             <div className="d-lg-none">
                 {userName ? (
@@ -148,7 +157,7 @@ function LoginModalComponent() {
                     </NavDropdown>
                 )}
             </div>
-    
+
             {/* Login Modal */}
             <Modal show={showLoginModal} onHide={() => setShowLoginModal(false)}>
                 <Modal.Header closeButton>
@@ -196,7 +205,7 @@ function LoginModalComponent() {
                     </div>
                 </Modal.Body>
             </Modal>
-    
+
             {/* Registration Modal */}
             <Modal show={showRegisterModal} onHide={() => setShowRegisterModal(false)}>
                 <Modal.Header closeButton>
@@ -246,7 +255,6 @@ function LoginModalComponent() {
             </Modal>
         </>
     );
-    
 }
 
 export default LoginModalComponent;

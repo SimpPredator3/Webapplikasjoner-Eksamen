@@ -10,6 +10,7 @@ using System.Collections.Generic;
 
 namespace api.Controllers
 {
+    // Main controller for managing Admin Dashboard functionality
     [ApiController]
     [Route("api/admindash")]
     public class AdminDashController : Controller
@@ -45,8 +46,8 @@ namespace api.Controllers
                 CreatedDate = post.CreatedDate,
                 Author = post.Author,
                 CommentCount = post.CommentCount,
-                Upvotes = post.Upvotes
-            }); 
+                Upvotes = post.Upvotes.Count
+            });
 
             return Ok(postDtos);
         }
@@ -74,7 +75,7 @@ namespace api.Controllers
                 CreatedDate = post.CreatedDate,
                 Author = post.Author,
                 CommentCount = post.CommentCount,
-                Upvotes = post.Upvotes
+                Upvotes = post.Upvotes.Count
             };
 
             return Ok(postDto);
@@ -83,7 +84,7 @@ namespace api.Controllers
 
         // GET: AdminDash/Create
         [HttpPost("create")]
-        [Authorize]
+        [Authorize] // Ensures only authenticated users can access
         public IActionResult Create()
         {
             return View(new PostCreateViewModel());
@@ -93,8 +94,8 @@ namespace api.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-         public async Task<IActionResult> Create([FromBody] PostCreateViewModel model)
-         {
+        public async Task<IActionResult> Create([FromBody] PostCreateViewModel model)
+        {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -105,43 +106,43 @@ namespace api.Controllers
                 return Forbid();
             }
 
-             var post = new Post
-                {
-                    Title = model.Title,
-                    Content = model.Content,
-                    ImageUrl = model.ImageUrl,
-                    Author = User.Identity.Name,
-                    Tag = model.Tag,
-                    CreatedDate = DateTime.Now
-                };
+            var post = new Post
+            {
+                Title = model.Title,
+                Content = model.Content,
+                ImageUrl = model.ImageUrl,
+                Author = User.Identity.Name, // Sets the current user as the author
+                Tag = model.Tag,
+                CreatedDate = DateTime.Now
+            };
 
-                bool returnOK = await _postRepository.AddPostAsync(post);
-                if (!returnOK)
-                {
-                    _logger.LogWarning("[AdminDashController] Post creation failed {@post}", model);
-                    return StatusCode(500, "A problem happened while handling your request.");
-                }
+            bool returnOK = await _postRepository.AddPostAsync(post);
+            if (!returnOK)
+            {
+                _logger.LogWarning("[AdminDashController] Post creation failed {@post}", model);
+                return StatusCode(500, "A problem happened while handling your request.");
+            }
 
-                var postDto = new PostDto
-                {
-                    Id = post.Id,
-                    Title = post.Title,
-                    Content = post.Content,
-                    ImageUrl = post.ImageUrl,
-                    Tag = post.Tag,
-                    CreatedDate = post.CreatedDate,
-                    Author = post.Author,
-                    CommentCount = post.CommentCount,
-                    Upvotes = post.Upvotes
-                };
+            var postDto = new PostDto
+            {
+                Id = post.Id,
+                Title = post.Title,
+                Content = post.Content,
+                ImageUrl = post.ImageUrl,
+                Tag = post.Tag,
+                CreatedDate = post.CreatedDate,
+                Author = post.Author,
+                CommentCount = post.CommentCount,
+                Upvotes = 0 // Initialize upvotes to zero
+            };
 
-                return CreatedAtAction(nameof(GetPostById), new { id = post.Id }, postDto);
-         }
+            return CreatedAtAction(nameof(GetPostById), new { id = post.Id }, postDto);
+        }
 
 
         // PUT: api/admindash/edit/{id}
         [HttpPut("edit/{id}")]
-        [Authorize]
+        [Authorize] // Ensures only authenticated users can access
         public async Task<IActionResult> Edit(int id, [FromBody] Post post)
         {
             if (id != post.Id)
@@ -175,7 +176,7 @@ namespace api.Controllers
 
         // DELETE: api/admindash/delete/{id}
         [HttpDelete("delete/{id}")]
-        [Authorize]
+        [Authorize] // Ensures only authenticated users can access
         public async Task<IActionResult> Delete(int id)
         {
             var post = await _postRepository.GetPostByIdAsync(id);

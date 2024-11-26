@@ -1,15 +1,23 @@
+.navbar-container {
+    position: relative;
+}
+
 .top-right-corner {
-    position: fixed;
+    position: absolute;
+    display: block;
     top: 10px;
     right: 10px;
     z-index: 1000;
     display: flex;
     align-items: center;
+    gap: 0.5rem;
 }
 
 .top-right-corner .btn {
-    margin-left: 0.5rem;
+    margin-left: 0;
+    padding: 0.25rem 0.75rem;
 }
+
 .link-button {
     background: none;
     border: none;
@@ -19,3 +27,12 @@
     padding: 0;
     font: inherit;
 }
+
+
+/* Hide on small screens */
+@media (max-width: 989px) {
+    .top-right-corner {
+        display: none;
+    }
+}
+

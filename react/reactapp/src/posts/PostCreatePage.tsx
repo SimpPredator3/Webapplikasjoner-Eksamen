@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import PostForm from './PostForm';
 import { Post } from '../types/Post';
 import { API_URL } from '../apiConfig';
+import '../App.css';
 
 const PostCreatePage: React.FC = () => {
   const navigate = useNavigate();
@@ -25,7 +26,7 @@ const PostCreatePage: React.FC = () => {
       console.log('Post created successfully:', data);
 
       // Redirect to posts page after successful creation
-      navigate('/posts');
+      navigate('/');
     } catch (error) {
       console.error('There was a problem with the fetch operation:', error);
     }
