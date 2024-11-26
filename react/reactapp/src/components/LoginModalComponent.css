@@ -1,0 +1,29 @@
+.navbar-container {
+    position: relative; /* Ensure the Navbar acts as the parent for absolute positioning */
+}
+
+.top-right-corner {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.top-right-corner .btn {
+    margin-left: 0;
+    padding: 0.25rem 0.75rem;
+}
+
+.link-button {
+    background: none;
+    border: none;
+    color: rgb(63, 75, 179);
+    text-decoration: underline;
+    cursor: pointer;
+    padding: 0;
+    font: inherit;
+}
+

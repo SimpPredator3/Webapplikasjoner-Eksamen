@@ -1,0 +1,249 @@
+@model IEnumerable<WebMVC.Models.Post>
+@{
+    // Fetching the tag data passed from the controller
+    var uniqueTags = ViewBag.UniqueTags as Dictionary<string, int>; // Unique tags with their counts
+    int noTags = ViewBag.NoTags; // Number of posts without tags
+    int allTags = ViewBag.AllTags; // Total number of posts
+}
+
+<head>
+    <link rel="stylesheet" href="~/css/main.css" />
+    <link rel="stylesheet" href="~/css/custom.css" />
+    <link rel="stylesheet" href="~/css/scroll.css" />
+</head>
+<div class="welcomebox">
+    <h3 class="welcometitle">Communicate in countless ways
+        from one place.</h3>
+    <p>Are you a student overwhelmed by textbooks and assignments? A
+        professional trying to juggle multiple projects and deadlines? Or simply
+        someone who loves learning new things and sharing their knowledge with
+        others? NoteHub is here to help! Our platform is designed to make
+        your life easier by providing a centralized space for organizing, sharing,
+        and collaborating on notes, images, and other materials.</p>
+</div>
+
+<h2>Tags</h2>
+
+<!-- Tag search bar -->
+<div class="tag-search" style="margin-bottom: 30px;">
+    <input type="text" id="tagSearchInput" class="form-control" placeholder="Search tags...">
+</div>
+
+<!-- Tag buttons -->
+<div class="row scroll">
+    <div class="col-md-3">
+        <div class="card mb-4">
+            <div class="tag-card">
+                <a href="javascript:void(0);" class="btn btn-card" id="showAllButton">All Posts (@allTags)</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card mb-4">
+            <div class="tag-card">
+                <a href="javascript:void(0);" class="btn btn-card" id="showNullButton">No Tags (@noTags)</a>
+            </div>
+        </div>
+    </div>
+
+    @if (uniqueTags != null && uniqueTags.Any())
+    {
+        @foreach (var tag in uniqueTags)
+        {
+            <div class="col-md-3 tag-item" data-tag="@tag.Key">
+                <div class="card mb-4">
+                    <div class="tag-card">
+                        <a href="javascript:void(0);" class="btn btn-card tag-button" data-tag="@tag.Key"> @tag.Key (@tag.Value)
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <p>No tags available.</p> <!-- Fallback message when uniqueTags is null or empty -->
+    }
+</div>
+<!-- Post Grid -->
+<div class="row" id="postGrid">
+    <h2 id="postTitle">All Posts</h2>
+
+    <!-- SVG divider -->
+    <svg width="100%" height="4"> <!-- 100% width and height for the line -->
+        <line x1="0" y1="2" x2="100%" y2="2" stroke="black" stroke-width="4" />
+    </svg>
+
+    <!-- Iterate through each post in the model -->
+    @foreach (var post in Model)
+    {
+        <!-- Post card structure with Bootstrap classes -->
+        <div class="col-md-4 post-card" data-tag="@post.Tag">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">@post.Title</h5>
+                    <h6 class="tag-disp">#@post.Tag</h6>
+                    <h6 class="card-subtitle mb-2 text-muted">By @post.Author on @post.CreatedDate.ToString("g")</h6>
+
+                    <!-- Check if an image URL is present, display image if available -->
+                    @if (!string.IsNullOrEmpty(post.ImageUrl))
+                    {
+                        <img src="@post.ImageUrl" alt="Image" class="img-thumbnail mb-2" />
+                    }
+
+                    <p class="card-text">@post.Content</p>
+                    <p><strong>Comments:</strong> @post.CommentCount</p>
+
+                    <!-- Display Upvotes count with dynamic updating via class 'like-counter' -->
+                    <p>Upvotes: <span class="like-counter">@post.Upvotes</span></p>
+
+                    <!-- Upvote button with post ID data attribute, used by JavaScript -->
+                    <button class="btn btn-success like-btn" data-post-id="@post.Id">Upvote</button>
+
+                    <!-- Link to post details -->
+
+                    <a href="javascript:void(0);" class="btn btn-info details-btn">Details</a>
+                    <div class="hiddenDiv custom-hidden">
+
+
+                        <div class="postComments" style="width: 500px;">
+                            @if (post.Comments != null && post.CommentCount != 0)
+                            {
+                                @foreach (var comment in post.Comments)
+                                {
+                                    <div>
+                                        <p><strong>@comment.Author</strong> (@comment.CreatedDate.ToShortDateString()):</p>
+                                        <p>@comment.Text</p>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <p>No comments yet.</p>
+                            }
+
+                            <hr />
+
+                            @if (User?.Identity?.IsAuthenticated == true)
+                            {
+                                <h3>Add a Comment</h3>
+                                <form asp-action="Create" asp-controller="Comment" method="post">
+                                    <input type="hidden" name="postId" value="@post.Id" />
+                                    <textarea name="Text" class="form-control"></textarea>
+                                    <button type="submit" class="btn btn-primary mt-2">Submit</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <p>You must be logged in to add a comment.</p>
+                            }
+                        </div>
+                        <a href="javascript:void(0);" class="btn btn-info hide-details-btn">Hide Details</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- jQuery Script to filter posts -->
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // Click event for filtering posts based on selected tag
+            $('.tag-button').click(function () {
+                var selectedTag = $(this).data('tag'); // Get the selected tag
+
+                $('#postTitle').text(selectedTag); //Change  headline
+
+                // Show/Hide posts based on the selected tag
+                $('.post-card').each(function () {
+                    var postTag = $(this).data('tag');
+
+                    if (postTag === selectedTag) {
+                        $(this).show(); // Show matching post
+                    } else {
+                        $(this).hide(); // Hide non-matching post
+                    }
+                });
+            });
+
+            // Click event for showing all posts
+            $('#showAllButton').click(function () {
+                // Show all posts
+                $('.post-card').each(function () {
+                    $(this).show();
+                });
+                $('#postTitle').text("All Posts"); //Change  headline
+            });
+
+            // Click event for showing all posts without tags
+            $('#showNullButton').click(function () {
+                // Show all posts without tags
+                $('.post-card').each(function () {
+                    var postTag = $(this).data('tag');
+                    if (!postTag) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                    $('#postTitle').text("No Tags"); //Change  headline
+                });
+            })
+            // Search functionality for filtering tag buttons
+            $('#tagSearchInput').on('keyup', function () {
+                var searchQuery = $(this).val().toLowerCase();
+                $('.tag-item').each(function () {
+                    var tagText = $(this).data('tag').toLowerCase();
+                    if (tagText.includes(searchQuery)) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            });
+            //______________________________________________________
+            $('.details-btn').on('click', function () {
+                var details = $(this);
+                details.next('.hiddenDiv').removeClass('custom-hidden');
+                details.closest('.post-card').addClass('col-md-12');
+            });
+            $('.hide-details-btn').on('click', function () {
+                var hidedetails = $(this);
+                hidedetails.closest('.hiddenDiv').addClass('custom-hidden');
+                hidedetails.closest('.post-card').removeClass('col-md-12');
+            });
+        });
+
+        // jQuery Script to Like and remove like
+        $(document).ready(function () {
+            // Handle upvote button click
+            $(document).on('click', '.like-btn', function (e) {  // Event delegation for dynamic elements
+                e.preventDefault();
+
+                var button = $(this);
+                var postId = button.data('post-id');
+
+                // Send AJAX request to upvote the post
+                $.ajax({
+                    url: '/Main/Upvote', // The URL for the like action
+                    type: 'POST',
+                    data: {
+                        postId: postId,
+                        __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val() // Anti-forgery token
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            // Update the like counter on success
+                            button.closest('.card-body').find('.like-counter').text(response.upvotes);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.log(error);  // Handle any errors
+                    }
+                });
+            });
+        });
+    </script>
+}

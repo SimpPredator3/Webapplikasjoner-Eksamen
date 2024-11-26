@@ -1,0 +1,76 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.App-link {
+  color: #61dafb;
+}
+
+/*DARKMODE*/
+/* Default background for light mode */
+body[data-bs-theme='light'] {
+  background-color: #ffe8d1; /* Light background color */
+  color: #000000; /* Dark text color */
+}
+
+/* Background for dark mode */
+body[data-bs-theme='dark'] {
+  background-color: #212529; /* Dark background color */
+  color: #ffffff; /* Light text color */
+}
+
+
+.darkmode-btn {
+  position: absolute;
+  top: 80px;
+  right: 20px;
+  background-color: #005246;
+  color: #ffe8d1;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1.5rem;
+}
+
+/* Hover effect */
+.darkmode-btn:hover {
+  background-color: #a16e50;
+  color: #0c0c0c;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.35);
+}
+
+
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
