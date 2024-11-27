@@ -124,7 +124,7 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
     };
 
     return (
-        <Container className="mt-4">
+        <Container className="admin-dashboard-container mt-4">
             {/* Tag Search Input */}
             <div className="d-flex justify-content-between align-items-center mb-3">
                 <input
@@ -135,6 +135,7 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
                     className="form-control"
                     style={{ width: '200px' }}
                 />
+                <Button href='/postcreate' className='admin-post-btn create-btn btn btn-secondary mt-3'>Create New Post</Button>
                 <div className="d-flex">
                     <button
                         onClick={toggleToGrid}
@@ -155,7 +156,7 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
                         className={`btn ${view === "MyPost" ? "active-btn" : "inactive-btn"}`}
                         title="My Posts"
                     >
-                        <i className="fas fa-user"></i> My Posts
+                        <i className="fas fa-user"></i>
                     </button>
                 </div>
             </div>

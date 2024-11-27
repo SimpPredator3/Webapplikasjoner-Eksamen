@@ -82,7 +82,10 @@
             <div class="card mb-4">
                 <div class="card-body">
                     <h5 class="card-title">@post.Title</h5>
+                    @if(!string.IsNullOrEmpty(post.Tag))
+                    {
                     <h6 class="tag-disp">#@post.Tag</h6>
+                    }
                     <h6 class="card-subtitle mb-2 text-muted">By @post.Author on @post.CreatedDate.ToString("g")</h6>
 
                     <!-- Check if an image URL is present, display image if available -->
