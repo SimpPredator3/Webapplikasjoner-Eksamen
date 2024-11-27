@@ -133,6 +133,11 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
 
     //handling comment
     const handleAddComment = async (postId: number, text: string) => {
+        if (!user) {
+            setError("You must be logged in to add a comment.");
+            return;
+        }
+
         setLoading(true);
         setError(null);
         try {
@@ -287,6 +292,7 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
                     </Spinner>
                 </div>
             )}
+            {error && <Alert variant="danger">{error}</Alert>}
             {!loading &&
                 !error &&
                 ((lockedView ?? view) === "list" ? (
