@@ -15,6 +15,7 @@ const PostForm: React.FC<PostFormProps> = ({ onPostCreated }) => {
   const [imageUrl, setImageUrl] = useState('');
   const [error, setError] = useState<string | null>(null);
   const { user } = useUser(); // Get the logged-in user from useUser
+  const [tag, setTag] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -34,6 +35,7 @@ const PostForm: React.FC<PostFormProps> = ({ onPostCreated }) => {
     const newPost: Post = {
       id: 0, // Temporarily set to 0, assuming the backend will assign a real ID
       title,
+      tag,
       author: user?.username || user?.email || 'Unknown Author', // Set author to the logged-in user's username or email
       content,
       imageUrl: imageUrl || undefined,
@@ -71,6 +73,15 @@ const PostForm: React.FC<PostFormProps> = ({ onPostCreated }) => {
           value={content}
           onChange={(e) => setContent(e.target.value)}
           required
+        />
+      </Form.Group>
+      <Form.Group controlId="formPostImageUrl">
+        <Form.Label>Tag</Form.Label>
+        <Form.Control
+          type="text"
+          placeholder="Enter Tag"
+          value={tag}
+          onChange={(e) => setTag(e.target.value)}
         />
       </Form.Group>
 
