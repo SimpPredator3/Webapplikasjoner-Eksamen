@@ -28,7 +28,7 @@ namespace WebMVC.Controllers
                 _logger.LogError("[AdminDashController] Post list not found while executing _postRepository.GetAllPostsAsync()");
                 return NotFound("Post list not found");
             }
-            return View("~/Views/AdminDash/Index.cshtml", posts);
+            return View("~/Views/AdminDash/Index.cshtml", posts); // Updated view path for AdminDash
         }
 
         // GET: AdminDash/Create

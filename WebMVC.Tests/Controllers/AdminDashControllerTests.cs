@@ -88,7 +88,7 @@ public class AdminDashControllerTests
     public async Task TestDetails_PostNotFound()
     {
         // Arrange
-        _mockPostRepository.Setup(repo => repo.GetPostByIdAsync(1)).ReturnsAsync((Post?)null);
+        _mockPostRepository.Setup(repo => repo.GetPostByIdAsync(1)).ReturnsAsync((Post)null);
 
         // Act
         var result = await _adminDashController.Details(1);
@@ -119,7 +119,7 @@ public class AdminDashControllerTests
     public async Task TestEdit_PostNotFound()
     {
         // Arrange
-        _mockPostRepository.Setup(repo => repo.GetPostByIdAsync(1)).ReturnsAsync((Post?)null);
+        _mockPostRepository.Setup(repo => repo.GetPostByIdAsync(1)).ReturnsAsync((Post)null);
 
         // Act
         var result = await _adminDashController.Edit(1);
