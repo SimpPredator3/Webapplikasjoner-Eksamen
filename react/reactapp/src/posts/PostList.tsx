@@ -90,7 +90,7 @@ const PostList: React.FC<PostListProps> = ({
                                     }}
                                     className="me-2"
                                     style={{
-                                        borderRadius: '20px', // Make the button rounded
+                                        borderRadius: '20px',
                                         fontWeight: 'bold',
                                     }}
                                 >
