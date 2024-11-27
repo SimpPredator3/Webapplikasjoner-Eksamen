@@ -135,7 +135,7 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
                     className="form-control"
                     style={{ width: '200px' }}
                 />
-                <Button href='/postcreate' className='admin-post-btn create-btn btn btn-secondary mt-3'>Create New Post</Button>
+                <Button href='/postcreate' className='admin-post-btn create-btn btn btn-secondary'>Create New Post</Button>
                 <div className="d-flex">
                     <button
                         onClick={toggleToGrid}

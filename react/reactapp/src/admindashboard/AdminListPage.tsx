@@ -154,7 +154,7 @@ const AdminListPage: React.FC<PostListPageProps> = ({ initialView = "grid", lock
             <div className="d-flex justify-content-between align-items-center mb-3">
                 <h1 className="mb-0 admin-titel">Admin Dashboard</h1>
                 {user?.role === 'Admin' && (
-                    <Button href='/postcreate' className='admin-post-btn create-btn btn btn-secondary mt-3'>Create New Post</Button>
+                    <Button href='/postcreate' className='admin-post-btn create-btn btn btn-secondary'>Create New Post</Button>
                 )}
                 {!lockedView && (
                     <div className="d-flex">
