@@ -4,6 +4,7 @@ import { Post } from '../types/Post';
 import './PostGrid.css';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import { useUser } from '../components/UserContext'; // Import useUser to get current user
+import '../App.css';
 
 interface PostGridProps {
     posts: Post[];
@@ -15,6 +16,7 @@ interface PostGridProps {
 const PostGrid: React.FC<PostGridProps> = ({ posts, API_URL, onDelete, onUpvote }) => {
     const navigate = useNavigate(); // Initialize navigate function
     const { user } = useUser(); // Get the current user from UserContext
+
 
     return (
         <Row xs={1} sm={2} md={3} className="g-4">
@@ -38,6 +40,7 @@ const PostGrid: React.FC<PostGridProps> = ({ posts, API_URL, onDelete, onUpvote 
                             <Card.Text className="text-muted">
                                 <small>{new Date(post.createdDate).toLocaleDateString()}</small>
                             </Card.Text>
+                            {post.tag && (<Card.Text>#{post.tag}</Card.Text> )}
                             <div className="d-flex justify-content-between align-items-center">
                                 <Button
                                     variant="success"

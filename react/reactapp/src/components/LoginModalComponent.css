@@ -1,5 +1,5 @@
 .navbar-container {
-    position: relative; /* Ensure the Navbar acts as the parent for absolute positioning */
+    position: relative;
 }
 
 .top-right-corner {

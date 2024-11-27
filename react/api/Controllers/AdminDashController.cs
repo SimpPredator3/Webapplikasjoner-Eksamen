@@ -10,6 +10,7 @@ using System.Collections.Generic;
 
 namespace api.Controllers
 {
+    // Main controller for managing Admin Dashboard functionality
     [ApiController]
     [Route("api/admindash")]
     public class AdminDashController : Controller
@@ -83,7 +84,7 @@ namespace api.Controllers
 
         // GET: AdminDash/Create
         [HttpPost("create")]
-        [Authorize]
+        [Authorize] // Ensures only authenticated users can access
         public IActionResult Create()
         {
             return View(new PostCreateViewModel());
@@ -110,7 +111,7 @@ namespace api.Controllers
                 Title = model.Title,
                 Content = model.Content,
                 ImageUrl = model.ImageUrl,
-                Author = User.Identity.Name,
+                Author = User.Identity.Name, // Sets the current user as the author
                 Tag = model.Tag,
                 CreatedDate = DateTime.Now
             };
@@ -141,7 +142,7 @@ namespace api.Controllers
 
         // PUT: api/admindash/edit/{id}
         [HttpPut("edit/{id}")]
-        [Authorize]
+        [Authorize] // Ensures only authenticated users can access
         public async Task<IActionResult> Edit(int id, [FromBody] Post post)
         {
             if (id != post.Id)
@@ -175,7 +176,7 @@ namespace api.Controllers
 
         // DELETE: api/admindash/delete/{id}
         [HttpDelete("delete/{id}")]
-        [Authorize]
+        [Authorize] // Ensures only authenticated users can access
         public async Task<IActionResult> Delete(int id)
         {
             var post = await _postRepository.GetPostByIdAsync(id);

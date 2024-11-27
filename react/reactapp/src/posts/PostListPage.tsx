@@ -5,8 +5,10 @@ import { API_URL } from '../apiConfig';
 import { Post } from '../types/Post';
 import './PostListPage.css';
 import PostList from './PostList';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useUser } from '../components/UserContext';
+import '../App.css';
+import MyPost from './MyPost';
 
 interface PostListPageProps {
     initialView?: "list" | "grid"; // Optional prop for initial view
@@ -17,12 +19,16 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
     const [posts, setPosts] = useState<Post[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
-    const [view, setView] = useState<"list" | "grid">(lockedView ?? initialView);
+    const [view, setView] = useState<"list" | "grid" | "MyPost">(lockedView ?? initialView);
     const [showModal, setShowModal] = useState<boolean>(false);
     const [postToDelete, setPostToDelete] = useState<number | null>(null);
+    const [searchTag, setSearchTag] = useState<string>("");
+
     const navigate = useNavigate();
+    const location = useLocation();
     const { user } = useUser();
 
+    // Fetch posts from API
     const fetchPosts = async () => {
         setLoading(true);
         setError(null);
@@ -41,18 +47,25 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
         }
     };
 
+    const filteredPosts = posts.filter(post =>
+        (post.tag?.toLowerCase() || "").includes(searchTag.toLowerCase())
+    );
+
+    // Update view based on navigation state
+    useEffect(() => {
+        const stateView = location.state?.view as "list" | "grid" | "MyPost";
+        if (stateView) {
+            setView(stateView);
+        }
+    }, [location.state]);
+
     useEffect(() => {
         fetchPosts();
     }, [user]); // Re-run fetchPosts whenever the user changes
 
-    useEffect(() => {
-        if (user) {
-            setView(view); // Trigger a re-render when the user changes
-        }
-    }, [user]);
-
     const toggleToGrid = () => setView("grid");
     const toggleToList = () => setView("list");
+    const toggleToMyPost = () => setView("MyPost");
 
     const confirmDeletePost = (id: number) => {
         setPostToDelete(id);
@@ -79,9 +92,6 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
             setPosts(posts.filter(post => post.id !== postToDelete)); // Update the state
             setShowModal(false); // Close the modal
             setPostToDelete(null); // Clear the post to delete
-
-            // Redirect to homepage
-            navigate('/');
         } catch (err) {
             console.error(err.message);
             setError('Failed to delete the post.');
@@ -115,29 +125,39 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
 
     return (
         <Container className="mt-4">
+            {/* Tag Search Input */}
             <div className="d-flex justify-content-between align-items-center mb-3">
-                <h1 className="mb-0">Posts</h1>
-                {user?.role === 'Admin' || user?.role === 'User' ? (
-                    <Button href='/postcreate' className='btn btn-secondary mt-3'>Create New Post</Button>
-                ) : null}
-                {!lockedView && (
-                    <div className="d-flex">
-                        <button
-                            onClick={toggleToGrid}
-                            className={`btn me-2 ${view === "grid" ? "active-btn" : "inactive-btn"}`}
-                            title="Grid View"
-                        >
-                            <i className="fas fa-th"></i>
-                        </button>
-                        <button
-                            onClick={toggleToList}
-                            className={`btn ${view === "list" ? "active-btn" : "inactive-btn"}`}
-                            title="List View"
-                        >
-                            <i className="fas fa-list"></i>
-                        </button>
-                    </div>
-                )}
+                <input
+                    type="text"
+                    placeholder="Search by tag"
+                    value={searchTag}
+                    onChange={(e) => setSearchTag(e.target.value)}
+                    className="form-control"
+                    style={{ width: '200px' }}
+                />
+                <div className="d-flex">
+                    <button
+                        onClick={toggleToGrid}
+                        className={`btn me-2 ${view === "grid" ? "active-btn" : "inactive-btn"}`}
+                        title="Grid View"
+                    >
+                        <i className="fas fa-th"></i>
+                    </button>
+                    <button
+                        onClick={toggleToList}
+                        className={`btn me-2 ${view === "list" ? "active-btn" : "inactive-btn"}`}
+                        title="List View"
+                    >
+                        <i className="fas fa-list"></i>
+                    </button>
+                    <button
+                        onClick={() => navigate('/posts', { state: { view: "MyPost" } })}
+                        className={`btn ${view === "MyPost" ? "active-btn" : "inactive-btn"}`}
+                        title="My Posts"
+                    >
+                        <i className="fas fa-user"></i> My Posts
+                    </button>
+                </div>
             </div>
 
             {loading && (
@@ -149,9 +169,15 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
             )}
             {error && <Alert variant="danger">{error}</Alert>}
             {!loading && !error && (
-                (lockedView ?? view) === "list"
-                    ? <PostList posts={posts} API_URL={API_URL} onDelete={confirmDeletePost} onUpvote={handleUpvote} />
-                    : <PostGrid posts={posts} API_URL={API_URL} onDelete={confirmDeletePost} onUpvote={handleUpvote} />
+                (lockedView ?? view) === "list" ? (
+                    <PostList posts={filteredPosts} API_URL={API_URL} onDelete={confirmDeletePost} onUpvote={handleUpvote} />
+                ) : (lockedView ?? view) === "grid" ? (
+                    <PostGrid posts={filteredPosts} API_URL={API_URL} onDelete={confirmDeletePost} onUpvote={handleUpvote} />
+                ) : (lockedView ?? view) === "MyPost" ? (
+                    <MyPost posts={filteredPosts} API_URL={API_URL} onDelete={confirmDeletePost} onUpvote={handleUpvote} />
+                ) : (
+                    <div>No view selected</div>
+                )
             )}
 
             {/* Confirmation Modal */}
