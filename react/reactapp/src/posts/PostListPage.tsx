@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import PostGrid from './PostGrid';
+import PostList from './PostList';
+import MyPost from './MyPost';
 import { Spinner, Alert, Button, Container, Modal } from 'react-bootstrap';
 import { API_URL } from '../apiConfig';
 import { Post } from '../types/Post';
 import './PostListPage.css';
-import PostList from './PostList';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useUser } from '../components/UserContext';
 import '../App.css';
-import MyPost from './MyPost';
 
 interface PostListPageProps {
     initialView?: "list" | "grid"; // Optional prop for initial view
@@ -30,9 +30,7 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
     const [postToDelete, setPostToDelete] = useState<number | null>(null);
     const [searchTag, setSearchTag] = useState<string>("");
     const [comments, setComments] = useState<Comment[]>([]);
-    const [visibleCommentPostId, setVisibleCommentPostId] = useState<
-        number | null
-    >(null);
+    const [visibleCommentPostId, setVisibleCommentPostId] = useState<number | null>(null);
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -64,10 +62,10 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
     // Update view based on navigation state
     useEffect(() => {
         const stateView = location.state?.view as "list" | "grid" | "MyPost";
-        if (stateView) {
+        if (stateView && !lockedView) {  // Avoid overriding if `view` is manually changed
             setView(stateView);
         }
-    }, [location.state]);
+    }, [location.state, lockedView]);
 
     useEffect(() => {
         fetchPosts();
@@ -270,7 +268,10 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
                         <i className="fas fa-list"></i>
                     </button>
                     <button
-                        onClick={() => navigate('/posts', { state: { view: "MyPost" } })}
+                        onClick={() => {
+                            console.log("Navigating to My Posts"); // Added console log
+                            navigate('/posts', { state: { view: "MyPost" } });
+                        }}
                         className={`btn ${view === "MyPost" ? "active-btn" : "inactive-btn"}`}
                         title="My Posts"
                     >
@@ -286,7 +287,6 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
                     </Spinner>
                 </div>
             )}
-            {error && <Alert variant="danger">{error}</Alert>}
             {!loading &&
                 !error &&
                 ((lockedView ?? view) === "list" ? (
@@ -304,6 +304,13 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
                         setVisibleCommentPostId={setVisibleCommentPostId}
                         visibleCommentPostId={visibleCommentPostId}
                     />
+                ) : view === "MyPost" ? (
+                    <MyPost
+                        posts={posts}
+                        API_URL={API_URL}
+                        onDelete={confirmDeletePost}
+                        onUpvote={handleUpvote}
+                    />
                 ) : (
                     <PostGrid
                         posts={posts}
@@ -319,7 +326,8 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
                         setVisibleCommentPostId={setVisibleCommentPostId}
                         visibleCommentPostId={visibleCommentPostId}
                     />
-                ))}
+                ))
+            }
 
             {/* Confirmation Modal */}
             <Modal show={showModal} onHide={cancelDelete}>

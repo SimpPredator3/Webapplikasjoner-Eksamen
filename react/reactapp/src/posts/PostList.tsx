@@ -77,40 +77,27 @@ const PostList: React.FC<PostListProps> = ({
                                 </Button>
                                 <span>{post.upvotes} Likes</span>
                             </div>
-                            {(user?.role === "Admin" || user?.username === post.author) && (
-                                <div className="d-flex justify-content-between mt-2">
-                                    <Button
-                                        variant="warning"
-                                        size="sm"
-                                        onClick={() => navigate(`/post/edit/${post.id}`)} // Navigate to the edit page
-                                    >
-                                        Edit
-                                    </Button>
-                                    <Button
-                                        variant="secondary"
-                                        size="sm"
-                                        onClick={() => {
-                                            fetchComments(post.id);
-                                            setVisibleCommentPostId((prev: number | null) =>
-                                                prev === post.id ? null : post.id
-                                            );
-                                        }}
-                                        className="me-2"
-                                    >
-                                        Comment
-                                    </Button>
-                                    <Button
-                                        variant="danger"
-                                        size="sm"
-                                        onClick={() => onDelete(post.id)} // Call the delete function
-                                        className="me-2"
-                                    >
-                                        Delete
-                                    </Button>
-                                </div>
-                            )}
-                        </Card.Body>
+                            <div className="d-flex justify-content-between mt-2">
 
+                                <Button
+                                    variant="info"
+                                    size="sm"
+                                    onClick={() => {
+                                        fetchComments(post.id);
+                                        setVisibleCommentPostId((prev: number | null) =>
+                                            prev === post.id ? null : post.id
+                                        );
+                                    }}
+                                    className="me-2"
+                                    style={{
+                                        borderRadius: '20px', // Make the button rounded
+                                        fontWeight: 'bold',
+                                    }}
+                                >
+                                    {visibleCommentPostId === post.id ? 'Hide Comments' : 'Show Comments'}
+                                </Button>
+                            </div>
+                        </Card.Body>
                     </div>
                     {visibleCommentPostId === post.id && (
                         <div className="px-6 pb-6">
