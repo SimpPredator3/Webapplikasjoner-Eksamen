@@ -21,6 +21,10 @@
     font-size: 1.2rem;
     font-weight: bold;
 }
+.post-card-tag {
+    font-weight: bold;
+    color: blue;
+}
 
 .author {
     color: #ff914d;

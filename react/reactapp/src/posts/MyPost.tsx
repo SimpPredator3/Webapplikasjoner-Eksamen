@@ -1,47 +1,56 @@
 import React from 'react';
-import { Button, Card } from 'react-bootstrap';
-import { Post } from '../types/Post'; // Import the Post type
+import { Card, Col, Row, Button } from 'react-bootstrap';
+import { Post } from '../types/Post';
+import './PostGrid.css';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
-import './PostList.css';
 import { useUser } from '../components/UserContext'; // Import useUser to get current user
 import '../App.css';
 
-interface PostListProps {
+interface MyPostProps {
     posts: Post[];
     API_URL: string;
     onDelete: (id: number) => void;
     onUpvote: (id: number) => Promise<void>;
 }
 
-const PostList: React.FC<PostListProps> = ({ posts, API_URL, onDelete, onUpvote }) => {
+const MyPost: React.FC<MyPostProps> = ({ posts, API_URL, onDelete, onUpvote }) => {
     const navigate = useNavigate(); // Initialize navigate function
     const { user } = useUser(); // Get the current user from UserContext
 
+    const userPosts = user?.role === 'Admin' ? posts : posts.filter(post => post.author === user?.username);
+
+    if (!user) {
+        return <p> Create a new user or login to access your page</p>
+    }
+    if (userPosts.length === 0) {
+        return <p>No posts found for the current user.</p>;
+    };
+
+
+
     return (
-        <div className="post-list">
-            {posts.map((post) => (
-                <Card key={post.id} className="post-list-card mb-4">
-                    <div className="d-flex flex-column flex-md-row">
+        <Row xs={1} sm={2} md={3} className="g-4">
+            {userPosts.map((post) => (
+                <Col key={post.id}> 
+                    <Card>
                         {post.imageUrl && (
-                            <div className="post-list-image">
-                                <Card.Img
-                                    src={`${post.imageUrl}`}
-                                    alt={post.title}
-                                    style={{ width: '100%', height: '250px', objectFit: 'cover' }}
-                                />
-                            </div>
+                            <Card.Img
+                                variant="top"
+                                src={`${post.imageUrl}`}
+                                alt={post.title}
+                                style={{ height: '200px', objectFit: 'cover' }}
+                            />
                         )}
-                        <Card.Body className="post-list-body">
-                            <Card.Title className="post-list-title">{post.title}</Card.Title>
+                        <Card.Body>
+                            <Card.Title>{post.title}</Card.Title>
                             <Card.Subtitle className="mb-2 text-muted">
                                 By <span className="author">{post.author}</span>
                             </Card.Subtitle>
-                            <Card.Text>{post.content}</Card.Text>
+                            <Card.Text>{post.tag}</Card.Text>
+                            <Card.Text>{post.content.substring(0, 100)}...</Card.Text>
                             <Card.Text className="text-muted">
                                 <small>{new Date(post.createdDate).toLocaleDateString()}</small>
                             </Card.Text>
-                            {post.tag && (<Card.Text>#{post.tag}</Card.Text> )}
-                            
                             <div className="d-flex justify-content-between align-items-center">
                                 <Button
                                     variant="success"
@@ -50,7 +59,6 @@ const PostList: React.FC<PostListProps> = ({ posts, API_URL, onDelete, onUpvote 
                                 >
                                     👍 {post.upvotes} Upvotes
                                 </Button>
-                                <span>{post.upvotes} Likes</span>
                             </div>
                             {(user?.role === 'Admin' || user?.username === post.author) && (
                                 <div className="d-flex justify-content-between mt-2">
@@ -72,11 +80,11 @@ const PostList: React.FC<PostListProps> = ({ posts, API_URL, onDelete, onUpvote 
                                 </div>
                             )}
                         </Card.Body>
-                    </div>
-                </Card>
+                    </Card>
+                </Col>
             ))}
-        </div>
+        </Row>
     );
 };
 
-export default PostList;
+export default MyPost;

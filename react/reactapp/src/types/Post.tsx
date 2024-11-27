@@ -5,5 +5,6 @@ export interface Post {
     content: string;
     imageUrl?: string;
     createdDate: string;
+    tag?:string;
     upvotes: number;
 }
