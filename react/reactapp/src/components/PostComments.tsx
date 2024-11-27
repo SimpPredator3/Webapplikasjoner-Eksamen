@@ -4,6 +4,8 @@ import { Button, Modal, Form } from "react-bootstrap";
 interface Comment {
   id: number;
   text: string;
+  author: string;
+  createdDate: string;
 }
 
 interface PostCommentsProps {
@@ -11,7 +13,7 @@ interface PostCommentsProps {
   author: string;
   comments: Comment[];
   onAddComment: (postId: number, text: string) => void;
-  onEditComment: (postId: number, commentId: number, text: string,author:string) => void;
+  onEditComment: (postId: number, commentId: number, text: string, author: string) => void;
   onDeleteComment: (commentId: number) => void;
 }
 
@@ -41,7 +43,7 @@ export function PostComments({
   };
 
   const handleEditComment = (commentId: number) => {
-    onEditComment(postId, commentId, editedCommentText,author);
+    onEditComment(postId, commentId, editedCommentText, author);
     setEditingCommentId(null);
     setEditedCommentText("");
   };
@@ -65,12 +67,12 @@ export function PostComments({
           className="min-height-60"
         />
         <Button variant="primary" type="submit">
-          Comment
+          Comments
         </Button>
       </Form>
       <div className="mt-3">
         {comments.map((comment) => (
-          <div key={comment.id} className="p-3  rounded mb-2 shadow-sm">
+          <div key={comment.id} className="p-3 rounded mb-2 shadow-sm">
             {editingCommentId === comment.id ? (
               <div>
                 <Form.Control
@@ -83,7 +85,7 @@ export function PostComments({
                   <Button
                     size="sm"
                     variant="success"
-                    onClick={() => handleEditComment(comment.id, )}
+                    onClick={() => handleEditComment(comment.id)}
                   >
                     Save
                   </Button>
@@ -100,29 +102,35 @@ export function PostComments({
                 </div>
               </div>
             ) : (
-              <div className="d-flex justify-content-between align-items-start">
-                <p className="mb-0">{comment.text}</p>
-                <div className="d-flex gap-2">
-                  <Button
-                    size="sm"
-                    variant="outline-primary"
-                    onClick={() => {
-                      setEditingCommentId(comment.id);
-                      setEditedCommentText(comment.text);
-                    }}
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline-danger"
-                    onClick={() => {
-                      setDeleteTargetCommentId(comment.id);
-                      setShowDeleteModal(true);
-                    }}
-                  >
-                    Delete
-                  </Button>
+              <div className="d-flex flex-column">
+                <div className="d-flex justify-content-between align-items-start">
+                  <p className="mb-0">{comment.text}</p>
+                  <div className="d-flex gap-2">
+                    <Button
+                      size="sm"
+                      variant="outline-primary"
+                      onClick={() => {
+                        setEditingCommentId(comment.id);
+                        setEditedCommentText(comment.text);
+                      }}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline-danger"
+                      onClick={() => {
+                        setDeleteTargetCommentId(comment.id);
+                        setShowDeleteModal(true);
+                      }}
+                    >
+                      Delete
+                    </Button>
+                  </div>
+                </div>
+                <div className="text-muted mt-1" style={{ fontSize: "0.8em" }}>
+                  By {comment.author} on{" "}
+                  {new Date(comment.createdDate).toLocaleString()}
                 </div>
               </div>
             )}
@@ -136,8 +144,7 @@ export function PostComments({
           <Modal.Title>Delete Comment</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          Are you sure you want to delete this comment? This action cannot be
-          undone.
+          Are you sure you want to delete this comment? This action cannot be undone.
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>

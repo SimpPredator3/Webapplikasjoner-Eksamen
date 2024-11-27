@@ -16,22 +16,24 @@ interface MyPostProps {
 const MyPost: React.FC<MyPostProps> = ({ posts, API_URL, onDelete, onUpvote }) => {
     const navigate = useNavigate(); // Initialize navigate function
     const { user } = useUser(); // Get the current user from UserContext
+    console.log("MyPost component mounted");
 
-    const userPosts = user?.role === 'Admin' ? posts : posts.filter(post => post.author === user?.username);
+    // Filter posts to only show those authored by the current user
+    const userPosts = posts.filter(post => post.author === user?.username);
+
+    console.log('Current User:', user);
 
     if (!user) {
-        return <p> Create a new user or login to access your page</p>
+        return <p>Create a new user or log in to access your page.</p>;
     }
     if (userPosts.length === 0) {
         return <p>No posts found for the current user.</p>;
-    };
-
-
+    }
 
     return (
         <Row xs={1} sm={2} md={3} className="g-4">
             {userPosts.map((post) => (
-                <Col key={post.id}> 
+                <Col key={post.id}>
                     <Card>
                         {post.imageUrl && (
                             <Card.Img
