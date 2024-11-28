@@ -1,18 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import PostGrid from './PostGrid';
+import PostList from './PostList';
+import MyPost from './MyPost';
 import { Spinner, Alert, Button, Container, Modal } from 'react-bootstrap';
 import { API_URL } from '../apiConfig';
 import { Post } from '../types/Post';
 import './PostListPage.css';
-import PostList from './PostList';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useUser } from '../components/UserContext';
 import '../App.css';
-import MyPost from './MyPost';
 
 interface PostListPageProps {
     initialView?: "list" | "grid"; // Optional prop for initial view
     lockedView?: "list" | "grid";  // Optional prop to lock the view
+}
+
+interface Comment {
+    id: number;
+    postId: number;
+    text: string;
 }
 
 const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", lockedView }) => {
@@ -23,6 +29,8 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
     const [showModal, setShowModal] = useState<boolean>(false);
     const [postToDelete, setPostToDelete] = useState<number | null>(null);
     const [searchTag, setSearchTag] = useState<string>("");
+    const [comments, setComments] = useState<Comment[]>([]);
+    const [visibleCommentPostId, setVisibleCommentPostId] = useState<number | null>(null);
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -54,10 +62,10 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
     // Update view based on navigation state
     useEffect(() => {
         const stateView = location.state?.view as "list" | "grid" | "MyPost";
-        if (stateView) {
+        if (stateView && !lockedView) {  // Avoid overriding if `view` is manually changed
             setView(stateView);
         }
-    }, [location.state]);
+    }, [location.state, lockedView]);
 
     useEffect(() => {
         fetchPosts();
@@ -123,8 +131,122 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
         }
     };
 
+    //handling comment
+    const handleAddComment = async (postId: number, text: string) => {
+        if (!user) {
+            setError("You must be logged in to add a comment.");
+            return;
+        }
+
+        setLoading(true);
+        setError(null);
+        try {
+            const response = await fetch(`${API_URL}/api/comment/${postId}`, {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ text }),
+            });
+            if (!response.ok) {
+                throw new Error("Failed to add comment");
+            }
+            const data: Comment = await response.json();
+            setComments((prev) => [...prev, data]);
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleEditComment = async (
+        postId: number,
+        commentId: number,
+        text: string,
+        author: string
+    ) => {
+        setLoading(true);
+        setError(null);
+        try {
+            fetch(`${API_URL}/api/comment/${commentId}`, {
+                method: "PUT",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    comment: text,
+                    postId,
+                    author,
+                    commentId,
+                    createdDate: new Date(),
+                }),
+            })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error("Failed to edit comment");
+                    }
+                    setComments((prev) =>
+                        prev.map((comment) =>
+                            comment.id === commentId ? { ...comment, text } : comment
+                        )
+                    );
+                })
+                .catch((err) => {
+                    setError(err.message);
+                })
+                .finally(() => {
+                    setLoading(false);
+                });
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleDeleteComment = async (commentId: number) => {
+        setLoading(true);
+        setError(null);
+        try {
+            const response = await fetch(`${API_URL}/api/comment/${commentId}`, {
+                method: "DELETE",
+                credentials: "include",
+            });
+            if (!response.ok) {
+                throw new Error("Failed to delete comment");
+            }
+            setComments(comments.filter((comment) => comment.id !== commentId));
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const fetchComment = async (id: number) => {
+        setLoading(true);
+        setError(null);
+
+        try {
+            const response = await fetch(`${API_URL}/api/comment/${id}`);
+            if (!response.ok) {
+                throw new Error("Failed to fetch comments");
+            }
+            const data: Comment[] = await response.json();
+
+            setComments(data);
+        } catch (err: any) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
-        <Container className="mt-4">
+        <Container className="admin-dashboard-container mt-4">
             {/* Tag Search Input */}
             <div className="d-flex justify-content-between align-items-center mb-3">
                 <input
@@ -135,6 +257,7 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
                     className="form-control"
                     style={{ width: '200px' }}
                 />
+                <Button href='/postcreate' className='admin-post-btn create-btn btn btn-secondary'>Create New Post</Button>
                 <div className="d-flex">
                     <button
                         onClick={toggleToGrid}
@@ -151,11 +274,14 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
                         <i className="fas fa-list"></i>
                     </button>
                     <button
-                        onClick={() => navigate('/posts', { state: { view: "MyPost" } })}
+                        onClick={() => {
+                            console.log("Navigating to My Posts"); // Added console log
+                            navigate('/posts', { state: { view: "MyPost" } });
+                        }}
                         className={`btn ${view === "MyPost" ? "active-btn" : "inactive-btn"}`}
                         title="My Posts"
                     >
-                        <i className="fas fa-user"></i> My Posts
+                        <i className="fas fa-user"></i>
                     </button>
                 </div>
             </div>
@@ -168,17 +294,55 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
                 </div>
             )}
             {error && <Alert variant="danger">{error}</Alert>}
-            {!loading && !error && (
-                (lockedView ?? view) === "list" ? (
-                    <PostList posts={filteredPosts} API_URL={API_URL} onDelete={confirmDeletePost} onUpvote={handleUpvote} />
-                ) : (lockedView ?? view) === "grid" ? (
-                    <PostGrid posts={filteredPosts} API_URL={API_URL} onDelete={confirmDeletePost} onUpvote={handleUpvote} />
-                ) : (lockedView ?? view) === "MyPost" ? (
-                    <MyPost posts={filteredPosts} API_URL={API_URL} onDelete={confirmDeletePost} onUpvote={handleUpvote} />
+            {!loading &&
+                !error &&
+                ((lockedView ?? view) === "list" ? (
+                    <PostList
+                        posts={posts}
+                        API_URL={API_URL}
+                        onDelete={confirmDeletePost}
+                        onUpvote={handleUpvote}
+                        onAddComment={handleAddComment}
+                        onEditComment={handleEditComment}
+                        onDeleteComment={handleDeleteComment}
+                        onVote={handleUpvote}
+                        comments={comments}
+                        fetchComments={fetchComment}
+                        setVisibleCommentPostId={setVisibleCommentPostId}
+                        visibleCommentPostId={visibleCommentPostId}
+                    />
+                ) : view === "MyPost" ? (
+                    <MyPost
+                    posts={posts}
+                    API_URL={API_URL}
+                    onDelete={confirmDeletePost}
+                    onUpvote={handleUpvote}
+                    onAddComment={handleAddComment}
+                    onEditComment={handleEditComment}
+                    onDeleteComment={handleDeleteComment}
+                    onVote={handleUpvote}
+                    comments={comments}
+                    fetchComments={fetchComment}
+                    setVisibleCommentPostId={setVisibleCommentPostId}
+                    visibleCommentPostId={visibleCommentPostId}
+                    />
                 ) : (
-                    <div>No view selected</div>
-                )
-            )}
+                    <PostGrid
+                        posts={posts}
+                        API_URL={API_URL}
+                        onDelete={confirmDeletePost}
+                        onUpvote={handleUpvote}
+                        onAddComment={handleAddComment}
+                        onEditComment={handleEditComment}
+                        onDeleteComment={handleDeleteComment}
+                        onVote={handleUpvote}
+                        comments={comments}
+                        fetchComments={fetchComment}
+                        setVisibleCommentPostId={setVisibleCommentPostId}
+                        visibleCommentPostId={visibleCommentPostId}
+                    />
+                ))
+            }
 
             {/* Confirmation Modal */}
             <Modal show={showModal} onHide={cancelDelete}>
@@ -202,3 +366,7 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
 };
 
 export default PostListPage;
+function setComments(data: Comment[]) {
+    throw new Error('Function not implemented.');
+}
+

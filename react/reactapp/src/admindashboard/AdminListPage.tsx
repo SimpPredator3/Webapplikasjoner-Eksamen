@@ -9,13 +9,17 @@ import { useNavigate } from 'react-router-dom';
 import { useUser } from '../components/UserContext';
 import '../App.css';
 
-// Props for controlling the initial and locked view modes
 interface PostListPageProps {
     initialView?: "list" | "grid";
-    lockedView?: "list" | "grid";  
+    lockedView?: "list" | "grid";
 }
 
-// Main component for managing and displaying posts in Admin Dashboard
+interface Comment {
+    id: number;
+    postId: number;
+    text: string;
+}
+
 const AdminListPage: React.FC<PostListPageProps> = ({ initialView = "grid", lockedView }) => {
     const [posts, setPosts] = useState<Post[]>([]);
     const [loadingPosts, setLoadingPosts] = useState<boolean>(false);
@@ -23,6 +27,8 @@ const AdminListPage: React.FC<PostListPageProps> = ({ initialView = "grid", lock
     const [view, setView] = useState<"list" | "grid">(lockedView ?? initialView);
     const [showModal, setShowModal] = useState<boolean>(false);
     const [postToDelete, setPostToDelete] = useState<number | null>(null);
+    const [comments, setComments] = useState<Comment[]>([]);
+    const [visibleCommentPostId, setVisibleCommentPostId] = useState<number | null>(null);
     const navigate = useNavigate();
     const { user, fetchUserRole, loading } = useUser();
 
@@ -37,23 +43,21 @@ const AdminListPage: React.FC<PostListPageProps> = ({ initialView = "grid", lock
                 navigate('/login'); // Redirect to login if user is not authenticated
                 return;
             }
-            
+
             console.log("User's role:", user.role);
             if (user.role !== 'Admin') {
                 console.log("User is not authorized. Redirecting to unauthorized...");
                 navigate('/unauthorized'); // Redirect unauthorized users
                 return;
             }
-    
+
             console.log("User is Admin. Fetching posts...");
             fetchPosts();
         };
-    
+
         checkAccess();
     }, [user, loading, navigate]);
 
-
-    // Fetches the list of posts from the API
     const fetchPosts = async () => {
         setLoadingPosts(true);
         setError(null);
@@ -72,25 +76,19 @@ const AdminListPage: React.FC<PostListPageProps> = ({ initialView = "grid", lock
         }
     };
 
-    // Switch to grid view
     const toggleToGrid = () => setView("grid");
-
-    // Switch to list view
     const toggleToList = () => setView("list");
 
-    // Opens the confirmation modal for deleting a post
     const confirmDeletePost = (id: number) => {
         setPostToDelete(id);
         setShowModal(true);
     };
 
-    // Closes the delete confirmation modal
     const cancelDelete = () => {
         setPostToDelete(null);
         setShowModal(false);
     };
 
-    // Handles deleting a post
     const handleDeletePost = async () => {
         if (postToDelete === null) return;
 
@@ -112,7 +110,6 @@ const AdminListPage: React.FC<PostListPageProps> = ({ initialView = "grid", lock
         }
     };
 
-    // Handles upvoting a post
     const handleUpvote = async (postId: number) => {
         try {
             const response = await fetch(`${API_URL}/api/upvote/${postId}`, {
@@ -126,7 +123,6 @@ const AdminListPage: React.FC<PostListPageProps> = ({ initialView = "grid", lock
 
             const data = await response.json();
 
-            
             setPosts((prevPosts) =>
                 prevPosts.map((post) =>
                     post.id === postId ? { ...post, upvotes: data.upvotes } : post
@@ -138,8 +134,101 @@ const AdminListPage: React.FC<PostListPageProps> = ({ initialView = "grid", lock
         }
     };
 
+    const handleAddComment = async (postId: number, text: string) => {
+        setLoadingPosts(true);
+        setError(null);
+        try {
+            const response = await fetch(`${API_URL}/api/comment/${postId}`, {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ text }),
+            });
+            if (!response.ok) {
+                throw new Error("Failed to add comment");
+            }
+            const data: Comment = await response.json();
+            setComments((prev) => [...prev, data]);
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoadingPosts(false);
+        }
+    };
+
+    const handleEditComment = async (postId: number, commentId: number, text: string, author: string) => {
+        setLoadingPosts(true); // Corrected here
+        setError(null);
+        try {
+            const response = await fetch(`${API_URL}/api/comment/${commentId}`, {
+                method: "PUT",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    postId,
+                    commentId,
+                    text,
+                    author,
+                    createdDate: new Date(), // Assuming the creation date is required for the request
+                }),
+            });
+            if (!response.ok) {
+                throw new Error("Failed to edit comment");
+            }
+            setComments((prev) =>
+                prev.map((comment) =>
+                    comment.id === commentId ? { ...comment, text } : comment
+                )
+            );
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoadingPosts(false); // Corrected here
+        }
+    };
+
+
+    const handleDeleteComment = async (commentId: number) => {
+        setLoadingPosts(true);
+        setError(null);
+        try {
+            const response = await fetch(`${API_URL}/api/comment/${commentId}`, {
+                method: "DELETE",
+                credentials: "include",
+            });
+            if (!response.ok) {
+                throw new Error("Failed to delete comment");
+            }
+            setComments((prev) => prev.filter((comment) => comment.id !== commentId));
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoadingPosts(false);
+        }
+    };
+
+    const fetchComments = async (postId: number) => {
+        setLoadingPosts(true);
+        setError(null);
+        try {
+            const response = await fetch(`${API_URL}/api/comment/${postId}`);
+            if (!response.ok) {
+                throw new Error("Failed to fetch comments");
+            }
+            const data: Comment[] = await response.json();
+            setComments(data);
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoadingPosts(false);
+        }
+    };
+
     if (loading) {
-        // Show a spinner while user details are loading
         return (
             <div className="text-center">
                 <Spinner animation="border" role="status">
@@ -148,13 +237,13 @@ const AdminListPage: React.FC<PostListPageProps> = ({ initialView = "grid", lock
             </div>
         );
     }
-    // Main UI rendering
+
     return (
         <Container className="admin-dashboard-container mt-4">
             <div className="d-flex justify-content-between align-items-center mb-3">
                 <h1 className="mb-0 admin-titel">Admin Dashboard</h1>
                 {user?.role === 'Admin' && (
-                    <Button href='/postcreate' className='admin-post-btn create-btn btn btn-secondary mt-3'>Create New Post</Button>
+                    <Button href='/postcreate' className='admin-post-btn create-btn btn btn-secondary'>Create New Post</Button>
                 )}
                 {!lockedView && (
                     <div className="d-flex">
@@ -176,7 +265,7 @@ const AdminListPage: React.FC<PostListPageProps> = ({ initialView = "grid", lock
                 )}
             </div>
 
-            {loading && (
+            {loadingPosts && (
                 <div className="text-center">
                     <Spinner animation="border" role="status">
                         <span className="sr-only">Loading...</span>
@@ -184,11 +273,40 @@ const AdminListPage: React.FC<PostListPageProps> = ({ initialView = "grid", lock
                 </div>
             )}
             {error && <Alert variant="danger">{error}</Alert>}
-            {!loading && !error && (
-                (lockedView ?? view) === "list"
-                    ? <PostList posts={posts} API_URL={API_URL} onDelete={confirmDeletePost} onUpvote={handleUpvote} />
-                    : <PostGrid posts={posts} API_URL={API_URL} onDelete={confirmDeletePost} onUpvote={handleUpvote} />
-            )}
+            {error && <Alert variant="danger">{error}</Alert>}
+            {!loading &&
+                !error &&
+                ((lockedView ?? view) === "list" ? (
+                    <PostList
+                        posts={posts}
+                        API_URL={API_URL}
+                        onDelete={confirmDeletePost}
+                        onUpvote={handleUpvote}
+                        onAddComment={handleAddComment}
+                        onEditComment={handleEditComment}
+                        onDeleteComment={handleDeleteComment}
+                        onVote={handleUpvote}
+                        comments={comments}
+                        fetchComments={fetchComments}
+                        setVisibleCommentPostId={setVisibleCommentPostId}
+                        visibleCommentPostId={visibleCommentPostId}
+                    />
+                ) : (
+                    <PostGrid
+                        posts={posts}
+                        API_URL={API_URL}
+                        onDelete={confirmDeletePost}
+                        onUpvote={handleUpvote}
+                        onAddComment={handleAddComment}
+                        onEditComment={handleEditComment}
+                        onDeleteComment={handleDeleteComment}
+                        onVote={handleUpvote}
+                        comments={comments}
+                        fetchComments={fetchComments}
+                        setVisibleCommentPostId={setVisibleCommentPostId}
+                        visibleCommentPostId={visibleCommentPostId}
+                    />
+                ))}
 
             {/* Confirmation Modal */}
             <Modal show={showModal} onHide={cancelDelete}>
@@ -212,4 +330,3 @@ const AdminListPage: React.FC<PostListPageProps> = ({ initialView = "grid", lock
 };
 
 export default AdminListPage;
-

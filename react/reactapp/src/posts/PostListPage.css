@@ -39,7 +39,6 @@
     color: #a16e50;
 }
 .create-btn{
-    padding: 0.5rem 1rem;
     background-color: #005246;
     color: #ffe8d1;
     border: none;
@@ -67,7 +66,6 @@
   @media (max-width: 768px) {
     .admin-post-btn {
       font-size: 0.875rem;
-      padding: 0.4rem 0.8rem;
     }
     .admin-titel{
         font-size: 1.7rem;

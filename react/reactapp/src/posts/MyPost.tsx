@@ -5,33 +5,61 @@ import './PostGrid.css';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import { useUser } from '../components/UserContext'; // Import useUser to get current user
 import '../App.css';
+import { PostComments } from "../components/PostComments";
 
 interface MyPostProps {
     posts: Post[];
     API_URL: string;
+    comments: any[];
     onDelete: (id: number) => void;
     onUpvote: (id: number) => Promise<void>;
+    setVisibleCommentPostId: React.Dispatch<React.SetStateAction<number | null>>;
+    visibleCommentPostId: number | null;
+    onVote: (id: number, direction: "up" | "down") => void;
+    onAddComment: (id: number, text: string) => void;
+    onEditComment: (
+      postId: number,
+      commentId: number,
+      text: string,
+      author: string
+    ) => void;
+    onDeleteComment: (commentId: number) => void;
+  
+    fetchComments: (postId: number) => void;
 }
 
-const MyPost: React.FC<MyPostProps> = ({ posts, API_URL, onDelete, onUpvote }) => {
+const MyPost: React.FC<MyPostProps> = ({   
+    posts,
+    API_URL,
+    setVisibleCommentPostId,
+    onUpvote,
+    onAddComment,
+    onEditComment,
+    onDeleteComment,
+    onDelete,
+    fetchComments,
+    comments,
+    visibleCommentPostId,}) => {
     const navigate = useNavigate(); // Initialize navigate function
     const { user } = useUser(); // Get the current user from UserContext
+    console.log("MyPost component mounted");
 
-    const userPosts = user?.role === 'Admin' ? posts : posts.filter(post => post.author === user?.username);
+    // Filter posts to only show those authored by the current user
+    const userPosts = posts.filter(post => post.author === user?.username);
+
+    console.log('Current User:', user);
 
     if (!user) {
-        return <p> Create a new user or login to access your page</p>
+        return <p>Create a new user or log in to access your page.</p>;
     }
     if (userPosts.length === 0) {
         return <p>No posts found for the current user.</p>;
-    };
-
-
+    }
 
     return (
         <Row xs={1} sm={2} md={3} className="g-4">
             {userPosts.map((post) => (
-                <Col key={post.id}> 
+                <Col key={post.id}>
                     <Card>
                         {post.imageUrl && (
                             <Card.Img
@@ -58,6 +86,26 @@ const MyPost: React.FC<MyPostProps> = ({ posts, API_URL, onDelete, onUpvote }) =
                                     onClick={() => onUpvote(post.id)}
                                 >
                                     👍 {post.upvotes} Upvotes
+                                </Button>
+                            </div>
+                            <div className="d-flex justify-content-between mt-2">
+
+                                <Button
+                                variant="info"
+                                size="sm"
+                                onClick={() => {
+                                    fetchComments(post.id);
+                                    setVisibleCommentPostId((prev: number | null) =>
+                                    prev === post.id ? null : post.id
+                                    );
+                                }}
+                                className="me-2"
+                                style={{
+                                    borderRadius: '20px',
+                                    fontWeight: 'bold',
+                                }}
+                                >
+                                {visibleCommentPostId === post.id ? 'Hide Comments' : 'Show Comments'}
                                 </Button>
                             </div>
                             {(user?.role === 'Admin' || user?.username === post.author) && (
