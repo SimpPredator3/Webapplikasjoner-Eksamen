@@ -18,17 +18,17 @@ interface MyPostProps {
     onVote: (id: number, direction: "up" | "down") => void;
     onAddComment: (id: number, text: string) => void;
     onEditComment: (
-      postId: number,
-      commentId: number,
-      text: string,
-      author: string
+        postId: number,
+        commentId: number,
+        text: string,
+        author: string
     ) => void;
     onDeleteComment: (commentId: number) => void;
   
     fetchComments: (postId: number) => void;
 }
 
-const MyPost: React.FC<MyPostProps> = ({   
+const MyPost: React.FC<MyPostProps> = ({
     posts,
     API_URL,
     setVisibleCommentPostId,
@@ -92,14 +92,14 @@ const MyPost: React.FC<MyPostProps> = ({
                             <div className="d-flex justify-content-between mt-2">
 
                                 <Button
-                                variant="info"
-                                size="sm"
-                                onClick={() => {
+                                    variant="info"
+                                    size="sm"
+                                    onClick={() => {
                                     fetchComments(post.id);
                                     setVisibleCommentPostId((prev: number | null) =>
-                                    prev === post.id ? null : post.id
-                                    );
-                                }}
+                                            prev === post.id ? null : post.id
+                                        );
+                                    }}
                                 className="me-2 comment-button"
                                 >
                                 {visibleCommentPostId === post.id ? 'Hide Comments' : 'Show Comments'}
