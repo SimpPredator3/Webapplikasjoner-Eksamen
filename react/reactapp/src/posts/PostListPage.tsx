@@ -96,7 +96,33 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
             setPostToDelete(id);
             setShowModal(true);
         },
+        handleConfirmDelete: async () => {
+            if (postToDelete === null) return;
+    
+            try {
+                const response = await fetch(`${API_URL}/api/post/${postToDelete}`, {
+                    method: 'DELETE',
+                    credentials: 'include',
+                });
+    
+                if (!response.ok) {
+                    throw new Error('Failed to delete post');
+                }
+    
+                setPosts((prevPosts) => prevPosts.filter((post) => post.id !== postToDelete));
+                setShowModal(false);
+                setPostToDelete(null);
+            } catch (err: any) {
+                console.error(err.message);
+                setError('Failed to delete the post.');
+            }
+        },
+        handleCancelDelete: () => {
+            setShowModal(false);
+            setPostToDelete(null);
+        },
     };
+    
 
     const commentHandlers = {
         fetchComments: async (postId: number) => {
@@ -263,7 +289,7 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
             )}
 
             {/* Confirmation Modal */}
-            <Modal show={showModal} onHide={() => setShowModal(false)}>
+            <Modal show={showModal} onHide={postHandlers.handleCancelDelete}>
                 <Modal.Header closeButton>
                     <Modal.Title>Confirm Deletion</Modal.Title>
                 </Modal.Header>
@@ -271,13 +297,10 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
                     Are you sure you want to delete this post? This action cannot be undone.
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={() => setShowModal(false)}>
+                    <Button variant="secondary" onClick={postHandlers.handleCancelDelete}>
                         Cancel
                     </Button>
-                    <Button variant="danger" onClick={() => {
-                        postHandlers.onDelete(postToDelete as number);
-                        setShowModal(false);
-                    }}>
+                    <Button variant="danger" onClick={postHandlers.handleConfirmDelete}>
                         Delete
                     </Button>
                 </Modal.Footer>
