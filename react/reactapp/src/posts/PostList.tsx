@@ -66,6 +66,7 @@ const PostList: React.FC<PostListProps> = ({
                                 <Button
                                     variant="success"
                                     size="sm"
+                                    className="like-button"
                                     onClick={() => postHandlers.onUpvote(post.id)}
                                 >
                                     👍 {post.upvotes} Upvotes
@@ -82,11 +83,7 @@ const PostList: React.FC<PostListProps> = ({
                                             prev === post.id ? null : post.id
                                         );
                                     }}
-                                    className="me-2"
-                                    style={{
-                                        borderRadius: '20px',
-                                        fontWeight: 'bold',
-                                    }}
+                                    className="me-2 comment-button"
                                 >
                                     {commentHandlers.visibleCommentPostId === post.id ? 'Hide Comments' : 'Show Comments'}
                                 </Button>
@@ -96,6 +93,7 @@ const PostList: React.FC<PostListProps> = ({
                                     <Button
                                         variant="warning"
                                         size="sm"
+                                        className="edit-button"
                                         onClick={() => navigate(`/post/edit/${post.id}`)} // Navigate to the edit page
                                     >
                                         Edit
@@ -104,7 +102,7 @@ const PostList: React.FC<PostListProps> = ({
                                         variant="danger"
                                         size="sm"
                                         onClick={() => postHandlers.onDelete(post.id)} // Call the delete function
-                                        className="me-2"
+                                        className="me-2 delete-button"
                                     >
                                         Delete
                                     </Button>
