@@ -53,8 +53,55 @@ p, span, label, button, input, textarea, table, td, th {
 .dropdown-toggle {
   font-family: 'Lato', sans-serif;
 }
-
-
+/*Like button*/
+.like-button{
+  background-color: #005246;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+  border: none;
+  transition: all 0.3s ease;
+}
+.like-button:hover{
+  background-color: #013d34;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.411);
+}
+/*Comment button*/
+.comment-button{
+  background-color: #1c728c;
+  color: #ffffff;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+  border: none;
+  transition: all 0.3s ease;
+}
+.comment-button:hover{
+  color: #ffffff;
+  background-color: #155568;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.411);
+}
+/*Edit button*/
+.edit-button{
+  background-color: #1c728c;
+  color: #ffffff;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+  border: none;
+  transition: all 0.3s ease;
+}
+.edit-button:hover{
+  color: #ffffff;
+  background-color: #155568;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.411);
+}
+/*Delete button*/
+.delete-button{
+  background-color: #ad2d2d;
+  color: #ffffff;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+  border: none;
+  transition: all 0.3s ease;
+}
+.delete-button:hover{
+  background-color: #7c2020;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.411);
+}
 
 
 /*DARKMODE*/

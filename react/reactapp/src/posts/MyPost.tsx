@@ -82,6 +82,7 @@ const MyPost: React.FC<MyPostProps> = ({
                             <div className="d-flex justify-content-between align-items-center">
                                 <Button
                                     variant="success"
+                                    className="like-button"
                                     size="sm"
                                     onClick={() => onUpvote(post.id)}
                                 >
@@ -99,11 +100,7 @@ const MyPost: React.FC<MyPostProps> = ({
                                     prev === post.id ? null : post.id
                                     );
                                 }}
-                                className="me-2"
-                                style={{
-                                    borderRadius: '20px',
-                                    fontWeight: 'bold',
-                                }}
+                                className="me-2 comment-button"
                                 >
                                 {visibleCommentPostId === post.id ? 'Hide Comments' : 'Show Comments'}
                                 </Button>
@@ -113,6 +110,7 @@ const MyPost: React.FC<MyPostProps> = ({
                                     <Button
                                         variant="warning"
                                         size="sm"
+                                        className="edit-button"
                                         onClick={() => navigate(`/post/edit/${post.id}`)} // Navigate to the edit page
                                     >
                                         Edit
@@ -121,7 +119,7 @@ const MyPost: React.FC<MyPostProps> = ({
                                         variant="danger"
                                         size="sm"
                                         onClick={() => onDelete(post.id)} // Call the delete function
-                                        className="me-2"
+                                        className="me-2 delete-button"
                                     >
                                         Delete
                                     </Button>

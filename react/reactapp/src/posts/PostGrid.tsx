@@ -74,6 +74,7 @@ const PostGrid: React.FC<PostGridProps> = ({
                 <Button
                   variant="success"
                   size="sm"
+                  className="like-button"
                   onClick={() => onUpvote(post.id)}
                 >
                   👍 {post.upvotes} Upvotes
@@ -90,11 +91,7 @@ const PostGrid: React.FC<PostGridProps> = ({
                       prev === post.id ? null : post.id
                     );
                   }}
-                  className="me-2"
-                  style={{
-                    borderRadius: '20px',
-                    fontWeight: 'bold',
-                  }}
+                  className="me-2 comment-button"
                 >
                   {visibleCommentPostId === post.id ? 'Hide Comments' : 'Show Comments'}
                 </Button>
@@ -104,6 +101,7 @@ const PostGrid: React.FC<PostGridProps> = ({
                         <Button
                             variant="warning"
                             size="sm"
+                            className="edit-button"
                             onClick={() => navigate(`/post/edit/${post.id}`)} // Navigate to the edit page
                         >
                             Edit
@@ -112,7 +110,7 @@ const PostGrid: React.FC<PostGridProps> = ({
                             variant="danger"
                             size="sm"
                             onClick={() => onDelete(post.id)} // Call the delete function
-                            className="me-2"
+                            className="me-2 delete-button"
                         >
                             Delete
                         </Button>

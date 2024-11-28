@@ -62,6 +62,10 @@
 .admin-post-btn {
     font-size: 1rem;
 }
+/*Search bar*/
+.search-bar {
+    width: 20%;
+}
   
   @media (max-width: 768px) {
     .admin-post-btn {
