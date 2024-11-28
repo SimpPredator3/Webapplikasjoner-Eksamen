@@ -313,10 +313,18 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
                     />
                 ) : view === "MyPost" ? (
                     <MyPost
-                        posts={posts}
-                        API_URL={API_URL}
-                        onDelete={confirmDeletePost}
-                        onUpvote={handleUpvote}
+                    posts={posts}
+                    API_URL={API_URL}
+                    onDelete={confirmDeletePost}
+                    onUpvote={handleUpvote}
+                    onAddComment={handleAddComment}
+                    onEditComment={handleEditComment}
+                    onDeleteComment={handleDeleteComment}
+                    onVote={handleUpvote}
+                    comments={comments}
+                    fetchComments={fetchComment}
+                    setVisibleCommentPostId={setVisibleCommentPostId}
+                    visibleCommentPostId={visibleCommentPostId}
                     />
                 ) : (
                     <PostGrid

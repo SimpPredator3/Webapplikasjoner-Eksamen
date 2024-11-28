@@ -5,15 +5,41 @@ import './PostGrid.css';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import { useUser } from '../components/UserContext'; // Import useUser to get current user
 import '../App.css';
+import { PostComments } from "../components/PostComments";
 
 interface MyPostProps {
     posts: Post[];
     API_URL: string;
+    comments: any[];
     onDelete: (id: number) => void;
     onUpvote: (id: number) => Promise<void>;
+    setVisibleCommentPostId: React.Dispatch<React.SetStateAction<number | null>>;
+    visibleCommentPostId: number | null;
+    onVote: (id: number, direction: "up" | "down") => void;
+    onAddComment: (id: number, text: string) => void;
+    onEditComment: (
+      postId: number,
+      commentId: number,
+      text: string,
+      author: string
+    ) => void;
+    onDeleteComment: (commentId: number) => void;
+  
+    fetchComments: (postId: number) => void;
 }
 
-const MyPost: React.FC<MyPostProps> = ({ posts, API_URL, onDelete, onUpvote }) => {
+const MyPost: React.FC<MyPostProps> = ({   
+    posts,
+    API_URL,
+    setVisibleCommentPostId,
+    onUpvote,
+    onAddComment,
+    onEditComment,
+    onDeleteComment,
+    onDelete,
+    fetchComments,
+    comments,
+    visibleCommentPostId,}) => {
     const navigate = useNavigate(); // Initialize navigate function
     const { user } = useUser(); // Get the current user from UserContext
     console.log("MyPost component mounted");
@@ -60,6 +86,26 @@ const MyPost: React.FC<MyPostProps> = ({ posts, API_URL, onDelete, onUpvote }) =
                                     onClick={() => onUpvote(post.id)}
                                 >
                                     👍 {post.upvotes} Upvotes
+                                </Button>
+                            </div>
+                            <div className="d-flex justify-content-between mt-2">
+
+                                <Button
+                                variant="info"
+                                size="sm"
+                                onClick={() => {
+                                    fetchComments(post.id);
+                                    setVisibleCommentPostId((prev: number | null) =>
+                                    prev === post.id ? null : post.id
+                                    );
+                                }}
+                                className="me-2"
+                                style={{
+                                    borderRadius: '20px',
+                                    fontWeight: 'bold',
+                                }}
+                                >
+                                {visibleCommentPostId === post.id ? 'Hide Comments' : 'Show Comments'}
                                 </Button>
                             </div>
                             {(user?.role === 'Admin' || user?.username === post.author) && (

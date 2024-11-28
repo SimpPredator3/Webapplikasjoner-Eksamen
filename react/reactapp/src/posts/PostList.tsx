@@ -97,6 +97,25 @@ const PostList: React.FC<PostListProps> = ({
                                     {visibleCommentPostId === post.id ? 'Hide Comments' : 'Show Comments'}
                                 </Button>
                             </div>
+                                {(user?.role === 'Admin' || user?.username === post.author) && (
+                                    <div className="d-flex justify-content-between mt-2">
+                                        <Button
+                                            variant="warning"
+                                            size="sm"
+                                            onClick={() => navigate(`/post/edit/${post.id}`)} // Navigate to the edit page
+                                        >
+                                            Edit
+                                        </Button>
+                                        <Button
+                                            variant="danger"
+                                            size="sm"
+                                            onClick={() => onDelete(post.id)} // Call the delete function
+                                            className="me-2"
+                                        >
+                                            Delete
+                                        </Button>
+                                    </div>
+                            )}
                         </Card.Body>
                     </div>
                     {visibleCommentPostId === post.id && (
