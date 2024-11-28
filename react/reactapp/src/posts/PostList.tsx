@@ -7,39 +7,34 @@ import { useUser } from '../components/UserContext'; // Import useUser to get cu
 import { PostComments } from "../components/PostComments";
 import '../App.css';
 
+interface CommentHandlers {
+    fetchComments: (postId: number) => void;
+    onAddComment: (id: number, text: string) => void;
+    onEditComment: (postId: number, commentId: number, text: string, author: string) => void;
+    onDeleteComment: (commentId: number) => void;
+    visibleCommentPostId: number | null;
+    setVisibleCommentPostId: React.Dispatch<React.SetStateAction<number | null>>;
+}
+
+interface PostHandlers {
+    onUpvote: (id: number) => Promise<void>;
+    onDelete: (id: number) => void;
+}
+
 interface PostListProps {
     posts: Post[];
-    API_URL: string;
-    comments: any[];
-    setVisibleCommentPostId: React.Dispatch<React.SetStateAction<number | null>>;
-    visibleCommentPostId: number | null;
-    onDelete: (id: number) => void;
-    onUpvote: (id: number) => Promise<void>;
-    onVote: (id: number, direction: "up" | "down") => void;
-    onAddComment: (id: number, text: string) => void;
-    onEditComment: (
-        postId: number,
-        commentId: number,
-        text: string,
-        author: string
-    ) => void;
-    onDeleteComment: (commentId: number) => void;
-
-    fetchComments: (postId: number) => void;
+    API: { API_URL: string };
+    commentHandlers: CommentHandlers;
+    postHandlers: PostHandlers;
+    comments: any[]; // Keep the comments as a separate prop
 }
 
 const PostList: React.FC<PostListProps> = ({
     posts,
-    API_URL,
-    setVisibleCommentPostId,
-    onUpvote,
-    onAddComment,
-    onEditComment,
-    onDeleteComment,
-    onDelete,
-    fetchComments,
+    API,
+    commentHandlers,
+    postHandlers,
     comments,
-    visibleCommentPostId,
 }) => {
     const navigate = useNavigate(); // Initialize navigate function
     const { user } = useUser(); // Get the current user from UserContext
@@ -71,20 +66,19 @@ const PostList: React.FC<PostListProps> = ({
                                 <Button
                                     variant="success"
                                     size="sm"
-                                    onClick={() => onUpvote(post.id)}
+                                    onClick={() => postHandlers.onUpvote(post.id)}
                                 >
                                     👍 {post.upvotes} Upvotes
                                 </Button>
                                 <span>{post.upvotes} Likes</span>
                             </div>
                             <div className="d-flex justify-content-between mt-2">
-
                                 <Button
                                     variant="info"
                                     size="sm"
                                     onClick={() => {
-                                        fetchComments(post.id);
-                                        setVisibleCommentPostId((prev: number | null) =>
+                                        commentHandlers.fetchComments(post.id);
+                                        commentHandlers.setVisibleCommentPostId((prev: number | null) =>
                                             prev === post.id ? null : post.id
                                         );
                                     }}
@@ -94,38 +88,38 @@ const PostList: React.FC<PostListProps> = ({
                                         fontWeight: 'bold',
                                     }}
                                 >
-                                    {visibleCommentPostId === post.id ? 'Hide Comments' : 'Show Comments'}
+                                    {commentHandlers.visibleCommentPostId === post.id ? 'Hide Comments' : 'Show Comments'}
                                 </Button>
                             </div>
-                                {(user?.role === 'Admin' || user?.username === post.author) && (
-                                    <div className="d-flex justify-content-between mt-2">
-                                        <Button
-                                            variant="warning"
-                                            size="sm"
-                                            onClick={() => navigate(`/post/edit/${post.id}`)} // Navigate to the edit page
-                                        >
-                                            Edit
-                                        </Button>
-                                        <Button
-                                            variant="danger"
-                                            size="sm"
-                                            onClick={() => onDelete(post.id)} // Call the delete function
-                                            className="me-2"
-                                        >
-                                            Delete
-                                        </Button>
-                                    </div>
+                            {(user?.role === 'Admin' || user?.username === post.author) && (
+                                <div className="d-flex justify-content-between mt-2">
+                                    <Button
+                                        variant="warning"
+                                        size="sm"
+                                        onClick={() => navigate(`/post/edit/${post.id}`)} // Navigate to the edit page
+                                    >
+                                        Edit
+                                    </Button>
+                                    <Button
+                                        variant="danger"
+                                        size="sm"
+                                        onClick={() => postHandlers.onDelete(post.id)} // Call the delete function
+                                        className="me-2"
+                                    >
+                                        Delete
+                                    </Button>
+                                </div>
                             )}
                         </Card.Body>
                     </div>
-                    {visibleCommentPostId === post.id && (
+                    {commentHandlers.visibleCommentPostId === post.id && (
                         <div className="px-6 pb-6">
                             <PostComments
                                 postId={post.id}
                                 comments={comments}
-                                onAddComment={onAddComment}
-                                onEditComment={onEditComment}
-                                onDeleteComment={onDeleteComment}
+                                onAddComment={commentHandlers.onAddComment}
+                                onEditComment={commentHandlers.onEditComment}
+                                onDeleteComment={commentHandlers.onDeleteComment}
                                 author={post.author}
                             />
                         </div>

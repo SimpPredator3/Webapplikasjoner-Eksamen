@@ -29,39 +29,14 @@ const AdminListPage: React.FC<PostListPageProps> = ({ initialView = "grid", lock
     const [postToDelete, setPostToDelete] = useState<number | null>(null);
     const [comments, setComments] = useState<Comment[]>([]);
     const [visibleCommentPostId, setVisibleCommentPostId] = useState<number | null>(null);
+
     const navigate = useNavigate();
     const { user, fetchUserRole, loading } = useUser();
 
-    useEffect(() => {
-        const checkAccess = async () => {
-            if (loading) {
-                console.log('Waiting for user context to finish loading...');
-                return; // Wait until user details are fully loaded
-            }
-            if (!user) {
-                console.log("User not logged in. Redirecting to login...");
-                navigate('/login'); // Redirect to login if user is not authenticated
-                return;
-            }
-
-            console.log("User's role:", user.role);
-            if (user.role !== 'Admin') {
-                console.log("User is not authorized. Redirecting to unauthorized...");
-                navigate('/unauthorized'); // Redirect unauthorized users
-                return;
-            }
-
-            console.log("User is Admin. Fetching posts...");
-            fetchPosts();
-        };
-
-        checkAccess();
-    }, [user, loading, navigate]);
-
+    // Fetch posts for the admin dashboard
     const fetchPosts = async () => {
         setLoadingPosts(true);
         setError(null);
-
         try {
             const response = await fetch(`${API_URL}/api/admindash`, { credentials: 'include' });
             if (!response.ok) {
@@ -76,31 +51,145 @@ const AdminListPage: React.FC<PostListPageProps> = ({ initialView = "grid", lock
         }
     };
 
-    const toggleToGrid = () => setView("grid");
-    const toggleToList = () => setView("list");
+    useEffect(() => {
+        const checkAccess = async () => {
+            if (loading) return; // Wait until user details are fully loaded
+            if (!user) {
+                navigate('/login');
+                return;
+            }
+            if (user.role !== 'Admin') {
+                navigate('/unauthorized');
+                return;
+            }
+            fetchPosts();
+        };
 
-    const confirmDeletePost = (id: number) => {
-        setPostToDelete(id);
-        setShowModal(true);
+        checkAccess();
+    }, [user, loading, navigate]);
+
+    const postHandlers = {
+        onUpvote: async (postId: number) => {
+            try {
+                const response = await fetch(`${API_URL}/api/upvote/${postId}`, {
+                    method: "POST",
+                    credentials: "include",
+                });
+                if (!response.ok) {
+                    throw new Error("Failed to upvote post.");
+                }
+                const data = await response.json();
+                setPosts((prevPosts) =>
+                    prevPosts.map((post) =>
+                        post.id === postId ? { ...post, upvotes: data.upvotes } : post
+                    )
+                );
+            } catch (err) {
+                console.error(err);
+                setError("Login to upvote a post");
+            }
+        },
+        onDelete: (id: number) => {
+            setPostToDelete(id);
+            setShowModal(true);
+        },
     };
 
-    const cancelDelete = () => {
-        setPostToDelete(null);
-        setShowModal(false);
+    const commentHandlers = {
+        fetchComments: async (postId: number) => {
+            setLoadingPosts(true);
+            setError(null);
+            try {
+                const response = await fetch(`${API_URL}/api/comment/${postId}`);
+                if (!response.ok) {
+                    throw new Error("Failed to fetch comments");
+                }
+                const data: Comment[] = await response.json();
+                setComments(data);
+            } catch (err: any) {
+                setError(err.message);
+            } finally {
+                setLoadingPosts(false);
+            }
+        },
+        onAddComment: async (postId: number, text: string) => {
+            setLoadingPosts(true);
+            try {
+                const response = await fetch(`${API_URL}/api/comment/${postId}`, {
+                    method: "POST",
+                    credentials: "include",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ text }),
+                });
+                if (!response.ok) {
+                    throw new Error("Failed to add comment");
+                }
+                const data: Comment = await response.json();
+                setComments((prev) => [...prev, data]);
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoadingPosts(false);
+            }
+        },
+        onEditComment: async (
+            postId: number,
+            commentId: number,
+            text: string,
+            author: string
+        ) => {
+            setLoadingPosts(true);
+            try {
+                const response = await fetch(`${API_URL}/api/comment/${commentId}`, {
+                    method: "PUT",
+                    credentials: "include",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ postId, text, author }),
+                });
+                if (!response.ok) {
+                    throw new Error("Failed to edit comment");
+                }
+                setComments((prev) =>
+                    prev.map((comment) =>
+                        comment.id === commentId ? { ...comment, text } : comment
+                    )
+                );
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoadingPosts(false);
+            }
+        },
+        onDeleteComment: async (commentId: number) => {
+            setLoadingPosts(true);
+            try {
+                const response = await fetch(`${API_URL}/api/comment/${commentId}`, {
+                    method: "DELETE",
+                    credentials: "include",
+                });
+                if (!response.ok) {
+                    throw new Error("Failed to delete comment");
+                }
+                setComments((prev) => prev.filter((comment) => comment.id !== commentId));
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoadingPosts(false);
+            }
+        },
+        visibleCommentPostId,
+        setVisibleCommentPostId,
     };
 
     const handleDeletePost = async () => {
         if (postToDelete === null) return;
-
         try {
             const response = await fetch(`${API_URL}/api/admindash/delete/${postToDelete}`, {
                 method: 'DELETE',
             });
-
             if (!response.ok) {
                 throw new Error('Failed to delete post');
             }
-
             setPosts(posts.filter(post => post.id !== postToDelete));
             setShowModal(false);
             setPostToDelete(null);
@@ -109,134 +198,6 @@ const AdminListPage: React.FC<PostListPageProps> = ({ initialView = "grid", lock
             setError('Failed to delete the post.');
         }
     };
-
-    const handleUpvote = async (postId: number) => {
-        try {
-            const response = await fetch(`${API_URL}/api/upvote/${postId}`, {
-                method: "POST",
-                credentials: "include",
-            });
-
-            if (!response.ok) {
-                throw new Error("Failed to upvote post.");
-            }
-
-            const data = await response.json();
-
-            setPosts((prevPosts) =>
-                prevPosts.map((post) =>
-                    post.id === postId ? { ...post, upvotes: data.upvotes } : post
-                )
-            );
-        } catch (err) {
-            console.error(err);
-            setError("Login to upvote a post");
-        }
-    };
-
-    const handleAddComment = async (postId: number, text: string) => {
-        setLoadingPosts(true);
-        setError(null);
-        try {
-            const response = await fetch(`${API_URL}/api/comment/${postId}`, {
-                method: "POST",
-                credentials: "include",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ text }),
-            });
-            if (!response.ok) {
-                throw new Error("Failed to add comment");
-            }
-            const data: Comment = await response.json();
-            setComments((prev) => [...prev, data]);
-        } catch (err) {
-            setError(err.message);
-        } finally {
-            setLoadingPosts(false);
-        }
-    };
-
-    const handleEditComment = async (postId: number, commentId: number, text: string, author: string) => {
-        setLoadingPosts(true); // Corrected here
-        setError(null);
-        try {
-            const response = await fetch(`${API_URL}/api/comment/${commentId}`, {
-                method: "PUT",
-                credentials: "include",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    postId,
-                    commentId,
-                    text,
-                    author,
-                    createdDate: new Date(), // Assuming the creation date is required for the request
-                }),
-            });
-            if (!response.ok) {
-                throw new Error("Failed to edit comment");
-            }
-            setComments((prev) =>
-                prev.map((comment) =>
-                    comment.id === commentId ? { ...comment, text } : comment
-                )
-            );
-        } catch (err) {
-            setError(err.message);
-        } finally {
-            setLoadingPosts(false); // Corrected here
-        }
-    };
-
-
-    const handleDeleteComment = async (commentId: number) => {
-        setLoadingPosts(true);
-        setError(null);
-        try {
-            const response = await fetch(`${API_URL}/api/comment/${commentId}`, {
-                method: "DELETE",
-                credentials: "include",
-            });
-            if (!response.ok) {
-                throw new Error("Failed to delete comment");
-            }
-            setComments((prev) => prev.filter((comment) => comment.id !== commentId));
-        } catch (err) {
-            setError(err.message);
-        } finally {
-            setLoadingPosts(false);
-        }
-    };
-
-    const fetchComments = async (postId: number) => {
-        setLoadingPosts(true);
-        setError(null);
-        try {
-            const response = await fetch(`${API_URL}/api/comment/${postId}`);
-            if (!response.ok) {
-                throw new Error("Failed to fetch comments");
-            }
-            const data: Comment[] = await response.json();
-            setComments(data);
-        } catch (err) {
-            setError(err.message);
-        } finally {
-            setLoadingPosts(false);
-        }
-    };
-
-    if (loading) {
-        return (
-            <div className="text-center">
-                <Spinner animation="border" role="status">
-                    <span className="sr-only">Loading...</span>
-                </Spinner>
-            </div>
-        );
-    }
 
     return (
         <Container className="admin-dashboard-container mt-4">
@@ -248,14 +209,14 @@ const AdminListPage: React.FC<PostListPageProps> = ({ initialView = "grid", lock
                 {!lockedView && (
                     <div className="d-flex">
                         <button
-                            onClick={toggleToGrid}
+                            onClick={() => setView("grid")}
                             className={`btn me-2 ${view === "grid" ? "active-btn" : "inactive-btn"}`}
                             title="Grid View"
                         >
                             <i className="fas fa-th"></i>
                         </button>
                         <button
-                            onClick={toggleToList}
+                            onClick={() => setView("list")}
                             className={`btn ${view === "list" ? "active-btn" : "inactive-btn"}`}
                             title="List View"
                         >
@@ -273,43 +234,28 @@ const AdminListPage: React.FC<PostListPageProps> = ({ initialView = "grid", lock
                 </div>
             )}
             {error && <Alert variant="danger">{error}</Alert>}
-            {error && <Alert variant="danger">{error}</Alert>}
-            {!loading &&
-                !error &&
-                ((lockedView ?? view) === "list" ? (
+            {!loadingPosts && !error && (
+                view === "list" ? (
                     <PostList
                         posts={posts}
-                        API_URL={API_URL}
-                        onDelete={confirmDeletePost}
-                        onUpvote={handleUpvote}
-                        onAddComment={handleAddComment}
-                        onEditComment={handleEditComment}
-                        onDeleteComment={handleDeleteComment}
-                        onVote={handleUpvote}
+                        API={{ API_URL }}
+                        commentHandlers={commentHandlers}
+                        postHandlers={postHandlers}
                         comments={comments}
-                        fetchComments={fetchComments}
-                        setVisibleCommentPostId={setVisibleCommentPostId}
-                        visibleCommentPostId={visibleCommentPostId}
                     />
                 ) : (
                     <PostGrid
                         posts={posts}
-                        API_URL={API_URL}
-                        onDelete={confirmDeletePost}
-                        onUpvote={handleUpvote}
-                        onAddComment={handleAddComment}
-                        onEditComment={handleEditComment}
-                        onDeleteComment={handleDeleteComment}
-                        onVote={handleUpvote}
+                        API={{ API_URL }}
+                        commentHandlers={commentHandlers}
+                        postHandlers={postHandlers}
                         comments={comments}
-                        fetchComments={fetchComments}
-                        setVisibleCommentPostId={setVisibleCommentPostId}
-                        visibleCommentPostId={visibleCommentPostId}
                     />
-                ))}
+                )
+            )}
 
             {/* Confirmation Modal */}
-            <Modal show={showModal} onHide={cancelDelete}>
+            <Modal show={showModal} onHide={() => setShowModal(false)}>
                 <Modal.Header closeButton>
                     <Modal.Title>Confirm Deletion</Modal.Title>
                 </Modal.Header>
@@ -317,7 +263,7 @@ const AdminListPage: React.FC<PostListPageProps> = ({ initialView = "grid", lock
                     Are you sure you want to delete this post? This action cannot be undone.
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={cancelDelete}>
+                    <Button variant="secondary" onClick={() => setShowModal(false)}>
                         Cancel
                     </Button>
                     <Button variant="danger" onClick={handleDeletePost}>

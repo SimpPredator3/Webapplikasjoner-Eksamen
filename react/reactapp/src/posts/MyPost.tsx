@@ -2,56 +2,54 @@ import React from 'react';
 import { Card, Col, Row, Button } from 'react-bootstrap';
 import { Post } from '../types/Post';
 import './PostGrid.css';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
-import { useUser } from '../components/UserContext'; // Import useUser to get current user
+import { useNavigate } from 'react-router-dom';
+import { useUser } from '../components/UserContext';
 import '../App.css';
 import { PostComments } from "../components/PostComments";
 
-interface MyPostProps {
-    posts: Post[];
-    API_URL: string;
-    comments: any[];
-    onDelete: (id: number) => void;
-    onUpvote: (id: number) => Promise<void>;
+interface CommentHandlers {
+    fetchComments: (postId: number) => void;
     setVisibleCommentPostId: React.Dispatch<React.SetStateAction<number | null>>;
     visibleCommentPostId: number | null;
-    onVote: (id: number, direction: "up" | "down") => void;
-    onAddComment: (id: number, text: string) => void;
+    onAddComment: (postId: number, text: string) => void;
     onEditComment: (
-      postId: number,
-      commentId: number,
-      text: string,
-      author: string
+        postId: number,
+        commentId: number,
+        text: string,
+        author: string
     ) => void;
     onDeleteComment: (commentId: number) => void;
-  
-    fetchComments: (postId: number) => void;
 }
 
-const MyPost: React.FC<MyPostProps> = ({   
+interface PostHandlers {
+    onUpvote: (id: number) => Promise<void>;
+    onDelete: (id: number) => void;
+}
+
+interface MyPostProps {
+    posts: Post[];
+    API: { API_URL: string };
+    commentHandlers: CommentHandlers;
+    postHandlers: PostHandlers;
+    comments: any[];
+}
+
+const MyPost: React.FC<MyPostProps> = ({
     posts,
-    API_URL,
-    setVisibleCommentPostId,
-    onUpvote,
-    onAddComment,
-    onEditComment,
-    onDeleteComment,
-    onDelete,
-    fetchComments,
+    commentHandlers,
+    postHandlers,
     comments,
-    visibleCommentPostId,}) => {
-    const navigate = useNavigate(); // Initialize navigate function
-    const { user } = useUser(); // Get the current user from UserContext
-    console.log("MyPost component mounted");
+}) => {
+    const navigate = useNavigate();
+    const { user } = useUser();
 
     // Filter posts to only show those authored by the current user
     const userPosts = posts.filter(post => post.author === user?.username);
 
-    console.log('Current User:', user);
-
     if (!user) {
         return <p>Create a new user or log in to access your page.</p>;
     }
+
     if (userPosts.length === 0) {
         return <p>No posts found for the current user.</p>;
     }
@@ -83,29 +81,30 @@ const MyPost: React.FC<MyPostProps> = ({
                                 <Button
                                     variant="success"
                                     size="sm"
-                                    onClick={() => onUpvote(post.id)}
+                                    onClick={() => postHandlers.onUpvote(post.id)}
                                 >
                                     👍 {post.upvotes} Upvotes
                                 </Button>
                             </div>
                             <div className="d-flex justify-content-between mt-2">
-
                                 <Button
-                                variant="info"
-                                size="sm"
-                                onClick={() => {
-                                    fetchComments(post.id);
-                                    setVisibleCommentPostId((prev: number | null) =>
-                                    prev === post.id ? null : post.id
-                                    );
-                                }}
-                                className="me-2"
-                                style={{
-                                    borderRadius: '20px',
-                                    fontWeight: 'bold',
-                                }}
+                                    variant="info"
+                                    size="sm"
+                                    onClick={() => {
+                                        commentHandlers.fetchComments(post.id);
+                                        commentHandlers.setVisibleCommentPostId((prev: number | null) =>
+                                            prev === post.id ? null : post.id
+                                        );
+                                    }}
+                                    className="me-2"
+                                    style={{
+                                        borderRadius: '20px',
+                                        fontWeight: 'bold',
+                                    }}
                                 >
-                                {visibleCommentPostId === post.id ? 'Hide Comments' : 'Show Comments'}
+                                    {commentHandlers.visibleCommentPostId === post.id
+                                        ? 'Hide Comments'
+                                        : 'Show Comments'}
                                 </Button>
                             </div>
                             {(user?.role === 'Admin' || user?.username === post.author) && (
@@ -113,14 +112,14 @@ const MyPost: React.FC<MyPostProps> = ({
                                     <Button
                                         variant="warning"
                                         size="sm"
-                                        onClick={() => navigate(`/post/edit/${post.id}`)} // Navigate to the edit page
+                                        onClick={() => navigate(`/post/edit/${post.id}`)}
                                     >
                                         Edit
                                     </Button>
                                     <Button
                                         variant="danger"
                                         size="sm"
-                                        onClick={() => onDelete(post.id)} // Call the delete function
+                                        onClick={() => postHandlers.onDelete(post.id)}
                                         className="me-2"
                                     >
                                         Delete
@@ -128,6 +127,18 @@ const MyPost: React.FC<MyPostProps> = ({
                                 </div>
                             )}
                         </Card.Body>
+                        {commentHandlers.visibleCommentPostId === post.id && (
+                            <div className="px-6 pb-6">
+                                <PostComments
+                                    postId={post.id}
+                                    comments={comments}
+                                    onAddComment={commentHandlers.onAddComment}
+                                    onEditComment={commentHandlers.onEditComment}
+                                    onDeleteComment={commentHandlers.onDeleteComment}
+                                    author={post.author}
+                                />
+                            </div>
+                        )}
                     </Card>
                 </Col>
             ))}
