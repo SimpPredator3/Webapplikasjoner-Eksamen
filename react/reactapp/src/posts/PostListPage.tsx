@@ -223,8 +223,7 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
                     placeholder="Search by tag"
                     value={searchTag}
                     onChange={(e) => setSearchTag(e.target.value)}
-                    className="form-control"
-                    style={{ width: '200px' }}
+                    className="search-bar form-control"
                 />
                 <Button href='/postcreate' className='admin-post-btn create-btn btn btn-secondary'>Create New Post</Button>
                 <div className="d-flex">

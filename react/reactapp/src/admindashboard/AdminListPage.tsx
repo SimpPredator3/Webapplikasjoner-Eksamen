@@ -26,6 +26,7 @@ const AdminListPage: React.FC<PostListPageProps> = ({ initialView = "grid", lock
     const [error, setError] = useState<string | null>(null);
     const [view, setView] = useState<"list" | "grid">(lockedView ?? initialView);
     const [showModal, setShowModal] = useState<boolean>(false);
+    const [searchTag, setSearchTag] = useState<string>("");
     const [postToDelete, setPostToDelete] = useState<number | null>(null);
     const [comments, setComments] = useState<Comment[]>([]);
     const [visibleCommentPostId, setVisibleCommentPostId] = useState<number | null>(null);
@@ -226,8 +227,15 @@ const AdminListPage: React.FC<PostListPageProps> = ({ initialView = "grid", lock
 
     return (
         <Container className="admin-dashboard-container mt-4">
+            <h1 className="mb-0 admin-titel">Admin Dashboard</h1>
             <div className="d-flex justify-content-between align-items-center mb-3">
-                <h1 className="mb-0 admin-titel">Admin Dashboard</h1>
+                <input
+                    type="text"
+                    placeholder="Search by tag"
+                    value={searchTag}
+                    onChange={(e) => setSearchTag(e.target.value)}
+                    className="search-bar form-control"
+                />
                 {user?.role === 'Admin' && (
                     <Button href='/postcreate' className='admin-post-btn create-btn btn btn-secondary'>Create New Post</Button>
                 )}
