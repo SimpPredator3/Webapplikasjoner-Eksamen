@@ -125,6 +125,16 @@ const PostEditPage: React.FC = () => {
                             onChange={handleInputChange}
                         />
                     </Form.Group>
+                    <Form.Group controlId="formTags" className="mt-3">
+                        <Form.Label>Tags; (e.g. tag1, tag2)</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="tag"
+                            value={post.tag || ''}
+                            onChange={handleInputChange}
+                            placeholder="Enter tags separated by commas"
+                        />
+                    </Form.Group>
                     <Button
                         className="mt-4"
                         variant="primary"
