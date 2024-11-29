@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PostGrid from './PostGrid';
 import PostList from './PostList';
 import MyPost from './MyPost';
-import { Spinner, Alert, Button, Container, Modal } from 'react-bootstrap';
+import { Spinner, Alert, Button, Container, Modal, Form } from 'react-bootstrap';
 import { API_URL } from '../apiConfig';
 import { Post } from '../types/Post';
 import './PostListPage.css';
@@ -31,6 +31,7 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
     const [searchTag, setSearchTag] = useState<string>("");
     const [comments, setComments] = useState<Comment[]>([]);
     const [visibleCommentPostId, setVisibleCommentPostId] = useState<number | null>(null);
+    const [sortOrder, setSortOrder] = useState<string>("newest");
 
     const location = useLocation();
     const { user } = useUser();
@@ -57,6 +58,18 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
     const filteredPosts = posts.filter(post =>
         (post.tag?.toLowerCase() || "").includes(searchTag.toLowerCase())
     );
+
+    // Sort posts based on the selected sort order
+    const sortedPosts = [...filteredPosts].sort((a, b) => {
+        switch (sortOrder) {
+            case "newest":
+                return new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime();
+            case "oldest":
+                return new Date(a.createdDate).getTime() - new Date(b.createdDate).getTime();
+            default:
+                return 0;
+        }
+    });
 
     // Update view based on navigation state
     useEffect(() => {
@@ -121,7 +134,6 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
             setPostToDelete(null);
         },
     };
-
 
     const commentHandlers = {
         fetchComments: async (postId: number) => {
@@ -213,21 +225,36 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
         setVisibleCommentPostId,
     };
 
+    const handleSortChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSortOrder(event.target.value);
+    };
+
     return (
         <Container className="admin-dashboard-container mt-4">
             {/* Tag Search Input */}
             <div className="d-flex justify-content-between align-items-center mb-3">
-                <input
-                    type="text"
-                    placeholder="Search by tag"
-                    value={searchTag}
-                    onChange={(e) => setSearchTag(e.target.value)}
-                    className="search-bar form-control"
-                />
+                <div className="d-flex align-items-center">
+                    <input
+                        type="text"
+                        placeholder="Search by tag"
+                        value={searchTag}
+                        onChange={(e) => setSearchTag(e.target.value)}
+                        className="search-bar form-control me-3 flex-grow-1"
+                    />
+                </div>
+
                 {user && (
                     <Button href='/postcreate' className='admin-post-btn create-btn btn btn-secondary'>Create New Post</Button>
                 )}
-                <div className="d-flex">
+
+                <div className="d-flex align-items-center">
+                    <Form.Group controlId="sortOptions" className="mb-0 me-3">
+                        <Form.Control as="select" value={sortOrder} onChange={handleSortChange} className="form-select">
+                            <option value="newest">Newest First</option>
+                            <option value="oldest">Oldest First</option>
+                        </Form.Control>
+                    </Form.Group>
+
                     <button
                         onClick={() => setView("grid")}
                         className={`btn me-2 ${view === "grid" ? "active-btn" : "inactive-btn"}`}
@@ -237,7 +264,7 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
                     </button>
                     <button
                         onClick={() => setView("list")}
-                        className={`btn me-2 ${view === "list" ? "active-btn" : "inactive-btn"}`}
+                        className={`btn ${view === "list" ? "active-btn" : "inactive-btn"}`}
                         title="List View"
                     >
                         <i className="fas fa-list"></i>
@@ -256,7 +283,7 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
             {!loading && !error && (
                 (lockedView ?? view) === "list" ? (
                     <PostList
-                        posts={filteredPosts}
+                        posts={sortedPosts}
                         API={{ API_URL }}
                         commentHandlers={commentHandlers}
                         postHandlers={postHandlers}
@@ -264,7 +291,7 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
                     />
                 ) : view === "MyPost" ? (
                     <MyPost
-                        posts={filteredPosts}
+                        posts={sortedPosts}
                         API={{ API_URL }}
                         commentHandlers={commentHandlers}
                         postHandlers={postHandlers}
@@ -272,7 +299,7 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
                     />
                 ) : (
                     <PostGrid
-                        posts={filteredPosts}
+                        posts={sortedPosts}
                         API={{ API_URL }}
                         commentHandlers={commentHandlers}
                         postHandlers={postHandlers}

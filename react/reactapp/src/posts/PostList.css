@@ -1,7 +1,8 @@
 .post-list {
     display: flex;
     flex-direction: column;
-    gap: 20px; /* Space between posts */
+    gap: 20px;
+    /* Space between posts */
 }
 
 .post-list-card {
@@ -18,10 +19,13 @@
     transition: transform 0.2s ease-in-out;
 }
 
-.post-list-image img {
-    max-height: 250px;
+.post-list-image {
+    width: 100%;
+    height: 250px;
+    max-width: 340px;
     object-fit: cover;
 }
+
 .post-card-subtitle .author {
     color: #ff914d;
 }

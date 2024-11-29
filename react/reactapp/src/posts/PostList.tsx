@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, Card } from 'react-bootstrap';
 import { Post } from '../types/Post'; // Import the Post type
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
@@ -29,6 +29,8 @@ interface PostListProps {
     comments: any[]; // Keep the comments as a separate prop
 }
 
+const MAX_CONTENT_LENGTH = 100; // Length threshold for showing "Show More" button
+
 const PostList: React.FC<PostListProps> = ({
     posts,
     API,
@@ -38,93 +40,142 @@ const PostList: React.FC<PostListProps> = ({
 }) => {
     const navigate = useNavigate(); // Initialize navigate function
     const { user } = useUser(); // Get the current user from UserContext
+    const [expandedPostId, setExpandedPostId] = useState<number | null>(null);
+
+    const handleExpandPost = (postId: number) => {
+        setExpandedPostId((prevId) => (prevId === postId ? null : postId));
+    }
 
     return (
         <div className="post-list">
-            {posts.map((post) => (
-                <Card key={post.id} className="post-list-card mb-4">
-                    <div className="d-flex flex-column flex-md-row">
-                        {post.imageUrl && (
-                            <div className="post-list-image">
-                                <Card.Img
-                                    src={`${post.imageUrl}`}
-                                    alt={post.title}
-                                    style={{ width: "100%", height: "250px", objectFit: "cover" }}
+            {posts.map((post) => {
+                // Determine the image URL
+                const imageUrl = post.imageUrl && post.imageUrl.trim() !== ""
+                    ? `/${post.imageUrl}`
+                    : "/images/default-placeholder.webp";
+
+                const isExpanded = expandedPostId === post.id;
+
+                // Determine if "Show More/Less" button should be displayed
+                const shouldShowToggleButton = post.content.length > MAX_CONTENT_LENGTH;
+
+                return (
+                    <Card key={post.id} className="post-list-card mb-4" onClick={() => handleExpandPost(post.id)}>
+                        <div className="d-flex flex-column flex-md-row">
+                            <Card.Img
+                                src={imageUrl}
+                                alt={post.title}
+                                className="post-list-image"
+                            />
+                            <Card.Body className="post-list-body">
+                                <Card.Title className="post-list-title">{post.title}</Card.Title>
+                                <Card.Subtitle className="mb-2 text-muted">
+                                    By <span className="author">{post.author}</span>
+                                </Card.Subtitle>
+
+                                {/* Conditionally render minimized or full content */}
+                                <Card.Text>
+                                    {isExpanded ? post.content : post.content.substring(0, MAX_CONTENT_LENGTH) + (post.content.length > MAX_CONTENT_LENGTH ? '...' : '')}
+                                </Card.Text>
+
+                                {/* Expand/Collapse button */}
+                                {shouldShowToggleButton && (
+                                    <Button
+                                        variant=""
+                                        size="sm"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleExpandPost(post.id);
+                                        }}
+                                        className="expand-button"
+                                    >
+                                        {isExpanded ? 'Show less...' : 'Show more...'}
+                                    </Button>
+                                )}
+
+                                <Card.Text className="text-muted">
+                                    <small>{new Date(post.createdDate).toLocaleDateString()}</small>
+                                </Card.Text>
+
+                                {post.tag && <Card.Text>#{post.tag}</Card.Text>}
+
+                                <div className="d-flex justify-content-between align-items-center">
+                                    <Button
+                                        variant="success"
+                                        size="sm"
+                                        className="like-button"
+                                        onClick={(e) => {
+                                            e.stopPropagation(); // Prevent expanding on button click
+                                            postHandlers.onUpvote(post.id);
+                                        }}
+                                    >
+                                        👍 {post.upvotes} Upvotes
+                                    </Button>
+                                    <span>{post.upvotes} Likes</span>
+                                </div>
+
+                                <div className="d-flex justify-content-between mt-2">
+                                    <Button
+                                        variant="info"
+                                        size="sm"
+                                        onClick={(e) => {
+                                            e.stopPropagation(); // Prevent expanding on button click
+                                            commentHandlers.fetchComments(post.id);
+                                            commentHandlers.setVisibleCommentPostId((prev: number | null) =>
+                                                prev === post.id ? null : post.id
+                                            );
+                                        }}
+                                        className="me-2 comment-button"
+                                    >
+                                        {commentHandlers.visibleCommentPostId === post.id ? 'Hide Comments' : 'Show Comments'}
+                                    </Button>
+                                </div>
+
+                                {(user?.role === 'Admin' || user?.username === post.author) && (
+                                    <div className="d-flex justify-content-between mt-2">
+                                        <Button
+                                            variant="warning"
+                                            size="sm"
+                                            className="edit-button"
+                                            onClick={(e) => {
+                                                e.stopPropagation(); // Prevent expanding on button click
+                                                navigate(`/post/edit/${post.id}`);
+                                            }}
+                                        >
+                                            Edit
+                                        </Button>
+                                        <Button
+                                            variant="danger"
+                                            size="sm"
+                                            onClick={(e) => {
+                                                e.stopPropagation(); // Prevent expanding on button click
+                                                postHandlers.onDelete(post.id);
+                                            }}
+                                            className="me-2 delete-button"
+                                        >
+                                            Delete
+                                        </Button>
+                                    </div>
+                                )}
+                            </Card.Body>
+                        </div>
+
+                        {/* Show comments if they are visible */}
+                        {commentHandlers.visibleCommentPostId === post.id && (
+                            <div className="px-6 pb-6">
+                                <PostComments
+                                    postId={post.id}
+                                    comments={comments}
+                                    onAddComment={commentHandlers.onAddComment}
+                                    onEditComment={commentHandlers.onEditComment}
+                                    onDeleteComment={commentHandlers.onDeleteComment}
+                                    author={post.author}
                                 />
                             </div>
                         )}
-                        <Card.Body className="post-list-body">
-                            <Card.Title className="post-list-title">{post.title}</Card.Title>
-                            <Card.Subtitle className="mb-2 text-muted">
-                                By <span className="author">{post.author}</span>
-                            </Card.Subtitle>
-                            <Card.Text>{post.content}</Card.Text>
-                            <Card.Text className="text-muted">
-                                <small>{new Date(post.createdDate).toLocaleDateString()}</small>
-                            </Card.Text>
-                            {post.tag && <Card.Text>#{post.tag}</Card.Text>}
-                            <div className="d-flex justify-content-between align-items-center">
-                                <Button
-                                    variant="success"
-                                    size="sm"
-                                    className="like-button"
-                                    onClick={() => postHandlers.onUpvote(post.id)}
-                                >
-                                    👍 {post.upvotes} Upvotes
-                                </Button>
-                                <span>{post.upvotes} Likes</span>
-                            </div>
-                            <div className="d-flex justify-content-between mt-2">
-                                <Button
-                                    variant="info"
-                                    size="sm"
-                                    onClick={() => {
-                                        commentHandlers.fetchComments(post.id);
-                                        commentHandlers.setVisibleCommentPostId((prev: number | null) =>
-                                            prev === post.id ? null : post.id
-                                        );
-                                    }}
-                                    className="me-2 comment-button"
-                                >
-                                    {commentHandlers.visibleCommentPostId === post.id ? 'Hide Comments' : 'Show Comments'}
-                                </Button>
-                            </div>
-                            {(user?.role === 'Admin' || user?.username === post.author) && (
-                                <div className="d-flex justify-content-between mt-2">
-                                    <Button
-                                        variant="warning"
-                                        size="sm"
-                                        className="edit-button"
-                                        onClick={() => navigate(`/post/edit/${post.id}`)} // Navigate to the edit page
-                                    >
-                                        Edit
-                                    </Button>
-                                    <Button
-                                        variant="danger"
-                                        size="sm"
-                                        onClick={() => postHandlers.onDelete(post.id)} // Call the delete function
-                                        className="me-2 delete-button"
-                                    >
-                                        Delete
-                                    </Button>
-                                </div>
-                            )}
-                        </Card.Body>
-                    </div>
-                    {commentHandlers.visibleCommentPostId === post.id && (
-                        <div className="px-6 pb-6">
-                            <PostComments
-                                postId={post.id}
-                                comments={comments}
-                                onAddComment={commentHandlers.onAddComment}
-                                onEditComment={commentHandlers.onEditComment}
-                                onDeleteComment={commentHandlers.onDeleteComment}
-                                author={post.author}
-                            />
-                        </div>
-                    )}
-                </Card>
-            ))}
+                    </Card>
+                );
+            })}
         </div>
     );
 };
