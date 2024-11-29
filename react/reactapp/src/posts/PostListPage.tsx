@@ -6,7 +6,7 @@ import { Spinner, Alert, Button, Container, Modal } from 'react-bootstrap';
 import { API_URL } from '../apiConfig';
 import { Post } from '../types/Post';
 import './PostListPage.css';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { useUser } from '../components/UserContext';
 import '../App.css';
 
@@ -32,7 +32,6 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
     const [comments, setComments] = useState<Comment[]>([]);
     const [visibleCommentPostId, setVisibleCommentPostId] = useState<number | null>(null);
 
-    const navigate = useNavigate();
     const location = useLocation();
     const { user } = useUser();
 
@@ -240,13 +239,6 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
                         title="List View"
                     >
                         <i className="fas fa-list"></i>
-                    </button>
-                    <button
-                        onClick={() => navigate('/posts', { state: { view: "MyPost" } })}
-                        className={`btn ${view === "MyPost" ? "active-btn" : "inactive-btn"}`}
-                        title="My Posts"
-                    >
-                        <i className="fas fa-user"></i>
                     </button>
                 </div>
             </div>

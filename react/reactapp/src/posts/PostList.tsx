@@ -62,6 +62,7 @@ const PostList: React.FC<PostListProps> = ({
                             <Card.Text className="text-muted">
                                 <small>{new Date(post.createdDate).toLocaleDateString()}</small>
                             </Card.Text>
+                            {post.tag && <Card.Text>#{post.tag}</Card.Text>}
                             <div className="d-flex justify-content-between align-items-center">
                                 <Button
                                     variant="success"

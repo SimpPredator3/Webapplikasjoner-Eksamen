@@ -72,11 +72,11 @@ const MyPost: React.FC<MyPostProps> = ({
                             <Card.Subtitle className="mb-2 text-muted">
                                 By <span className="author">{post.author}</span>
                             </Card.Subtitle>
-                            <Card.Text>{post.tag}</Card.Text>
-                            <Card.Text>{post.content.substring(0, 100)}...</Card.Text>
+                            <Card.Text>{post.content.substring(0, 100)}</Card.Text>
                             <Card.Text className="text-muted">
                                 <small>{new Date(post.createdDate).toLocaleDateString()}</small>
                             </Card.Text>
+                            {post.tag && <Card.Text>#{post.tag}</Card.Text>}
                             <div className="d-flex justify-content-between align-items-center">
                                 <Button
                                     variant="success"
