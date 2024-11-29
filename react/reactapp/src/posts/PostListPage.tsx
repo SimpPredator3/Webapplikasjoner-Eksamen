@@ -97,17 +97,17 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
         },
         handleConfirmDelete: async () => {
             if (postToDelete === null) return;
-    
+
             try {
                 const response = await fetch(`${API_URL}/api/post/${postToDelete}`, {
                     method: 'DELETE',
                     credentials: 'include',
                 });
-    
+
                 if (!response.ok) {
                     throw new Error('Failed to delete post');
                 }
-    
+
                 setPosts((prevPosts) => prevPosts.filter((post) => post.id !== postToDelete));
                 setShowModal(false);
                 setPostToDelete(null);
@@ -121,7 +121,7 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
             setPostToDelete(null);
         },
     };
-    
+
 
     const commentHandlers = {
         fetchComments: async (postId: number) => {
@@ -224,7 +224,9 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
                     onChange={(e) => setSearchTag(e.target.value)}
                     className="search-bar form-control"
                 />
-                <Button href='/postcreate' className='admin-post-btn create-btn btn btn-secondary'>Create New Post</Button>
+                {user && (
+                    <Button href='/postcreate' className='admin-post-btn create-btn btn btn-secondary'>Create New Post</Button>
+                )}
                 <div className="d-flex">
                     <button
                         onClick={() => setView("grid")}
