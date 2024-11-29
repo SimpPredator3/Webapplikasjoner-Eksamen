@@ -76,7 +76,7 @@ const PostForm: React.FC<PostFormProps> = ({ onPostCreated }) => {
         />
       </Form.Group>
       <Form.Group controlId="formPostImageUrl">
-        <Form.Label>Tag</Form.Label>
+        <Form.Label>Tags; (e.g. tag1, tag2)</Form.Label>
         <Form.Control
           type="text"
           placeholder="Enter Tag"
