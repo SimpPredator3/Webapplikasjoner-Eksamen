@@ -288,6 +288,7 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
                         commentHandlers={commentHandlers}
                         postHandlers={postHandlers}
                         comments={comments}
+                        showEditDelete={false} // No edit/delete on the main page
                     />
                 ) : view === "MyPost" ? (
                     <MyPost
@@ -304,6 +305,7 @@ const PostListPage: React.FC<PostListPageProps> = ({ initialView = "grid", locke
                         commentHandlers={commentHandlers}
                         postHandlers={postHandlers}
                         comments={comments}
+                        showEditDelete={false} // No edit/delete on the main page
                     />
                 )
             )}

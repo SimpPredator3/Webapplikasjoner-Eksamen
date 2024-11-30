@@ -32,6 +32,7 @@ interface PostGridProps {
     commentHandlers: CommentHandlers;
     postHandlers: PostHandlers;
     comments: any[];
+    showEditDelete: boolean;
 }
 
 const MAX_CONTENT_LENGTH = 100; // Length threshold for showing "Show More" button
@@ -41,6 +42,7 @@ const PostGrid: React.FC<PostGridProps> = ({
     commentHandlers,
     postHandlers,
     comments,
+    showEditDelete,
 }) => {
     const navigate = useNavigate();
     const { user } = useUser();
@@ -137,7 +139,7 @@ const PostGrid: React.FC<PostGridProps> = ({
                                     </Button>
                                 </div>
 
-                                {(user?.role === 'Admin' || user?.username === post.author) && (
+                                {showEditDelete && (user?.role === 'Admin' || user?.username === post.author) && (
                                     <div className="d-flex justify-content-between mt-2">
                                         <Button
                                             variant="warning"

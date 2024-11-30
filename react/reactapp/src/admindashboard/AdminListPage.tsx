@@ -275,6 +275,7 @@ const AdminListPage: React.FC<PostListPageProps> = ({ initialView = "grid", lock
                         commentHandlers={commentHandlers}
                         postHandlers={postHandlers}
                         comments={comments}
+                        showEditDelete={true} // Add edit/delete on the admin dashboard page
                     />
                 ) : (
                     <PostGrid
@@ -283,6 +284,7 @@ const AdminListPage: React.FC<PostListPageProps> = ({ initialView = "grid", lock
                         commentHandlers={commentHandlers}
                         postHandlers={postHandlers}
                         comments={comments}
+                        showEditDelete={true} // Add edit/delete on the admin dashboard page
                     />
                 )
             )}

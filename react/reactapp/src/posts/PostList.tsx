@@ -27,6 +27,7 @@ interface PostListProps {
     commentHandlers: CommentHandlers;
     postHandlers: PostHandlers;
     comments: any[]; // Keep the comments as a separate prop
+    showEditDelete: boolean;
 }
 
 const MAX_CONTENT_LENGTH = 100; // Length threshold for showing "Show More" button
@@ -37,6 +38,7 @@ const PostList: React.FC<PostListProps> = ({
     commentHandlers,
     postHandlers,
     comments,
+    showEditDelete,
 }) => {
     const navigate = useNavigate(); // Initialize navigate function
     const { user } = useUser(); // Get the current user from UserContext
@@ -131,7 +133,7 @@ const PostList: React.FC<PostListProps> = ({
                                     </Button>
                                 </div>
 
-                                {(user?.role === 'Admin' || user?.username === post.author) && (
+                                {showEditDelete && (user?.role === 'Admin' || user?.username === post.author) && (
                                     <div className="d-flex justify-content-between mt-2">
                                         <Button
                                             variant="warning"
