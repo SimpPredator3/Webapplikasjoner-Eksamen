@@ -42,7 +42,7 @@ namespace api.Controllers
             {
                 // If the user already upvoted, remove the upvote
                 await _upvoteRepository.RemoveUpvoteAsync(existingUpvote);
-                post.UpvoteCount--; // Decrement upvote count
+                post.UpvoteCount = Math.Max(0, post.UpvoteCount - 1); // Decrement upvote count, ensure it's not negative
             }
             else
             {

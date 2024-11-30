@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using api.DAL;
 
@@ -10,9 +11,11 @@ using api.DAL;
 namespace api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241129144958_PostImgWithDefalut")]
+    partial class PostImgWithDefalut
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.10");
@@ -279,157 +282,157 @@ namespace api.Migrations
                             Id = 1,
                             Author = "student.expert@example.com",
                             Content = "Final exams can be overwhelming, but with proper preparation, you can ace them. Here are the top 10 study tips that helped me improve my grades and stay focused during finals.",
-                            CreatedDate = new DateTime(2024, 11, 29, 16, 6, 47, 573, DateTimeKind.Utc).AddTicks(3616),
+                            CreatedDate = new DateTime(2024, 11, 29, 14, 49, 57, 893, DateTimeKind.Utc).AddTicks(74),
                             ImageUrl = "images/post1.webp",
                             Tag = "study, finals, productivity",
                             Title = "Top 10 Study Tips for Finals",
-                            UpvoteCount = 0
+                            UpvoteCount = 35
                         },
                         new
                         {
                             Id = 2,
                             Author = "study.pro@example.com",
                             Content = "Online classes require discipline and focus. In this post, I will share some strategies to stay productive during virtual lectures and get the most out of your online education.",
-                            CreatedDate = new DateTime(2024, 11, 29, 16, 6, 47, 573, DateTimeKind.Utc).AddTicks(3618),
+                            CreatedDate = new DateTime(2024, 11, 29, 14, 49, 57, 893, DateTimeKind.Utc).AddTicks(75),
                             ImageUrl = "images/post2.webp",
                             Tag = "productivity, online classes, study",
                             Title = "How to Stay Productive During Online Classes",
-                            UpvoteCount = 0
+                            UpvoteCount = 20
                         },
                         new
                         {
                             Id = 3,
                             Author = "time.manager@example.com",
                             Content = "Time management is crucial for balancing school work and personal life. In this post, I share five effective techniques, such as the Pomodoro method and daily planning, that can help students manage their time better.",
-                            CreatedDate = new DateTime(2024, 11, 29, 16, 6, 47, 573, DateTimeKind.Utc).AddTicks(3619),
+                            CreatedDate = new DateTime(2024, 11, 29, 14, 49, 57, 893, DateTimeKind.Utc).AddTicks(76),
                             ImageUrl = "images/post3.webp",
                             Tag = "time management, productivity, student life",
                             Title = "5 Effective Time Management Techniques for Students",
-                            UpvoteCount = 0
+                            UpvoteCount = 40
                         },
                         new
                         {
                             Id = 4,
                             Author = "struggling.student@example.com",
                             Content = "I'm really struggling with the latest calculus assignment, specifically understanding how to solve integrals involving trigonometric functions. Does anyone have any tips or resources that could help me out?",
-                            CreatedDate = new DateTime(2024, 11, 29, 16, 6, 47, 573, DateTimeKind.Utc).AddTicks(3620),
+                            CreatedDate = new DateTime(2024, 11, 29, 14, 49, 57, 893, DateTimeKind.Utc).AddTicks(77),
                             Tag = "calculus, help, assignment",
                             Title = "Need Help with Calculus Assignment",
-                            UpvoteCount = 0
+                            UpvoteCount = 15
                         },
                         new
                         {
                             Id = 5,
                             Author = "note.guru@example.com",
                             Content = "Taking effective notes is a skill every student should master. This post will guide you through the best note-taking techniques, including the Cornell method and mind mapping, to help you retain more information from lectures.",
-                            CreatedDate = new DateTime(2024, 11, 29, 16, 6, 47, 573, DateTimeKind.Utc).AddTicks(3620),
+                            CreatedDate = new DateTime(2024, 11, 29, 14, 49, 57, 893, DateTimeKind.Utc).AddTicks(78),
                             ImageUrl = "images/post2.webp",
                             Tag = "note-taking, study skills, college",
                             Title = "Best Note-Taking Methods for College Students",
-                            UpvoteCount = 0
+                            UpvoteCount = 28
                         },
                         new
                         {
                             Id = 6,
                             Author = "bio.student@example.com",
                             Content = "Hey everyone! I'm looking for some good study notes for the upcoming biology exam, specifically about cell structure and function. If anyone has notes they could share, it would be a great help!",
-                            CreatedDate = new DateTime(2024, 11, 29, 16, 6, 47, 573, DateTimeKind.Utc).AddTicks(3621),
+                            CreatedDate = new DateTime(2024, 11, 29, 14, 49, 57, 893, DateTimeKind.Utc).AddTicks(79),
                             Tag = "biology, study notes, resources",
                             Title = "Anyone Have Good Biology Study Notes?",
-                            UpvoteCount = 0
+                            UpvoteCount = 22
                         },
                         new
                         {
                             Id = 7,
                             Author = "no.more.procrastination@example.com",
                             Content = "Procrastination is every student's enemy. In this post, I'll share practical tips to overcome procrastination, build motivation, and develop effective study habits.",
-                            CreatedDate = new DateTime(2024, 11, 29, 16, 6, 47, 573, DateTimeKind.Utc).AddTicks(3622),
+                            CreatedDate = new DateTime(2024, 11, 29, 14, 49, 57, 893, DateTimeKind.Utc).AddTicks(80),
                             ImageUrl = "images/post1.webp",
                             Tag = "procrastination, study habits, motivation",
                             Title = "How to Avoid Procrastination as a Student",
-                            UpvoteCount = 0
+                            UpvoteCount = 30
                         },
                         new
                         {
                             Id = 8,
                             Author = "teamwork.challenges@example.com",
                             Content = "Our group is having trouble meeting deadlines for our group project. Does anyone have advice on how to improve communication and divide tasks more effectively? Any tips would be greatly appreciated!",
-                            CreatedDate = new DateTime(2024, 11, 29, 16, 6, 47, 573, DateTimeKind.Utc).AddTicks(3623),
+                            CreatedDate = new DateTime(2024, 11, 29, 14, 49, 57, 893, DateTimeKind.Utc).AddTicks(81),
                             Tag = "group projects, teamwork, help",
                             Title = "Struggling with Group Project Deadlines",
-                            UpvoteCount = 0
+                            UpvoteCount = 18
                         },
                         new
                         {
                             Id = 9,
                             Author = "study.setup@example.com",
                             Content = "A good study environment can significantly improve your focus and productivity. Here are some tips on how to create the perfect study space at home, including lighting, desk setup, and minimizing distractions.",
-                            CreatedDate = new DateTime(2024, 11, 29, 16, 6, 47, 573, DateTimeKind.Utc).AddTicks(3624),
+                            CreatedDate = new DateTime(2024, 11, 29, 14, 49, 57, 893, DateTimeKind.Utc).AddTicks(82),
                             ImageUrl = "images/post3.webp",
                             Tag = "study space, productivity, focus",
                             Title = "Creating the Perfect Study Space at Home",
-                            UpvoteCount = 0
+                            UpvoteCount = 22
                         },
                         new
                         {
                             Id = 10,
                             Author = "physics.need.help@example.com",
                             Content = "I'm preparing for the upcoming physics exam and it would really help if I could go through the solutions from last year's exam. Does anyone have a copy or know where I can find it?",
-                            CreatedDate = new DateTime(2024, 11, 29, 16, 6, 47, 573, DateTimeKind.Utc).AddTicks(3625),
+                            CreatedDate = new DateTime(2024, 11, 29, 14, 49, 57, 893, DateTimeKind.Utc).AddTicks(83),
                             Tag = "physics, exam, help",
                             Title = "Does Anyone Have Solutions for Last Year's Physics Exam?",
-                            UpvoteCount = 0
+                            UpvoteCount = 10
                         },
                         new
                         {
                             Id = 11,
                             Author = "exam.ready@example.com",
                             Content = "Exams can be stressful, but a solid preparation plan can make all the difference. In this post, I'll share a checklist for stress-free studying that will help you stay organized and confident during exam season.",
-                            CreatedDate = new DateTime(2024, 11, 29, 16, 6, 47, 573, DateTimeKind.Utc).AddTicks(3626),
+                            CreatedDate = new DateTime(2024, 11, 29, 14, 49, 57, 893, DateTimeKind.Utc).AddTicks(84),
                             ImageUrl = "images/post1.webp",
                             Tag = "exam prep, study guide, stress management",
                             Title = "Exam Preparation Checklist for Stress-Free Studying",
-                            UpvoteCount = 0
+                            UpvoteCount = 25
                         },
                         new
                         {
                             Id = 12,
                             Author = "chemistry.lab.struggle@example.com",
                             Content = "Does anyone have any tips on writing good lab reports? I'm struggling with understanding what details to include in my chemistry lab reports and how to structure them properly.",
-                            CreatedDate = new DateTime(2024, 11, 29, 16, 6, 47, 573, DateTimeKind.Utc).AddTicks(3627),
+                            CreatedDate = new DateTime(2024, 11, 29, 14, 49, 57, 893, DateTimeKind.Utc).AddTicks(85),
                             Tag = "chemistry, lab reports, help",
                             Title = "Struggling with Chemistry Lab Reports",
-                            UpvoteCount = 0
+                            UpvoteCount = 14
                         },
                         new
                         {
                             Id = 13,
                             Author = "math.group@example.com",
                             Content = "I'm looking to form a study group for Calculus II. If anyone is interested in meeting up once a week to go through problems and help each other out, please let me know!",
-                            CreatedDate = new DateTime(2024, 11, 29, 16, 6, 47, 573, DateTimeKind.Utc).AddTicks(3628),
+                            CreatedDate = new DateTime(2024, 11, 29, 14, 49, 57, 893, DateTimeKind.Utc).AddTicks(86),
                             Tag = "study group, calculus, math",
                             Title = "Math Study Group for Calculus II",
-                            UpvoteCount = 0
+                            UpvoteCount = 23
                         },
                         new
                         {
                             Id = 14,
                             Author = "bio.flashcards@example.com",
                             Content = "I've made some flashcards for key biology terms that I'm using to prepare for the upcoming exam. If anyone wants to collaborate or needs access to these flashcards, let me know!",
-                            CreatedDate = new DateTime(2024, 11, 29, 16, 6, 47, 573, DateTimeKind.Utc).AddTicks(3629),
+                            CreatedDate = new DateTime(2024, 11, 29, 14, 49, 57, 893, DateTimeKind.Utc).AddTicks(87),
                             Tag = "flashcards, biology, study tools",
                             Title = "Flashcards for Biology Terminology",
-                            UpvoteCount = 0
+                            UpvoteCount = 19
                         },
                         new
                         {
                             Id = 15,
                             Author = "history.buff@example.com",
                             Content = "I'm finding it difficult to memorize all the dates for my history exam. Does anyone have effective memorization techniques or tools that could help with learning historical timelines?",
-                            CreatedDate = new DateTime(2024, 11, 29, 16, 6, 47, 573, DateTimeKind.Utc).AddTicks(3630),
+                            CreatedDate = new DateTime(2024, 11, 29, 14, 49, 57, 893, DateTimeKind.Utc).AddTicks(88),
                             Tag = "history, memorization, study tips",
                             Title = "Effective Ways to Memorize Historical Dates",
-                            UpvoteCount = 0
+                            UpvoteCount = 16
                         });
                 });
 

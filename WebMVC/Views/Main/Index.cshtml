@@ -12,33 +12,27 @@
     <link rel="stylesheet" href="~/css/main.css" />
 </head>
 <div class="welcomebox">
-    <h3 class="welcometitle">Communicate in countless ways
-        from one place.</h3>
-    <p>Are you a student overwhelmed by textbooks and assignments? A
-        professional trying to juggle multiple projects and deadlines? Or simply
-        someone who loves learning new things and sharing their knowledge with
-        others? NoteHub is here to help! Our platform is designed to make
-        your life easier by providing a centralized space for organizing, sharing,
-        and collaborating on notes, images, and other materials.</p>
+    <h1 className="welcometitle mb-4">Welcome to NoteHub!</h1>
+    <p className="text-center intro-text">Overwhelmed with assignments, projects, or just love sharing knowledge? <br></br> NoteHub simplifies your life by organizing, sharing, and collaborating on notes and materials—all in one place!</p>
 </div>
 
 <h2>Tags</h2>
 
 <!-- Tag search bar -->
-<div class="tag-search" style="margin-bottom: 30px;">
+<div style="margin-bottom: 30px;">
     <input type="text" id="tagSearchInput" class="form-control" placeholder="Search tags...">
 </div>
 
 <!-- Tag buttons -->
-<div class="row scroll">
-    <div class="col-md-3">
+<div class="row">
+    <div class="col-md-3 tag-item">
         <div class="card mb-4">
             <div class="tag-card">
                 <a href="javascript:void(0);" class="btn btn-card" id="showAllButton">All Posts (@allTags)</a>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-3 tag-item">
         <div class="card mb-4">
             <div class="tag-card">
                 <a href="javascript:void(0);" class="btn btn-card" id="showNullButton">No Tags (@noTags)</a>
